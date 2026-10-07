@@ -1,0 +1,15 @@
+# Python virtual environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Node dependencies and generated reports
+node_modules/
+coverage/
+
+# Local OS/editor noise
+.DS_Store
+Thumbs.db
