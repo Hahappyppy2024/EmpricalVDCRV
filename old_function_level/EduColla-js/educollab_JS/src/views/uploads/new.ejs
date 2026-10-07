@@ -1,9 +1,0 @@
-<%- include('../partials/header') %>
-<h2>Upload File</h2>
-<p><a href="/courses/<%= course_id %>/uploads">Back</a></p>
-<% if (typeof error !== 'undefined' && error) { %><p style="color:red"><%= error %></p><% } %>
-<form method="post" action="/courses/<%= course_id %>/uploads" enctype="multipart/form-data">
-  <input type="file" name="file" />
-  <button type="submit">Upload</button>
-</form>
-<%- include('../partials/footer') %>

@@ -1,9 +1,0 @@
-<%- include('../partials/header') %>
-<h2>My Memberships</h2>
-<% memberships.forEach(m => { %>
-  <div class="card">
-    <h3><a href="/courses/<%= m.course_id %>"><%= m.course_title %></a></h3>
-    <p>Role: <b><%= m.role_in_course %></b></p>
-  </div>
-<% }) %>
-<%- include('../partials/footer') %>

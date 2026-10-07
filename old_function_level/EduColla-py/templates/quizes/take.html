@@ -1,5 +1,0 @@
-<form method="post" action="{{ url_for('quiz.answer_question', course_id=course_id, quiz_id=quiz_id, attempt_id=attempt['attempt_id']) }}">
-  <input type="hidden" name="question_id" value="{{ q['question_id'] }}">
-  <textarea name="answer_json" class="form-control"></textarea>
-  <button class="btn btn-sm btn-primary" type="submit">Save Answer</button>
-</form>

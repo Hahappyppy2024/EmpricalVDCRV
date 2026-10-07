@@ -1,9 +1,0 @@
-<%- include('../partials/header') %>
-<h2>My Quiz Attempts</h2>
-<% attempts.forEach(a => { %>
-  <div class="card">
-    <h3><%= a.course_title %> / <%= a.quiz_title %></h3>
-    <p class="muted">Started: <%= a.started_at %> • Submitted: <%= a.submitted_at || 'not yet' %></p>
-  </div>
-<% }) %>
-<%- include('../partials/footer') %>
