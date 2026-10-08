@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Workspaces · Team Chat{% endblock %}
+{% block content %}
+<h1>Workspaces and channels</h1>
+
+<div class="grid-2">
+  <div class="card">
+    <h2>Create a workspace</h2>
+    <form method="post" class="stack">
+      <label>Name
+        <input type="text" name="name" required placeholder="My team">
+      </label>
+      <label>Description
+        <textarea name="description" rows="2"></textarea>
+      </label>
+      <button class="btn btn-primary" type="submit">Create workspace</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Your workspaces</h2>
+    {% for entry in data['workspaces'] %}
+    <div class="list-item">
+      <div>
+        <strong>{{ entry.workspace.name }}</strong>
+        <span class="muted">({{ entry.role }})</span>
+        <div class="muted small">{{ entry.workspace.description }}</div>
+      </div>
+      <a class="btn btn-small" href="{{ url_for('messaging.chat_page') }}?slug={{ entry.workspace.slug }}">Open</a>
+    </div>
+    {% else %}
+    <p class="muted">No workspaces yet. Create one to get started.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card">
+  <h2>Channels in your workspaces</h2>
+  {% for entry in data['workspaces'] %}
+    <h3>{{ entry.workspace.name }}</h3>
+    <ul class="plain">
+      {% for channel in entry.channels %}
+      <li>
+        <a href="{{ url_for('messaging.chat_page') }}?slug={{ entry.workspace.slug }}&channel={{ channel.id }}">
+          #{{ channel.name }}
+        </a>
+        <span class="badge">{{ channel.visibility }}</span>
+        {% if channel.archived %}<span class="badge badge-warn">archived</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+</div>
+{% endblock %}

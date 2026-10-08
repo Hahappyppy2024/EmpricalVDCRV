@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Export — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}export{% endblock %}
+{% block content %}
+<h1>Export</h1>
+<div class="grid two">
+  <div>
+    <div class="card">
+      <h2>New export</h2>
+      <form data-api method="post" action="{{ url_for('api.post_export') }}" class="grid form-grid">
+        <label>Dataset
+          <select name="dataset_id" required>
+            {% for d in datasets %}
+              <option value="{{ d.id }}">{{ d.name }}</option>
+            {% else %}
+              <option value="" disabled>No datasets available</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>Format
+          <select name="kind">
+            <option value="csv">CSV</option>
+            <option value="pdf">PDF report</option>
+          </select>
+        </label>
+        <label class="span2">Filter (optional)
+          <input type="text" name="filter_ref" placeholder='e.g. sales > 200'>
+        </label>
+        <label class="span2">Report name (optional)
+          <input type="text" name="name" placeholder="Leave blank to use the dataset name">
+        </label>
+        <div class="span2"><button type="submit" class="btn primary">Generate export</button></div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Exports</h2>
+      <table class="data">
+        <thead><tr><th>#</th><th>Dataset</th><th>Format</th><th>Filter</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        {% for r in records %}
+          <tr>
+            <td>{{ r.id }}</td>
+            <td>{{ r.dataset_name }}</td>
+            <td>{{ r.kind }}</td>
+            <td><code>{{ r.filter_ref or '' }}</code></td>
+            <td>{{ r.status }}</td>
+            <td><a class="btn small" href="{{ url_for('api.export_download', export_id=r.id) }}">Download</a></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="6" class="muted">No exports yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Errors · Team Chat{% endblock %}
+{% block content %}
+<h1>Error records</h1>
+<p class="muted">Invalid operations return stable, deterministic user-facing errors. Client-side reports are recorded here.</p>
+
+<div class="card">
+  <h2>Report an error</h2>
+  <form id="error-form" class="stack small">
+    <label>Code
+      <input type="text" id="error-code" placeholder="validation_error" required>
+    </label>
+    <label>Message
+      <input type="text" id="error-message" placeholder="Message body is required" required>
+    </label>
+    <label>Path
+      <input type="text" id="error-path" placeholder="/api/chat/real_time_messaging">
+    </label>
+    <button class="btn" type="submit">Report</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Recorded errors</h2>
+  <div id="error-records" class="list-scroll">Loading…</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.ERRORS_BOOT = { currentUser: {{ current_user.to_dict() | tojson }} };
+</script>
+<script src="{{ url_for('static', filename='js/errors.js') }}"></script>
+{% endblock %}

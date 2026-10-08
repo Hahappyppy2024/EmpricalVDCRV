@@ -1,0 +1,29 @@
+{
+  "name": "p10-ai-assistant-llm-webui",
+  "version": "1.0.0",
+  "description": "P10 AI Assistant / LLM WebUI - synthetic benchmark application (JavaScript, Node 22, Express 5, SQLite)",
+  "type": "module",
+  "main": "src/server.js",
+  "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "db:reset": "node scripts/db-reset.js",
+    "db:seed": "node scripts/db-seed.js",
+    "smoke": "node scripts/smoke.js",
+    "smoke:ws": "node scripts/smoke-ws.js"
+  },
+  "dependencies": {
+    "bcryptjs": "3.0.2",
+    "better-sqlite3": "11.10.0",
+    "dotenv": "16.4.7",
+    "express": "5.1.0",
+    "multer": "2.0.2",
+    "ws": "8.18.1"
+  },
+  "allowScripts": {
+    "better-sqlite3@11.10.0": true
+  }
+}

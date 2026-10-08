@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Sign in — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}login{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <h1>Sign in</h1>
+  <p class="muted">Use a seeded account: <code>analyst / analyst123</code>, <code>viewer / viewer123</code>, or <code>admin / admin123</code>.</p>
+  <form method="post" action="{{ url_for('pages.login') }}">
+    <label>Username
+      <input type="text" name="username" required autofocus>
+    </label>
+    <label>Password
+      <input type="password" name="password" required>
+    </label>
+    <button type="submit" class="btn primary">Sign in</button>
+  </form>
+  <p class="muted">No account? <a href="{{ url_for('pages.signup') }}">Register a viewer account</a>.</p>
+</div>
+{% endblock %}

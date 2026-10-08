@@ -1,0 +1,6 @@
+services:
+  netd:
+    build: .
+    ports: ["${NETD_PORT:-9090}:9090"]
+    volumes: ["${NETD_DATA_VOLUME:-./var}:/app/var"]
+    restart: unless-stopped

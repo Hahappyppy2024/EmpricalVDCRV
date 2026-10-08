@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    environment:
+      APP_ADDR: ":8080"
+      DB_PATH: "/app/data/p09.db"
+      SESSION_COOKIE: "p09_session"
+    ports:
+      - "8080:8080"
+    volumes:
+      - p09data:/app/data
+      - p09storage:/app/storage
+volumes:
+  p09data: {}
+  p09storage: {}

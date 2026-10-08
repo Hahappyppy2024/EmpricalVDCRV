@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: development
+      DB_PATH: var/cloud_files.sqlite
+      UPLOAD_DIR: var/uploads
+      SESSION_COOKIE: cloud_session
+    volumes:
+      - cloud-data:/app/var
+volumes:
+  cloud-data:

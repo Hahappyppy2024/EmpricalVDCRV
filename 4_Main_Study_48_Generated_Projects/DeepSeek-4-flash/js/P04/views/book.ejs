@@ -1,0 +1,72 @@
+<%- include('partials/head', { title: 'Book a room — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1>Book a room</h1>
+    <p>Reserve a room with contact, guest, and simulated payment details.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>Reservation details</h3>
+      <form id="booking-form">
+        <label for="room_id">Room</label>
+        <select id="room_id" name="room_id" required>
+          <option value="">Select a room</option>
+          <% rooms.forEach(room => { %>
+            <option value="<%= room.id %>" <%= typeof roomId !== 'undefined' && Number(roomId) === room.id ? 'selected' : '' %>>
+              <%= room.name %> — $<%= room.price_per_night %>/night (up to <%= room.capacity %> guests)
+            </option>
+          <% }) %>
+        </select>
+
+        <div class="field-row">
+          <div><label for="check_in_date">Check in</label><input type="date" id="check_in_date" name="check_in_date" min="<%= today %>" required></div>
+          <div><label for="check_out_date">Check out</label><input type="date" id="check_out_date" name="check_out_date" min="<%= today %>" required></div>
+        </div>
+
+        <label for="guests">Number of guests</label>
+        <input type="number" id="guests" name="guests" min="1" max="8" value="1" required>
+
+        <h3 style="margin-top:18px;">Contact and guest details</h3>
+        <div class="field-row">
+          <div><label for="contact_name">Contact name</label><input type="text" id="contact_name" value="<%= user.name %>" required></div>
+          <div><label for="contact_phone">Contact phone</label><input type="text" id="contact_phone" value="<%= user.phone || '' %>"></div>
+        </div>
+        <label for="contact_email">Contact email</label>
+        <input type="email" id="contact_email" value="<%= user.email %>" required>
+
+        <h3 style="margin-top:18px;">Payment (simulated)</h3>
+        <p class="muted" style="font-size:13px;margin:0;">Card details are masked and processed by the local deterministic payment adapter — no real payment is made.</p>
+        <div class="field-row">
+          <div><label for="card_number">Card number</label><input type="text" id="card_number" placeholder="4242 4242 4242 4242" required></div>
+          <div class="field-row" style="grid-template-columns:1fr 1fr;gap:8px;">
+            <div><label for="card_expiry">Expiry</label><input type="text" id="card_expiry" placeholder="12/29" required></div>
+            <div><label for="card_cvc">CVC</label><input type="text" id="card_cvc" placeholder="123" required></div>
+          </div>
+        </div>
+
+        <label for="idempotency_key">Idempotency key (optional)</label>
+        <input type="text" id="idempotency_key" placeholder="leave blank for a new key">
+
+        <div id="price-preview" class="alert alert-info hidden"></div>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">Confirm booking</button>
+        </div>
+      </form>
+      <div id="booking-result"></div>
+    </div>
+
+    <div class="card">
+      <h3>Your reservations</h3>
+      <div id="recent-bookings"><p class="muted">Loading…</p></div>
+      <hr>
+      <p class="muted" style="font-size:13px;">
+        Need to change or cancel a stay? Go to <a href="/bookings">My bookings</a>.
+      </p>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="application/json" id="rooms-data"><%- JSON.stringify(rooms) %></script>
+<script type="module" src="/js/pages/book.js"></script>

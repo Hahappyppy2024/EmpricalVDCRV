@@ -1,0 +1,13 @@
+services:
+  dashboard:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      FLASK_SECRET_KEY: dev-secret-change-me
+      DATABASE_PATH: /app/data/analytics.db
+      UPLOAD_DIR: /app/data/uploads
+      MAX_UPLOAD_MB: "10"
+      PORT: "8000"
+    volumes:
+      - ./data:/app/data

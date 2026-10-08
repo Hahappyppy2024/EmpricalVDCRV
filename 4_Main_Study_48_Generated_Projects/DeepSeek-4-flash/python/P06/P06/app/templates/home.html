@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Home · Team Chat{% endblock %}
+{% block content %}
+<h1>Welcome, {{ current_user.display_name }}</h1>
+<p class="muted">Real-Time Team Chat System — a Zulip-aligned synthetic benchmark application.</p>
+
+<div class="grid-2">
+  <div class="card">
+    <h2>Workspaces</h2>
+    <ul class="plain">
+      {% for entry in data['workspaces'] %}
+      <li>
+        <a href="{{ url_for('messaging.chat_page') }}?slug={{ entry.workspace.slug }}">
+          {{ entry.workspace.name }}
+        </a>
+        <span class="muted">({{ entry.role }})</span>
+      </li>
+      {% else %}
+      <li class="muted">No workspaces yet.</li>
+      {% endfor %}
+    </ul>
+    <a class="btn" href="{{ url_for('workspaces.workspaces_page') }}">Manage workspaces</a>
+  </div>
+  <div class="card">
+    <h2>Quick links</h2>
+    <ul class="plain">
+      <li><a href="{{ url_for('messaging.chat_page') }}">Open the chat</a></li>
+      <li><a href="{{ url_for('direct_messages.dm_page') }}">Direct messages</a></li>
+      <li><a href="{{ url_for('attachments.attachments_page') }}">Attachments</a></li>
+      <li><a href="{{ url_for('history_search.search_page') }}">Search message history</a></li>
+      <li><a href="{{ url_for('link_preview.links_page') }}">Link preview</a></li>
+      <li><a href="{{ url_for('connection_handling.connection_page') }}">Connection & delivery states</a></li>
+      <li><a href="{{ url_for('frontend_api.frontend_page') }}">Frontend API states</a></li>
+      <li><a href="{{ url_for('errors_api.errors_page') }}">Error records</a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{{define "content"}}
+<div class="page-head">
+  <h1>Dashboard</h1>
+  <p class="muted">Signed in as <strong>{{.User.username}}</strong> ({{.User.role}}).</p>
+</div>
+{{if .Stats.global_notice}}<div class="notice">{{.Stats.global_notice}}</div>{{end}}
+
+<h2>Workspace overview</h2>
+<div class="cards">
+  <a class="card" href="/account"><strong>{{index .Stats "account_access"}}</strong><span>Access events</span></a>
+  <a class="card" href="/workflows"><strong>{{index .Stats "workflow_creation"}}</strong><span>Workflows</span></a>
+  <a class="card" href="/tools"><strong>{{index .Stats "tool_catalog"}}</strong><span>Visible tools</span></a>
+  <a class="card" href="/runs"><strong>{{index .Stats "task_execution"}}</strong><span>Runs</span></a>
+  <a class="card" href="/schedules"><strong>{{index .Stats "scheduled_runs"}}</strong><span>Schedules</span></a>
+  <a class="card" href="/files"><strong>{{index .Stats "workspace_files"}}</strong><span>Workspace files</span></a>
+  <a class="card" href="/webhooks"><strong>{{index .Stats "webhook_triggers"}}</strong><span>Webhooks</span></a>
+  <a class="card" href="/http-actions"><strong>{{index .Stats "external_http_action"}}</strong><span>HTTP actions</span></a>
+  <a class="card" href="/secrets"><strong>{{index .Stats "secrets_manager"}}</strong><span>Secrets</span></a>
+  <a class="card" href="/logs"><strong>{{index .Stats "run_logs_and_replay"}}</strong><span>Log entries</span></a>
+  <a class="card" href="/templates"><strong>{{index .Stats "sharing_and_templates"}}</strong><span>Templates</span></a>
+  {{if .Admin}}<a class="card admin" href="/admin"><strong>&#9874;</strong><span>Admin governance</span></a>{{end}}
+</div>
+
+<h2>Recent runs</h2>
+<div class="panel">
+  {{if .Recent}}
+  <table class="grid">
+    <thead><tr><th>#</th><th>Workflow</th><th>Trigger</th><th>Status</th><th>Started</th></tr></thead>
+    <tbody>
+      {{range .Recent}}
+      <tr>
+        <td><a href="/runs/{{index . "id"}}">#{{index . "id"}}</a></td>
+        <td>{{index . "workflow_id"}}</td>
+        <td>{{index . "trigger"}}</td>
+        <td><span class="badge st-{{index . "status"}}">{{index . "status"}}</span></td>
+        <td>{{index . "started_at"}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+  {{else}}<p class="muted">No runs yet. Start one from the <a href="/runs">Task runs</a> page.</p>{{end}}
+</div>
+{{end}}

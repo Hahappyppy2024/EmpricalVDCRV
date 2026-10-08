@@ -1,0 +1,34 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      APP_URL: http://127.0.0.1:8080
+      APP_DEBUG: "false"
+      DATABASE_PATH: /app/data/p13.sqlite
+      STORAGE_PATH: /app/storage
+      SEED_PASSWORD: Passw0rd!
+    volumes:
+      - p13-data:/app/data
+      - p13-storage:/app/storage
+    command: sh -c "php scripts/seed.php && php -S 0.0.0.0:8080 -t public public/router.php"
+
+  # Optional real-time notification transport (Workerman).
+  # Start with: docker compose up ws
+  ws:
+    build: .
+    ports:
+      - "8090:8090"
+    environment:
+      DATABASE_PATH: /app/data/p13.sqlite
+      STORAGE_PATH: /app/storage
+      WS_PORT: "8090"
+    volumes:
+      - p13-data:/app/data
+      - p13-storage:/app/storage
+    command: php wss/server.php start
+
+volumes:
+  p13-data:
+  p13-storage:

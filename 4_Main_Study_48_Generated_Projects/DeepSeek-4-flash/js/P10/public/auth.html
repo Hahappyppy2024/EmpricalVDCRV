@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in - P10 AI Assistant</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="auth-body">
+  <main class="auth-card">
+    <h1 class="auth-title">AI Assistant Web UI</h1>
+    <p class="auth-subtitle">P10 &middot; Lobe-Chat-aligned synthetic workspace</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Sign in</button>
+      <button class="auth-tab" data-tab="register">Register</button>
+    </div>
+
+    <form id="login-form" class="auth-form">
+      <label>Username or email<input type="text" name="username" required autocomplete="username"></label>
+      <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+      <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+    </form>
+
+    <form id="register-form" class="auth-form hidden">
+      <label>Username<input type="text" name="username" required minlength="3" autocomplete="username"></label>
+      <label>Email<input type="email" name="email" required autocomplete="email"></label>
+      <label>Password<input type="password" name="password" required minlength="6" autocomplete="new-password"></label>
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+    </form>
+
+    <p id="auth-message" class="auth-message" role="alert"></p>
+    <p class="auth-hint">Seed accounts: <code>admin/admin123</code>, <code>alice/alice123</code>, <code>bob/bob123</code></p>
+  </main>
+  <script src="/js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P10 AI Assistant</title>
+  <script>
+    fetch('/api/auth/me', { credentials: 'same-origin' })
+      .then((r) => (r.ok ? '/app' : '/auth'))
+      .then((target) => { window.location.replace(target); });
+  </script>
+</head>
+<body>
+  <p>Redirecting&hellip;</p>
+</body>
+</html>

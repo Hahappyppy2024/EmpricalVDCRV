@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    container_name: p10-ai-assistant
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DATABASE_PATH: ./data/app.db
+      UPLOAD_DIR: ./data/uploads
+      SESSION_COOKIE_NAME: aiwebui_sid
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

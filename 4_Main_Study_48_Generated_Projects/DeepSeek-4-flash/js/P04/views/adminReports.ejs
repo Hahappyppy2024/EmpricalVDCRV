@@ -1,0 +1,31 @@
+<%- include('partials/head', { title: 'Admin reports — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1>Admin reports</h1>
+    <p>Export occupancy, revenue, and cancellation reports.</p>
+  </div>
+
+  <div class="card">
+    <form id="report-form" class="search-panel">
+      <div><label>Report type</label>
+        <select id="report-type">
+          <option value="occupancy">Occupancy</option>
+          <option value="revenue">Revenue</option>
+          <option value="cancellations">Cancellations</option>
+        </select>
+      </div>
+      <div><label>From</label><input type="date" id="report-from" min="2020-01-01" max="<%= today %>"></div>
+      <div><label>To</label><input type="date" id="report-to" min="2020-01-01" max="<%= today %>"></div>
+      <div style="align-self:end;"><button class="btn btn-primary" type="submit">Run report</button></div>
+    </form>
+    <div id="report-result" style="margin-top:16px;"></div>
+  </div>
+
+  <div class="card">
+    <h3>Export history</h3>
+    <div id="export-history"><p class="muted">Loading…</p></div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/admin-reports.js"></script>

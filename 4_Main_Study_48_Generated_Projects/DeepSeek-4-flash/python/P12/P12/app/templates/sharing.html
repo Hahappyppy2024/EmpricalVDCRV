@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Dashboard sharing — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}dashboard_sharing{% endblock %}
+{% block content %}
+<h1>Dashboard sharing</h1>
+<div class="grid two">
+  <div>
+    <div class="card">
+      <h2>New share</h2>
+      <form data-api method="post" action="{{ url_for('api.post_dashboard_sharing') }}" class="grid form-grid">
+        <label>Dataset
+          <select name="dataset_id">
+            <option value="">— none —</option>
+            {% for d in datasets %}
+              <option value="{{ d.id }}">{{ d.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>Chart
+          <select name="chart_id">
+            <option value="">— none —</option>
+            {% for c in charts %}
+              <option value="{{ c.id }}">{{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>Share type
+          <select name="share_type">
+            <option value="link">link (public)</option>
+            <option value="team">team</option>
+          </select>
+        </label>
+        <label>Target (team name)
+          <input type="text" name="target" placeholder="e.g. sales-team">
+        </label>
+        <div class="span2"><button type="submit" class="btn primary">Create share</button></div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Active shares</h2>
+      <table class="data">
+        <thead><tr><th>Type</th><th>Dataset</th><th>Chart</th><th>Target</th><th>Link</th></tr></thead>
+        <tbody>
+        {% for r in records %}
+          <tr>
+            <td>{{ r.share_type }}</td>
+            <td>{{ r.dataset_name }}</td>
+            <td>{{ r.chart_name }}</td>
+            <td>{{ r.target }}</td>
+            <td>
+              {% if r.link_token %}
+                <code><a href="{{ url_for('pages.shared', token=r.link_token) }}">/shared/{{ r.link_token }}</a></code>
+              {% else %}
+                <span class="muted">—</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="muted">No shares yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

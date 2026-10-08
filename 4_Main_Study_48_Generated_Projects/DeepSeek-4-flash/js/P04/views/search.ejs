@@ -1,0 +1,45 @@
+<%- include('partials/head', { title: 'Room search — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1>Search rooms</h1>
+    <p>Find a room by date, capacity, price, and amenities.</p>
+  </div>
+
+  <div class="card">
+    <form id="search-form" method="get" action="/search">
+      <div class="search-panel">
+        <div><label>Check in</label><input type="date" id="check_in_date" name="check_in_date" value="<%= filters.check_in_date || today %>" min="<%= today %>"></div>
+        <div><label>Check out</label><input type="date" id="check_out_date" name="check_out_date" value="<%= filters.check_out_date || '' %>"></div>
+        <div><label>Guests</label><input type="number" id="capacity" name="capacity" min="1" max="8" value="<%= filters.capacity || '' %>" placeholder="Any"></div>
+        <div><label>Min price ($)</label><input type="number" id="min_price" name="min_price" min="0" value="<%= filters.min_price || '' %>"></div>
+        <div><label>Max price ($)</label><input type="number" id="max_price" name="max_price" min="0" value="<%= filters.max_price || '' %>"></div>
+        <div><label>Room type</label>
+          <select id="type" name="type">
+            <option value="">Any type</option>
+            <% roomTypes.forEach(t => { %>
+              <option value="<%= t %>" <%= filters.type === t ? 'selected' : '' %>><%= t %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div><label>Keyword</label><input type="text" id="q" name="q" value="<%= filters.q || '' %>" placeholder="e.g. balcony"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Search</button>
+        <span class="muted"><%= count %> matching <%= count === 1 ? 'room' : 'rooms' %></span>
+      </div>
+    </form>
+  </div>
+
+  <% if (count === 0) { %>
+    <div class="alert alert-info">No rooms match your filters. Try widening the date range or price band.</div>
+  <% } else { %>
+    <div class="grid">
+      <% results.forEach(room => { %>
+        <%- include('partials/roomCard', { room }) %>
+      <% }) %>
+    </div>
+  <% } %>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/search.js"></script>

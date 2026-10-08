@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Frontend API integration · Team Chat{% endblock %}
+{% block content %}
+<h1>Frontend API integration</h1>
+<p class="muted">Loading, typing indicators, errors and empty states handled by the UI.</p>
+
+<div class="card">
+  <h2>Simulate API/event states</h2>
+  <form id="frontend-form" class="stack small">
+    <label>Event type
+      <select id="frontend-event-type">
+        <option value="loading">loading</option>
+        <option value="empty_state">empty_state</option>
+        <option value="api_error">api_error</option>
+        <option value="typing">typing</option>
+        <option value="presence">presence</option>
+        <option value="reconnect">reconnect</option>
+      </select>
+    </label>
+    <label>Payload (JSON, optional)
+      <input type="text" id="frontend-payload" placeholder='{"view": "messages"}'>
+    </label>
+    <button class="btn" type="submit">Record state</button>
+  </form>
+  <div class="api-status" id="api-status">Loading API status…</div>
+</div>
+
+<div class="card">
+  <h2>Recent frontend events</h2>
+  <div id="frontend-events" class="list-scroll">Loading…</div>
+</div>
+
+<div class="card">
+  <h2>Typing indicator demo</h2>
+  <p class="muted">Open two browser tabs on the Chat page, type in one, and watch the other show a typing indicator. This page records the events.</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.FRONTEND_BOOT = { currentUser: {{ current_user.to_dict() | tojson }} };
+</script>
+<script src="{{ url_for('static', filename='js/frontend.js') }}"></script>
+{% endblock %}

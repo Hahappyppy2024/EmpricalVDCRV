@@ -1,0 +1,9 @@
+/vendor/
+/.env
+/storage/db/*.sqlite
+/storage/db/*.sqlite-*
+/storage/files/*
+!/storage/files/.gitkeep
+/var/
+composer.lock.backup
+.DS_Store

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Link preview · Team Chat{% endblock %}
+{% block content %}
+<h1>Link preview</h1>
+<div class="grid-2">
+  <div class="card">
+    <h2>Generate a preview</h2>
+    <form method="post" class="stack">
+      <label>URL
+        <input type="url" name="url" required placeholder="https://example.com">
+      </label>
+      <button class="btn btn-primary" type="submit">Fetch metadata</button>
+    </form>
+    <p class="muted small">Uses a deterministic offline fetcher — no network is required.</p>
+    {% if preview %}
+    <div class="preview-card">
+      <div class="preview-title">{{ preview.title }}</div>
+      <div class="muted small">{{ preview.site_name }} · {{ preview.url }}</div>
+      <p>{{ preview.description }}</p>
+      {% if preview.image_url %}<img src="{{ preview.image_url }}" alt="preview">{% endif %}
+    </div>
+    {% endif %}
+    {% if error %}<div class="flash flash-error">{{ error }}</div>{% endif %}
+  </div>
+  <div class="card">
+    <h2>Recent previews</h2>
+    <ul class="plain">
+      {% for p in data.previews %}
+      <li>
+        <a href="{{ p.url }}" target="_blank" rel="noopener">{{ p.title or p.url }}</a>
+        <span class="muted small">— {{ p.site_name }}</span>
+      </li>
+      {% else %}
+      <li class="muted">No previews yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

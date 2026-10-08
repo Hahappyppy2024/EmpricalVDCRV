@@ -1,0 +1,74 @@
+<%- include('partials/head', { title: 'My bookings — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1><%= isStaff ? 'All bookings (staff)' : 'My bookings' %></h1>
+    <p>View, modify, or cancel bookings under the hotel policy.</p>
+  </div>
+
+  <div class="card">
+    <h3>Bookings</h3>
+    <% if (bookings.length === 0) { %>
+      <p class="muted">No bookings yet. <a href="/book">Create your first booking</a>.</p>
+    <% } else { %>
+      <div class="table-wrap">
+        <table>
+          <tr>
+            <th>Code</th><th>Room</th><th>Guest</th><th>Dates</th><th>Guests</th><th>Total</th><th>Status</th><th>Actions</th>
+          </tr>
+          <% bookings.forEach(b => { %>
+            <tr data-booking-id="<%= b.id %>" data-status="<%= b.status %>">
+              <td><%= b.code %></td>
+              <td><%= b.room_name %></td>
+              <td><%= b.guest_name %></td>
+              <td><%= b.check_in_date %> → <%= b.check_out_date %></td>
+              <td><%= b.guests %></td>
+              <td class="money">$<%= b.total_price %></td>
+              <td><span class="badge <%= b.status %>"><%= b.status %></span></td>
+              <td>
+                <% if (b.status === 'confirmed' || (isStaff && b.status === 'confirmed')) { %>
+                  <button class="btn btn-sm btn-danger cancel-btn" data-id="<%= b.id %>">Cancel</button>
+                  <% if (!isStaff) { %>
+                    <button class="btn btn-sm modify-btn" data-id="<%= b.id %>">Modify</button>
+                  <% } %>
+                <% } %>
+              </td>
+            </tr>
+            <% if (!isStaff) { %>
+              <tr class="modify-row hidden" data-row-for="<%= b.id %>">
+                <td colspan="8">
+                  <form class="modify-form" data-id="<%= b.id %>" style="display:flex;gap:10px;align-items:end;flex-wrap:wrap;">
+                    <div><label>Check in</label><input type="date" name="check_in_date" value="<%= b.check_in_date %>" min="<%= today %>"></div>
+                    <div><label>Check out</label><input type="date" name="check_out_date" value="<%= b.check_out_date %>" min="<%= today %>"></div>
+                    <div><label>Guests</label><input type="number" name="guests" min="1" max="8" value="<%= b.guests %>"></div>
+                    <button class="btn btn-primary btn-sm" type="submit">Save changes</button>
+                    <button class="btn btn-sm cancel-modify" type="button">Close</button>
+                  </form>
+                </td>
+              </tr>
+            <% } %>
+          <% }) %>
+        </table>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="card">
+    <h3>Audit trail</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>When</th><th>Actor</th><th>Action</th><th>Target</th></tr>
+        <% audit.forEach(a => { %>
+          <tr>
+            <td><%= a.created_at %></td>
+            <td><%= a.actor_id || '—' %></td>
+            <td><%= a.action %></td>
+            <td><%= a.target_type %> <%= a.target_id || '' %></td>
+          </tr>
+        <% }) %>
+      </table>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/bookings.js"></script>

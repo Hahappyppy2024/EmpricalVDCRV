@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in - P08 Expense Approval</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="login-body">
+  <main class="login-card">
+    <h1>Enterprise Expense Approval System</h1>
+    <p class="login-sub">P08 - Sign in to access your workspace</p>
+    <div id="msg" class="alert hidden"></div>
+    <form id="login-form">
+      <label for="username">Username</label>
+      <input id="username" name="username" autocomplete="username" required />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required />
+      <button type="submit">Sign in</button>
+    </form>
+    <details class="seed-accounts">
+      <summary>Seed accounts</summary>
+      <ul>
+        <li>employee: <code>alice / employee123</code></li>
+        <li>employee: <code>bob / employee123</code></li>
+        <li>manager: <code>mgr1 / manager123</code></li>
+        <li>finance: <code>finance1 / finance123</code></li>
+        <li>admin: <code>admin / admin123</code></li>
+      </ul>
+    </details>
+  </main>
+  <script>
+    const form = document.getElementById('login-form');
+    const msg = document.getElementById('msg');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.classList.add('hidden');
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error && data.error.message);
+        window.location.href = '/';
+      } catch (err) {
+        msg.textContent = err.message || 'Sign-in failed';
+        msg.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

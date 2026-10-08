@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Attachments · Team Chat{% endblock %}
+{% block content %}
+<h1>Attachments</h1>
+<div class="grid-2">
+  <div class="card">
+    <h2>Upload a file</h2>
+    <form method="post" enctype="multipart/form-data" class="stack">
+      <label>File
+        <input type="file" name="file" required>
+      </label>
+      <label class="check">
+        <input type="checkbox" name="is_private" value="on"> Private (only you can download)
+      </label>
+      <label>Attach to message ID (optional)
+        <input type="number" name="message_id" min="1">
+      </label>
+      <button class="btn btn-primary" type="submit">Upload</button>
+    </form>
+    <p class="muted small">Allowed types: txt, md, pdf, images, csv, json, zip, office docs and source files. Max 16 MiB.</p>
+    {% if last is defined and last %}
+      <div class="flash flash-success">Uploaded #{{ last.attachment.id }} — {{ last.attachment.filename }} ({{ last.attachment.size }} bytes)</div>
+    {% endif %}
+  </div>
+  <div class="card">
+    <h2>Your files</h2>
+    <table class="table">
+      <thead><tr><th>File</th><th>Size</th><th>Private</th><th></th></tr></thead>
+      <tbody>
+        {% for item in data.attachments %}
+        <tr>
+          <td>
+            <a href="{{ url_for('attachments.attachments_download', attachment_id=item.id) }}">{{ item.filename }}</a>
+            <div class="muted small">#{{ item.id }} · {{ item.created_at }}</div>
+          </td>
+          <td>{{ item.size }} B</td>
+          <td>{{ 'yes' if item.is_private else 'no' }}</td>
+          <td><a class="btn btn-small" href="{{ url_for('attachments.attachments_download', attachment_id=item.id) }}">Download</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="muted">No attachments yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

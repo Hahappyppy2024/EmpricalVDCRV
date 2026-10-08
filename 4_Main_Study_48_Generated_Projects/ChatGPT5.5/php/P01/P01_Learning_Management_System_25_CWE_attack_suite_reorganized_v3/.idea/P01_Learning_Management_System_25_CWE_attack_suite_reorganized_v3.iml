@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/src" isTestSource="false" packagePrefix="App\" />
+      <sourceFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/tests" isTestSource="false" packagePrefix="Tests\" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/fig/http-message-util" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/nikic/fast-route" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/psr/container" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/psr/http-factory" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/psr/http-message" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/psr/http-server-handler" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/psr/http-server-middleware" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/psr/log" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/ralouphie/getallheaders" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/slim/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/P01_Learning_Management_System/vendor/slim/slim" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

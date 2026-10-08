@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Create account · Team Chat{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card auth-card">
+    <h1>Create an account</h1>
+    <form method="post" action="{{ url_for('accounts.register_page') }}" class="stack">
+      <label>Username
+        <input type="text" name="username" required pattern="[A-Za-z0-9_.-]{3,32}" placeholder="3-32 letters, digits, . _ -">
+      </label>
+      <label>Email
+        <input type="email" name="email" required>
+      </label>
+      <label>Full name
+        <input type="text" name="full_name">
+      </label>
+      <label>Password
+        <input type="password" name="password" required minlength="8">
+      </label>
+      <button class="btn btn-primary" type="submit">Create account</button>
+    </form>
+    <div class="auth-links">
+      <a href="{{ url_for('accounts.login_page') }}">Already have an account? Sign in</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+<%- include('partials/head', { title: 'Register — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div style="max-width:460px;margin:0 auto;">
+    <div class="card">
+      <h2>Create an account</h2>
+      <p class="muted mb-0">Register as a guest to book rooms and manage your stays.</p>
+      <form id="register-form">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+        <label for="phone">Phone (optional)</label>
+        <input type="text" id="phone" name="phone">
+        <label for="password">Password (min 8 characters)</label>
+        <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password">
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">Register</button>
+        </div>
+      </form>
+      <div id="register-result"></div>
+      <p class="muted" style="font-size:13px;margin:8px 0 0;">
+        Already registered? <a href="/account/login">Sign in</a>
+      </p>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/auth.js"></script>

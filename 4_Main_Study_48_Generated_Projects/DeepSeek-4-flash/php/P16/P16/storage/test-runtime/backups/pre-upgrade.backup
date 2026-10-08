@@ -1,0 +1,112 @@
+{
+    "format": "p16-backup-v1",
+    "created_at": "2026-08-21 01:09:02",
+    "config": [
+        {
+            "config_key": "alert_email",
+            "config_value": "ops@monitor.local",
+            "status": "active"
+        },
+        {
+            "config_key": "log_level",
+            "config_value": "info",
+            "status": "active"
+        },
+        {
+            "config_key": "maintenance_mode",
+            "config_value": "0",
+            "status": "active"
+        },
+        {
+            "config_key": "max_connections",
+            "config_value": "150",
+            "status": "active"
+        },
+        {
+            "config_key": "poll_interval",
+            "config_value": "30",
+            "status": "pending"
+        },
+        {
+            "config_key": "retention_days",
+            "config_value": "90",
+            "status": "active"
+        },
+        {
+            "config_key": "ws_port",
+            "config_value": "9090",
+            "status": "active"
+        }
+    ],
+    "latest_metrics": [
+        {
+            "server_name": "backup-01",
+            "cpu_pct": 12.3,
+            "memory_pct": 33.7,
+            "disk_pct": 22.9,
+            "service_status": "maintenance"
+        },
+        {
+            "server_name": "monitoring-01",
+            "cpu_pct": 54,
+            "memory_pct": 66.2,
+            "disk_pct": 80.5,
+            "service_status": "degraded"
+        },
+        {
+            "server_name": "worker-01",
+            "cpu_pct": 63.4,
+            "memory_pct": 71,
+            "disk_pct": 41.6,
+            "service_status": "ok"
+        },
+        {
+            "server_name": "cache-01",
+            "cpu_pct": 19.8,
+            "memory_pct": 44.3,
+            "disk_pct": 28.1,
+            "service_status": "ok"
+        },
+        {
+            "server_name": "db-01",
+            "cpu_pct": 78.5,
+            "memory_pct": 88.9,
+            "disk_pct": 55,
+            "service_status": "degraded"
+        },
+        {
+            "server_name": "web-01",
+            "cpu_pct": 42.1,
+            "memory_pct": 61.4,
+            "disk_pct": 73.2,
+            "service_status": "ok"
+        }
+    ],
+    "jobs": [
+        {
+            "name": "nightly-backup",
+            "profile": "nightly_backup",
+            "status": "active"
+        },
+        {
+            "name": "health-check-hourly",
+            "profile": "health_check",
+            "status": "active"
+        },
+        {
+            "name": "log-rotate-daily",
+            "profile": "log_rotate",
+            "status": "paused"
+        },
+        {
+            "name": "report-weekly",
+            "profile": "report_generation",
+            "status": "active"
+        },
+        {
+            "name": "metric-aggregate",
+            "profile": "metric_aggregation",
+            "status": "active"
+        }
+    ]
+}

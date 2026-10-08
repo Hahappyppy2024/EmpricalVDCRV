@@ -1,0 +1,5 @@
+/.env
+/var/*.sqlite*
+/var/coverage.json
+/var/coverage-summary.json
+/var/coverage-test.log

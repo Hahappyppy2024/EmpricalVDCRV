@@ -1,0 +1,18 @@
+services:
+  chat:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      SECRET_KEY: compose-dev-secret-change-me
+      DATABASE_URL: sqlite:////app/instance/chat.db
+      UPLOAD_FOLDER: /app/instance/uploads
+      MAILBOX_DIR: /app/instance/mailbox
+      PUBLIC_BASE_URL: http://localhost:8000
+      COOKIE_SECURE: "false"
+    volumes:
+      - chat_data:/app/instance
+    restart: unless-stopped
+
+volumes:
+  chat_data:

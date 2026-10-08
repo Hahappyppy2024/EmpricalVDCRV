@@ -1,0 +1,66 @@
+{{template "header" .}}
+<div class="row between">
+  <h1>Webhooks — {{.Project.Name}}</h1>
+  {{if .CanManage}}<a href="/projects/{{.Project.Slug}}" class="btn">Back to project</a>{{end}}
+</div>
+<p class="hint">Outbound webhooks are delivered with an HMAC-SHA256 signature header (<code>X-Issue-Tracker-Signature</code>). Every delivery attempt is recorded below; seeded webhooks point at the local listener so everything works offline.</p>
+
+{{if .CanManage}}
+<div class="card">
+  <h2>Add webhook</h2>
+  <form method="post" action="/projects/{{.Project.Slug}}/webhooks" class="stack">
+    <label>URL
+      <input type="url" name="url" placeholder="https://example.com/hook" required>
+    </label>
+    <label>Secret
+      <input type="text" name="secret" placeholder="leave blank to generate">
+    </label>
+    <fieldset>
+      <legend>Events</legend>
+      {{range .AllEvents}}
+        <label class="check"><input type="checkbox" name="events" value="{{.}}" checked> {{.}}</label>
+      {{end}}
+    </fieldset>
+    <button type="submit" class="primary">Create webhook</button>
+  </form>
+</div>
+{{end}}
+
+{{range .Rows}}
+<div class="card">
+  <div class="row between">
+    <h2>{{.Webhook.URL}}</h2>
+    <span class="badge {{if .Webhook.Active}}pub{{else}}priv{{end}}">{{if .Webhook.Active}}active{{else}}inactive{{end}}</span>
+  </div>
+  <p class="hint">events: {{join ", " .Webhook.Events}} · created {{formatTime .Webhook.CreatedAt}}</p>
+  {{if $.CanManage}}
+  <form class="row" method="post" action="/api/issue/webhooks/{{.Webhook.ID}}" data-js-api data-method="patch">
+    <input type="text" name="url" value="{{.Webhook.URL}}" placeholder="new URL">
+    <input type="text" name="secret" placeholder="rotate secret">
+    <select name="active">
+      <option value="">(keep state)</option>
+      <option value="true">activate</option>
+      <option value="false">deactivate</option>
+    </select>
+    <button type="submit" class="primary">Update</button>
+  </form>
+  {{end}}
+  <h3>Recent deliveries</h3>
+  <table>
+    <thead><tr><th>Event</th><th>Status</th><th>Attempts</th><th>Response</th><th>When</th></tr></thead>
+    <tbody>
+    {{range .Deliveries}}
+      <tr>
+        <td>{{.Event}}</td>
+        <td><span class="badge {{if eq .Status "delivered"}}pub{{else}}priv{{end}}">{{.Status}}</span></td>
+        <td>{{.Attempts}}</td>
+        <td class="mono small">{{.Response}}</td>
+        <td>{{formatTime .CreatedAt}}</td>
+      </tr>
+    {{end}}
+    {{if not .Deliveries}}<tr><td colspan="5" class="hint">No deliveries yet.</td></tr>{{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+{{template "footer" .}}

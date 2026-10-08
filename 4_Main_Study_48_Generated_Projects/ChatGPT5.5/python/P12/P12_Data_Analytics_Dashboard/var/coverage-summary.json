@@ -1,0 +1,10 @@
+{
+  "line_hit": 386,
+  "line_total": 386,
+  "line_percent": 100.0,
+  "branch_hit": 144,
+  "branch_total": 154,
+  "branch_percent": 93.51,
+  "threshold": 85.0,
+  "passed": true
+}

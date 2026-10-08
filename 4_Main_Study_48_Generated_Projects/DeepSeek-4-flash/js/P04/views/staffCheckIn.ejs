@@ -1,0 +1,40 @@
+<%- include('partials/head', { title: 'Staff check-in/out — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1>Staff check-in / check-out</h1>
+    <p>Check guests in and out and track stay status in real time.</p>
+  </div>
+
+  <div class="card">
+    <h3>Due for check-in</h3>
+    <div class="table-wrap">
+      <table id="checkin-table">
+        <thead><tr><th>Code</th><th>Guest</th><th>Room</th><th>Dates</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Currently checked in</h3>
+    <div class="table-wrap">
+      <table id="checkout-table">
+        <thead><tr><th>Code</th><th>Guest</th><th>Room</th><th>Dates</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Recent check-in/out events <span class="ws-dot" id="ws-status"></span><span class="muted" id="ws-label">realtime</span></h3>
+    <div class="table-wrap">
+      <table id="events-table">
+        <thead><tr><th>When</th><th>Booking</th><th>Action</th><th>By</th></tr></thead>
+        <tbody><tr><td colspan="4" class="muted">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/staff-checkin.js"></script>

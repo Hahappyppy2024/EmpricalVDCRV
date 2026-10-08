@@ -1,0 +1,7 @@
+/vendor/
+/.env
+/database/conference.sqlite*
+/storage/*.log
+/storage/websocket.log
+/storage/manuscripts/*.pdf
+/storage/exports/*

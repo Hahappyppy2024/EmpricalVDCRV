@@ -1,0 +1,105 @@
+{{template "header" .}}
+<div class="row between">
+  <div>
+    <h1>{{.Project.Name}}</h1>
+    <p class="hint">{{.Project.Description}}</p>
+  </div>
+  <a href="/projects/{{.Project.Slug}}/issues/new" class="btn primary">New issue</a>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <div class="row between">
+      <h2>Issues</h2>
+      <a href="/search?project_id={{.Project.ID}}">filter →</a>
+    </div>
+    {{if .Issues}}
+      {{range .Issues}}{{template "issue_row" .}}{{end}}
+    {{else}}
+      <p class="hint">No issues yet.</p>
+    {{end}}
+  </div>
+
+  <div class="stack">
+    <div class="card">
+      <h2>Labels</h2>
+      <ul class="plain">
+      {{range .Labels}}
+        <li><span class="badge label" style="background:#{{.Color}}">{{.Name}}</span></li>
+      {{end}}
+      </ul>
+      {{if .CanManage}}
+      <form method="post" action="/projects/{{.Project.Slug}}/labels" class="row">
+        <input type="text" name="name" placeholder="Label name" required>
+        <input type="color" name="color" value="#1f883d" style="width:3em">
+        <button type="submit" class="primary">Add</button>
+      </form>
+      {{end}}
+    </div>
+    <div class="card">
+      <h2>Milestones</h2>
+      <ul class="plain">
+      {{range .Milestones}}
+        <li>{{.Title}} {{if .IsOpen}}<span class="badge pub">open</span>{{else}}<span class="badge priv">closed</span>{{end}}</li>
+      {{end}}
+      </ul>
+      {{if .CanManage}}
+      <form method="post" action="/projects/{{.Project.Slug}}/milestones" class="row">
+        <input type="text" name="title" placeholder="Milestone title" required>
+        <button type="submit" class="primary">Add</button>
+      </form>
+      {{end}}
+    </div>
+    {{if .CanManage}}
+    <div class="card">
+      <h2>Visibility</h2>
+      <form method="post" action="/projects/{{.Project.Slug}}/visibility" class="row">
+        <select name="visibility">
+          <option value="public" {{if eq .Project.Visibility "public"}}selected{{end}}>Public</option>
+          <option value="private" {{if eq .Project.Visibility "private"}}selected{{end}}>Private</option>
+        </select>
+        <button type="submit" class="primary">Update</button>
+      </form>
+    </div>
+    {{end}}
+    {{if eq .Project.Visibility "private"}}
+    <div class="card">
+      <h2>Members <span class="badge priv">private project</span></h2>
+      <p class="hint">Private project issues are visible only to these members.</p>
+      <ul class="plain">
+      {{range .Members}}
+        <li>{{.Username}} ({{.Role}}) {{if $.CanManage}}{{if ne .Username $.User.Username}}<a href="/projects/{{$.Project.Slug}}/members/{{.ID}}/remove" class="danger">remove</a>{{end}}{{end}}</li>
+      {{end}}
+      </ul>
+      {{if .CanManage}}
+      <form method="post" action="/projects/{{.Project.Slug}}/members" class="row">
+        <input type="text" name="username" placeholder="Username" required>
+        <select name="role"><option value="member">member</option><option value="maintainer">maintainer</option></select>
+        <button type="submit" class="primary">Add member</button>
+      </form>
+      {{end}}
+    </div>
+    {{end}}
+    <div class="card">
+      <div class="row between">
+        <h2>Webhooks</h2>
+        {{if .CanManage}}<a href="/projects/{{.Project.Slug}}/webhooks" class="btn">Manage</a>{{end}}
+      </div>
+      <ul class="plain">
+      {{range .Webhooks}}
+        <li>{{.URL}} — {{if .Active}}<span class="badge pub">active</span>{{else}}<span class="badge priv">inactive</span>{{end}}</li>
+      {{end}}
+      </ul>
+    </div>
+    {{if .CanManage}}
+    <div class="card">
+      <div class="row between">
+        <h2>Import / export</h2>
+        <a href="/projects/{{.Project.Slug}}/import-export" class="btn">Open</a>
+      </div>
+    </div>
+    {{end}}
+  </div>
+</div>
+{{template "footer" .}}
+<script>connectWS({{.Project.ID}});</script>

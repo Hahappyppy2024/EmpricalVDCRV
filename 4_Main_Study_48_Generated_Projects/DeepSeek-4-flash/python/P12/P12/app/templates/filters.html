@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Filter builder — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}filter_builder{% endblock %}
+{% block content %}
+<h1>Filter builder</h1>
+<div class="grid two">
+  <div>
+    <div class="card">
+      <h2>New saved view</h2>
+      <form data-api method="post" action="{{ url_for('api.post_filter_builder') }}" class="grid form-grid">
+        <label class="span2">Dataset
+          <select name="dataset_id" id="fld-dataset" required>
+            {% for d in datasets %}
+              <option value="{{ d.id }}">{{ d.name }} ({{ d.row_count }} rows)</option>
+            {% else %}
+              <option value="" disabled>No datasets available</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label class="span2">Name
+          <input type="text" name="name" placeholder="e.g. High value sales" required>
+        </label>
+        <label class="span2">Expression
+          <input type="text" name="expression" id="fld-expression" placeholder='e.g. sales > 200 AND region == "East"' required>
+        </label>
+        <div class="span2"><button type="submit" class="btn primary">Save filter</button></div>
+      </form>
+      <div id="filter-preview" class="preview-box muted">Select a dataset and type an expression to preview the match count.</div>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Saved filters</h2>
+      <table class="data">
+        <thead><tr><th>Name</th><th>Dataset</th><th>Expression</th><th>Rows</th></tr></thead>
+        <tbody>
+        {% for r in records %}
+          <tr>
+            <td>{{ r.name }}</td>
+            <td>{{ r.dataset_name }}</td>
+            <td><code>{{ r.expression }}</code></td>
+            <td>{{ r.row_count }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="4" class="muted">No saved filters yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

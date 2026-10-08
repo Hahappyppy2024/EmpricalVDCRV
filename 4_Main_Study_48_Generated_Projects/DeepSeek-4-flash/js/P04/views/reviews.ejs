@@ -1,0 +1,71 @@
+<%- include('partials/head', { title: 'Reviews — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1>Guest reviews</h1>
+    <p>Read what guests say, or post a review after a completed stay.</p>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h2 style="margin-bottom:12px;">Latest reviews</h2>
+      <% if (reviews.length === 0) { %>
+        <div class="alert alert-info">No reviews yet.</div>
+      <% } %>
+      <% reviews.forEach(rv => { %>
+        <div class="card">
+          <div class="flex-between">
+            <div>
+              <strong><%= rv.author_name %></strong>
+              <span class="muted" style="font-size:13px;"> · <%= rv.room_name %> · <%= rv.created_at %></span>
+            </div>
+            <span class="badge <%= rv.status %>"><%= rv.status %></span>
+          </div>
+          <div style="margin:8px 0;">
+            <% for (let i = 1; i <= 5; i++) { %>
+              <span style="color:<%= i <= rv.rating ? '#f5a623' : '#d4dae3' %>;">★</span>
+            <% } %>
+          </div>
+          <p class="quote" style="margin:0;"><%= rv.text %></p>
+          <% if (rv.status === 'pending' && user && ['moderator','admin'].includes(user.role)) { %>
+            <div class="flex" style="margin-top:10px;">
+              <button class="btn btn-sm btn-primary moderate-btn" data-id="<%= rv.id %>" data-status="published">Publish</button>
+              <button class="btn btn-sm btn-danger moderate-btn" data-id="<%= rv.id %>" data-status="rejected">Reject</button>
+            </div>
+          <% } %>
+          <% if (user && rv.user_id === user.id && rv.status === 'pending') { %>
+            <p class="muted" style="font-size:13px;margin:8px 0 0;">This review is awaiting moderation.</p>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+
+    <div class="card">
+      <h3>Post a review</h3>
+      <% if (!isAuthenticated) { %>
+        <p class="muted"><a href="/account/login">Sign in</a> to review a completed stay.</p>
+      <% } else { %>
+        <form id="review-form">
+          <label>Booking code</label>
+          <input type="text" id="booking_code" placeholder="BK-XXXXXXX" required>
+          <label>Rating</label>
+          <select id="rating">
+            <option value="5">5 — Excellent</option>
+            <option value="4">4 — Good</option>
+            <option value="3">3 — Average</option>
+            <option value="2">2 — Poor</option>
+            <option value="1">1 — Terrible</option>
+          </select>
+          <label>Review</label>
+          <textarea id="review_text" required></textarea>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Submit review</button>
+          </div>
+        </form>
+        <div id="review-result"></div>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/reviews.js"></script>

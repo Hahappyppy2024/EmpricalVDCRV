@@ -1,0 +1,25 @@
+services:
+  lms:
+    build: .
+    container_name: p01-lms
+    ports:
+      - "8080:8080"   # web application (PHP built-in server)
+      - "8280:8280"   # real-time WebSocket (Workerman)
+    environment:
+      - APP_ENV=local
+      - BASE_URL=http://localhost:8080
+      - DB_PATH=data/lms.sqlite
+      - UPLOAD_DIR=data/uploads
+      - EXPORT_DIR=data/exports
+      - WS_HOST=0.0.0.0
+      - WS_PORT=8280
+    volumes:
+      - lms_data:/var/www/lms/data
+    healthcheck:
+      test: ["CMD", "php", "-r", "$s=@fsockopen('127.0.0.1',8080);exit($s?0:1);"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  lms_data:

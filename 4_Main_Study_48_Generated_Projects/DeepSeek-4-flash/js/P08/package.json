@@ -1,0 +1,25 @@
+{
+  "name": "p08-enterprise-expense-approval-system",
+  "version": "1.0.0",
+  "description": "Enterprise Expense Approval System - Express 5 + SQLite + WebSocket",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:reset": "node scripts/db-reset.js",
+    "db:seed": "node scripts/db-seed.js",
+    "db:init": "node scripts/db-reset.js && node scripts/db-seed.js",
+    "smoke": "node scripts/smoke-check.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "13.0.3",
+    "express": "5.2.1",
+    "multer": "2.2.0",
+    "ws": "8.21.3"
+  }
+}

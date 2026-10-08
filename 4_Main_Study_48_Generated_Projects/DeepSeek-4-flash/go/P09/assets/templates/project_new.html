@@ -1,0 +1,21 @@
+{{template "header" .}}
+<div class="card">
+  <h1>New project</h1>
+  <p class="hint">Project management — create a public or private project.</p>
+  <form method="post" action="/projects/new" class="stack">
+    <label>Name
+      <input type="text" name="name" required minlength="2">
+    </label>
+    <label>Description
+      <textarea name="description" rows="3"></textarea>
+    </label>
+    <label>Visibility
+      <select name="visibility">
+        <option value="public">Public</option>
+        <option value="private">Private</option>
+      </select>
+    </label>
+    <button type="submit" class="primary">Create project</button>
+  </form>
+</div>
+{{template "footer" .}}

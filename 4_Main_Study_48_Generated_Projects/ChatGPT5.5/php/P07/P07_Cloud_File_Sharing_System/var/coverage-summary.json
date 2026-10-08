@@ -1,0 +1,117 @@
+{
+    "summary": {
+        "project": "P07_Cloud_File_Sharing_System",
+        "phpVersion": "8.3.6",
+        "xdebugVersion": "3.2.0",
+        "lineHit": 693,
+        "lineTotal": 729,
+        "branchHit": 363,
+        "branchTotal": 404,
+        "pathHit": 143,
+        "pathTotal": 4496,
+        "linePercent": 95.06,
+        "branchPercent": 89.85,
+        "pathPercent": 3.18
+    },
+    "files": [
+        {
+            "file": "src/ApiException.php",
+            "lineHit": 4,
+            "lineTotal": 4,
+            "branchHit": 2,
+            "branchTotal": 2,
+            "pathHit": 2,
+            "pathTotal": 2
+        },
+        {
+            "file": "src/AppKernel.php",
+            "lineHit": 24,
+            "lineTotal": 25,
+            "branchHit": 4,
+            "branchTotal": 5,
+            "pathHit": 3,
+            "pathTotal": 4
+        },
+        {
+            "file": "src/Auth.php",
+            "lineHit": 26,
+            "lineTotal": 27,
+            "branchHit": 16,
+            "branchTotal": 17,
+            "pathHit": 10,
+            "pathTotal": 12
+        },
+        {
+            "file": "src/AuthAdminRoutes.php",
+            "lineHit": 132,
+            "lineTotal": 133,
+            "branchHit": 56,
+            "branchTotal": 57,
+            "pathHit": 28,
+            "pathTotal": 55
+        },
+        {
+            "file": "src/CloudRepository.php",
+            "lineHit": 54,
+            "lineTotal": 64,
+            "branchHit": 38,
+            "branchTotal": 45,
+            "pathHit": 21,
+            "pathTotal": 46
+        },
+        {
+            "file": "src/Database.php",
+            "lineHit": 8,
+            "lineTotal": 9,
+            "branchHit": 3,
+            "branchTotal": 4,
+            "pathHit": 2,
+            "pathTotal": 3
+        },
+        {
+            "file": "src/FileFolderRoutes.php",
+            "lineHit": 233,
+            "lineTotal": 248,
+            "branchHit": 119,
+            "branchTotal": 137,
+            "pathHit": 41,
+            "pathTotal": 177
+        },
+        {
+            "file": "src/Http.php",
+            "lineHit": 8,
+            "lineTotal": 8,
+            "branchHit": 3,
+            "branchTotal": 3,
+            "pathHit": 3,
+            "pathTotal": 3
+        },
+        {
+            "file": "src/Seeder.php",
+            "lineHit": 41,
+            "lineTotal": 43,
+            "branchHit": 26,
+            "branchTotal": 32,
+            "pathHit": 1,
+            "pathTotal": 4097
+        },
+        {
+            "file": "src/Support.php",
+            "lineHit": 23,
+            "lineTotal": 23,
+            "branchHit": 21,
+            "branchTotal": 22,
+            "pathHit": 9,
+            "pathTotal": 23
+        },
+        {
+            "file": "src/TeamTrashRoutes.php",
+            "lineHit": 140,
+            "lineTotal": 145,
+            "branchHit": 75,
+            "branchTotal": 80,
+            "pathHit": 23,
+            "pathTotal": 74
+        }
+    ]
+}

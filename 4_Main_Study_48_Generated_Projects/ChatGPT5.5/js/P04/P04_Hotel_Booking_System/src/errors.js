@@ -1,0 +1,2 @@
+export class ApiError extends Error { constructor(status,code,message,fields={}){super(message);this.status=status;this.code=code;this.fields=fields;} }
+export function requireFields(data,fields){const missing={};for(const field of fields)if(data[field]===undefined||data[field]===null||data[field]==='')missing[field]='required';if(Object.keys(missing).length)throw new ApiError(422,'validation_error','Required fields are missing.',missing);}

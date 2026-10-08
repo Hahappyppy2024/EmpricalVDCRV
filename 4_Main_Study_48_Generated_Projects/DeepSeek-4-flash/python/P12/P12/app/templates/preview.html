@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Preview — {{ dataset.name }}{% endblock %}
+{% block page %}data_preview{% endblock %}
+{% block content %}
+<h1>Data preview — {{ dataset.name }}</h1>
+<p class="muted">{{ dataset.row_count }} rows, {{ dataset.column_count }} columns,
+  {{ dataset.schema.values() | select | list | length }} column types detected.</p>
+
+<div class="card">
+  <h2>Summary statistics</h2>
+  <table class="data">
+    <thead>
+      <tr><th>Column</th><th>Type</th><th>Missing</th><th>Distinct</th><th>Min</th><th>Max</th><th>Mean</th></tr>
+    </thead>
+    <tbody>
+    {% for c in summary.columns %}
+      <tr>
+        <td><code>{{ c.column }}</code></td>
+        <td>{{ c.type }}</td>
+        <td>{{ c.missing }}</td>
+        <td>{{ c.distinct }}</td>
+        <td>{{ c.min if c.min is not none else '' }}</td>
+        <td>{{ c.max if c.max is not none else '' }}</td>
+        <td>{{ c.mean if c.mean is not none else '' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <p class="muted">Total missing values: {{ summary.total_missing }}</p>
+</div>
+
+<div class="card">
+  <h2>Rows <span class="muted">(first 50 of {{ dataset.row_count }})</span></h2>
+  <div class="table-scroll">
+  <table class="data compact">
+    <thead><tr>{% for c in dataset.columns %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+    <tbody>
+    {% for row in preview_rows %}
+      <tr>{% for v in row %}<td>{{ v if v is not none else '' }}</td>{% endfor %}</tr>
+    {% else %}
+      <tr><td colspan="{{ dataset.columns | length }}" class="muted">No rows.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<p><a class="btn" href="{{ url_for('pages.exports') }}">Export this dataset</a>
+   <a class="btn" href="{{ url_for('pages.charts') }}">Chart this dataset</a>
+   <a class="btn ghost" href="{{ url_for('pages.datasets') }}">Back to catalog</a></p>
+{% endblock %}

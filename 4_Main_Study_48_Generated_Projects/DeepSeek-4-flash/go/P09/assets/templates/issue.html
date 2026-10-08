@@ -1,0 +1,118 @@
+{{template "header" .}}
+<div class="card">
+  <p class="hint"><a href="/projects/{{.Project.Slug}}">{{.Project.Name}}</a> · created by {{.Issue.CreatorName}} · {{formatTime .Issue.CreatedAt}}</p>
+  <h1>#{{.Issue.Number}} {{.Issue.Title}}</h1>
+  <p>
+    <span class="badge status-{{.Issue.Status}}">{{.Issue.Status}}</span>
+    <span class="badge prio-{{.Issue.Priority}}">{{.Issue.Priority}} priority</span>
+    {{range .IssueLabels}}<span class="badge label" style="background:#{{.Color}}">{{.Name}}</span>{{end}}
+    {{if .Issue.AssigneeName}}<span class="badge priv">assigned: {{.Issue.AssigneeName}}</span>{{end}}
+    {{if .Issue.MilestoneID}}<span class="badge pub">milestone</span>{{end}}
+  </p>
+  <div class="issue-body">{{.Issue.Body}}</div>
+</div>
+
+<div class="grid-2">
+  <div class="stack">
+    {{if .CanManage}}
+    <div class="card">
+      <h2>Assignment and workflow</h2>
+      <form class="stack" data-js-api method="post" action="/api/issue/assignment_and_workflow">
+        <input type="hidden" name="issue_id" value="{{.Issue.ID}}">
+        <div class="row">
+          <label>Status
+            <select name="status">
+              <option value="">(keep)</option>
+              {{range .AllowedStatuses}}<option value="{{.}}">{{.}}</option>{{end}}
+            </select>
+          </label>
+          <label>Assignee
+            <select name="assignee_id">
+              <option value="">(keep)</option>
+              {{range .Users}}<option value="{{.ID}}">{{.Username}}</option>{{end}}
+            </select>
+          </label>
+          <label>Milestone
+            <select name="milestone_id">
+              <option value="">(keep)</option>
+              {{range .Milestones}}<option value="{{.ID}}">{{.Title}}</option>{{end}}
+            </select>
+          </label>
+        </div>
+        <button type="submit" class="primary">Apply</button>
+      </form>
+    </div>
+    {{end}}
+
+    {{if .CanEdit}}
+    <div class="card">
+      <h2>Edit issue</h2>
+      <form class="stack" method="post" action="/api/issue/issue_creation/{{.Issue.ID}}" data-js-api data-method="patch">
+        <label>Title <input type="text" name="title" value="{{.Issue.Title}}" required></label>
+        <label>Body <textarea name="body" rows="4">{{.Issue.Body}}</textarea></label>
+        <div class="row">
+          <label>Priority
+            <select name="priority">
+              <option value="low" {{if eq .Issue.Priority "low"}}selected{{end}}>low</option>
+              <option value="medium" {{if eq .Issue.Priority "medium"}}selected{{end}}>medium</option>
+              <option value="high" {{if eq .Issue.Priority "high"}}selected{{end}}>high</option>
+              <option value="urgent" {{if eq .Issue.Priority "urgent"}}selected{{end}}>urgent</option>
+            </select>
+          </label>
+        </div>
+        <fieldset>
+          <legend>Labels</legend>
+          {{range .Labels}}
+          <label class="check"><input type="checkbox" name="label_ids" value="{{.ID}}" {{if hasLabel $.IssueLabels .ID}}checked{{end}}> {{.Name}}</label>
+          {{end}}
+        </fieldset>
+        <button type="submit" class="primary">Save changes</button>
+      </form>
+    </div>
+    {{end}}
+  </div>
+
+  <div class="stack">
+    <div class="card" id="comments">
+      <h2>Comments</h2>
+      {{range .Comments}}
+      <div class="comment" id="comment-{{.ID}}">
+        <p class="issue-meta">{{.AuthorName}} · {{formatTime .CreatedAt}}
+          {{if or (eq .AuthorID $.User.ID) $.CanManage}}
+            <button type="button" class="linkbtn" data-edit-comment="{{.ID}}">edit</button>
+            <button type="button" class="linkbtn danger" data-delete-comment="{{.ID}}">delete</button>
+          {{end}}
+        </p>
+        <p class="comment-body" data-comment-body="{{.ID}}">{{.Body}}</p>
+      </div>
+      {{else}}
+      <p class="hint">No comments yet.</p>
+      {{end}}
+      <form method="post" action="/issues/{{.Issue.ID}}/comments" class="stack">
+        <textarea name="body" rows="3" placeholder="Add a comment…" required></textarea>
+        <button type="submit" class="primary">Comment</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Attachments</h2>
+      <ul class="plain">
+      {{range .Attachments}}
+        <li><a href="/api/files/{{.ID}}/download">{{.Filename}}</a> <span class="issue-meta">({{.Size}} bytes, by {{.OwnerName}})</span></li>
+      {{end}}
+      </ul>
+      <form class="stack" id="upload-form" data-js-upload action="/api/issue/attachments">
+        <input type="file" name="file" required>
+        <input type="hidden" name="issue_id" value="{{.Issue.ID}}">
+        <button type="submit" class="primary">Upload attachment</button>
+      </form>
+      <p class="hint">Allowed types: images, text, CSV, JSON, PDF, ZIP, GZIP, TAR. Max {{.MaxUploadMB}} MB.</p>
+    </div>
+  </div>
+</div>
+<script>
+window.__issueID = {{.Issue.ID}};
+window.__canManage = {{if .CanManage}}true{{else}}false{{end}};
+</script>
+{{template "footer" .}}
+<script>connectWS({{.Project.ID}});</script>

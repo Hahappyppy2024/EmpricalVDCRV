@@ -1,0 +1,33 @@
+{
+  "name": "hotel-booking-system",
+  "version": "1.0.0",
+  "description": "P04 Hotel Booking System — reservation service with account access, room search, booking creation, staff check-in/out, inventory, messaging, reviews, invoices, and admin reports.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "reset": "node scripts/reset-db.js",
+    "seed": "node scripts/seed.js",
+    "smoke": "node scripts/smoke.js",
+    "check:pages": "node scripts/check-pages.js",
+    "test:functional": "node tests/Functional/run_functional_tests.js",
+    "test:security": "node tests/exploit/run_all_tests.js",
+    "test:all": "npm run test:functional && npm run test:security"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "2.4.3",
+    "better-sqlite3": "11.10.0",
+    "dotenv": "16.4.5",
+    "ejs": "3.1.10",
+    "express": "5.1.0",
+    "ws": "8.18.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "c8": "^12.0.0"
+  }
+}

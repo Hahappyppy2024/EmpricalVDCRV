@@ -1,0 +1,11 @@
+region,product,sales,quantity,date
+East,Widget,120.5,3,2026-01-05
+West,Gadget,230,2,2026-01-07
+North,Widget,90,1,2026-01-12
+South,Gadget,310.75,4,2026-02-03
+East,Gizmo,150,2,2026-02-14
+West,Widget,410,5,2026-03-02
+North,Gadget,60,1,2026-03-11
+South,Gizmo,275.5,3,2026-04-01
+East,Gadget,190,2,2026-04-20
+West,Gizmo,330,4,2026-05-09

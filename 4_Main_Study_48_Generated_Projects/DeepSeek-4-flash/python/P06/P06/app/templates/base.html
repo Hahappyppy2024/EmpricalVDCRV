@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Team Chat{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% if current_user %}
+<header class="topbar">
+  <div class="brand">
+    <a href="{{ url_for('pages.index') }}">Team Chat</a>
+  </div>
+  <nav class="mainnav">
+    <a href="{{ url_for('pages.home') }}">Home</a>
+    <a href="{{ url_for('messaging.chat_page') }}">Chat</a>
+    <a href="{{ url_for('direct_messages.dm_page') }}">DMs</a>
+    <a href="{{ url_for('attachments.attachments_page') }}">Attachments</a>
+    <a href="{{ url_for('history_search.search_page') }}">Search</a>
+    <a href="{{ url_for('link_preview.links_page') }}">Link preview</a>
+    <a href="{{ url_for('connection_handling.connection_page') }}">Connection</a>
+    <a href="{{ url_for('frontend_api.frontend_page') }}">Frontend</a>
+    <a href="{{ url_for('errors_api.errors_page') }}">Errors</a>
+    {% if current_user.role in ('owner','admin') %}
+    <a href="{{ url_for('channel_management.audit_page') }}">Audit</a>
+    {% endif %}
+  </nav>
+  <div class="userbox">
+    <a href="{{ url_for('accounts.profile_page') }}" title="Profile">
+      {{ current_user.display_name }} <span class="role">({{ current_user.role }})</span>
+    </a>
+    <form method="post" action="{{ url_for('accounts.logout_page') }}" class="inline">
+      <button class="btn btn-small" type="submit">Sign out</button>
+    </form>
+  </div>
+</header>
+{% endif %}
+
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flashes">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+
+<script src="{{ url_for('static', filename='js/common.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

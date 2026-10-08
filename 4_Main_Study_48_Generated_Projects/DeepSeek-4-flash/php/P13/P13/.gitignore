@@ -1,0 +1,7 @@
+/vendor/
+/data/*.sqlite
+/data/*.sqlite-*
+/storage/uploads/*
+.env
+composer.phar
+.DS_Store

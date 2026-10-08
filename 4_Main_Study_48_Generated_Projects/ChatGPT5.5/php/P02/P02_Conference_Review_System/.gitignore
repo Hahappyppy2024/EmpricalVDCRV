@@ -1,0 +1,6 @@
+/vendor/
+/.env
+/var/*.sqlite
+/var/*.sqlite-journal
+/var/manuscripts/*
+!/var/manuscripts/.gitkeep

@@ -1,0 +1,322 @@
+﻿[
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A01_Access_Control",
+        "CWE":  "CWE-284",
+        "Name":  "Disabled account enforcement",
+        "Status":  "PASS",
+        "Expected":  "Disabled user cannot authenticate",
+        "Actual":  "HTTP 403",
+        "Evidence":  ""
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A01_Access_Control",
+        "CWE":  "CWE-306",
+        "Name":  "Authentication required for expense reports",
+        "Status":  "PASS",
+        "Expected":  "Unauthenticated request is rejected",
+        "Actual":  "HTTP 401",
+        "Evidence":  ""
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A01_Access_Control",
+        "CWE":  "CWE-352",
+        "Name":  "CSRF protection on state-changing request",
+        "Status":  "FAIL",
+        "Expected":  "Cookie-authenticated cross-origin mutation requires CSRF defense",
+        "Actual":  "HTTP 201",
+        "Evidence":  "Origin=https://attacker.invalid"
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A01_Access_Control",
+        "CWE":  "CWE-359",
+        "Name":  "Private expense data isolation",
+        "Status":  "PASS",
+        "Expected":  "Bob cannot read Alice\u0027s report detail",
+        "Actual":  "HTTP 403",
+        "Evidence":  ""
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A01_Access_Control",
+        "CWE":  "CWE-639",
+        "Name":  "Expense and receipt IDOR",
+        "Status":  "PASS",
+        "Expected":  "Bob cannot read Alice report or receipt by numeric ID",
+        "Actual":  "report=403; file=403",
+        "Evidence":  "Alice report/file IDs from deterministic seed"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A01_Access_Control",
+        "CWE":  "CWE-862",
+        "Name":  "Admin configuration authorization",
+        "Status":  "PASS",
+        "Expected":  "Employee cannot view admin configuration",
+        "Actual":  "HTTP 403",
+        "Evidence":  ""
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A01_Access_Control",
+        "CWE":  "CWE-863",
+        "Name":  "Manager assignment authorization",
+        "Status":  "FAIL",
+        "Expected":  "mgr1 cannot approve Bob report routed to mgr2",
+        "Actual":  "submit=200; wrongManager=200",
+        "Evidence":  "report_id=18"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A01_Access_Control",
+        "CWE":  "CWE-915",
+        "Name":  "Registration mass assignment",
+        "Status":  "PASS",
+        "Expected":  "Client cannot self-assign privileged role",
+        "Actual":  "HTTP 201; role=employee",
+        "Evidence":  "{\"ok\":true,\"data\":{\"id\":15,\"username\":\"massccb4e1607b\",\"full_name\":\"Mass Assignment Probe\",\"email\":\"massccb4e1607b@p08.test\",\"role\":\"employee\",\"department_id\":null,\"cost_center_id\":null,\"manager_id\":null,\"active\":true,\"created_at\":\"2026-08-21 14:35:40\"}}"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A02_Cryptographic_Failures",
+        "CWE":  "CWE-1004",
+        "Name":  "HttpOnly session cookie",
+        "Status":  "PASS",
+        "Expected":  "exp_session is HttpOnly",
+        "Actual":  "HttpOnly=True",
+        "Evidence":  "Cookie object after login"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A02_Cryptographic_Failures",
+        "CWE":  "CWE-614",
+        "Name":  "Secure session cookie",
+        "Status":  "FAIL",
+        "Expected":  "Session cookie uses Secure attribute",
+        "Actual":  "HTTP 200; Secure=False",
+        "Evidence":  "deployment-sensitive when target is plain HTTP"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A03_Injection",
+        "CWE":  "CWE-20",
+        "Name":  "Reject invalid expense amount",
+        "Status":  "PASS",
+        "Expected":  "Negative amount is rejected with 4xx",
+        "Actual":  "HTTP 400",
+        "Evidence":  ""
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A03_Injection",
+        "CWE":  "CWE-22",
+        "Name":  "Receipt filename traversal",
+        "Status":  "PASS",
+        "Expected":  "Traversal filename cannot control storage path",
+        "Actual":  "Upload accepted; stored_name=18a6fc1d-dc67-4867-98e8-da75cbb24b48.txt",
+        "Evidence":  "{\"ok\":true,\"data\":{\"receipt\":{\"id\":5,\"report_id\":9,\"line_id\":null,\"file_id\":7,\"original_name\":\"p08-probe.txt\",\"mime_type\":\"text/plain\",\"size\":23,\"stored_name\":\"18a6fc1d-dc67-4867-98e8-da75cbb24b48.txt\"},\"report_no\":\"EXP-2026-0001\"}}"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A03_Injection",
+        "CWE":  "CWE-79",
+        "Name":  "Stored XSS in comments",
+        "Status":  "INCONCLUSIVE",
+        "Expected":  "Stored user text must not execute as markup/script in browser",
+        "Actual":  "Payload stored and returned raw by API; browser execution requires manual/UI replay",
+        "Evidence":  "payload=\u003cimg src=x onerror=alert(79)\u003e"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A03_Injection",
+        "CWE":  "CWE-89",
+        "Name":  "SQL injection login bypass",
+        "Status":  "PASS",
+        "Expected":  "SQLi payload cannot authenticate",
+        "Actual":  "HTTP 401",
+        "Evidence":  ""
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A04_Insecure_Design",
+        "CWE":  "CWE-362",
+        "Name":  "Stale report update concurrency",
+        "Status":  "FAIL",
+        "Expected":  "Second update using stale version is rejected",
+        "Actual":  "first=200 second=200",
+        "Evidence":  "initial updated_at=2026-08-21 14:35:47"
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A04_Insecure_Design",
+        "CWE":  "CWE-434",
+        "Name":  "Receipt content validation",
+        "Status":  "FAIL",
+        "Expected":  "Server validates file content, not only claimed MIME/extension",
+        "Actual":  "Upload HTTP 201; download=200; payloadPreserved=True",
+        "Evidence":  "{\"ok\":true,\"data\":{\"receipt\":{\"id\":6,\"report_id\":9,\"line_id\":null,\"file_id\":8,\"original_name\":\"receipt.png\",\"mime_type\":\"image/png\",\"size\":29,\"stored_name\":\"1ecaacc6-c822-4478-83ab-6863cfad4186.png\"},\"report_no\":\"EXP-2026-0001\"}}"
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A04_Insecure_Design",
+        "CWE":  "CWE-602",
+        "Name":  "Server-side expense total integrity",
+        "Status":  "PASS",
+        "Expected":  "Server ignores client total/status and derives total=321.23,status=draft",
+        "Actual":  "HTTP 201; total=321.23; status=draft",
+        "Evidence":  "{\"ok\":true,\"data\":{\"id\":20,\"report_no\":\"EXP-2026-0012\",\"employee_id\":12,\"title\":\"total integrity probe\",\"purpose\":\"CWE-602\",\"department_id\":5,\"cost_center_id\":5,\"status\":\"draft\",\"total_amount\":321.23,\"submitted_at\":null,\"submitted_to_id\":null,\"created_at\":\"2026-08-21 14:35:49\",\"updated_at\":\"2026-08-21 14:35:49\",\"employee\":{\"id\":12,\"full_name\":\"Alice Anderson\",\"username\":\"alice\"},\"lines\":[{\"id\":24,\"category_id\":8,\"category_name\":\"Office Supplies\",\"expense_date\":\"2026-08-20\",\"description\":\"server total\",\"merchant\":null,\"amount\":321.23,\"receipt_id\":null}],\"receipts\":[],\"approvals\":[],\"reviews\":[],\"comments\":[],\"activity\":[{\"id\":19,\"type\":\"report.created\",\"message\":\"Report EXP-2026-0012 created\",\"created_at\":\"2026-08-21 14:35:49\",\"actor_name\":\"Alice Anderson\"}],\"policy_warnings\":[{\"code\":\"POL-APPROVE-THRESHOLD\",\"severity\":\"info\",\"message\":\"Report total 321.23 meets the approval threshold requiring manager approval\"}]}}"
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A04_Insecure_Design",
+        "CWE":  "CWE-770",
+        "Name":  "Receipt upload size limit",
+        "Status":  "PASS",
+        "Expected":  "File larger than configured 5 MiB is rejected",
+        "Actual":  "HTTP 400; bytes=5243904",
+        "Evidence":  ""
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A04_Insecure_Design",
+        "CWE":  "CWE-840",
+        "Name":  "Approval workflow state enforcement",
+        "Status":  "PASS",
+        "Expected":  "Draft report cannot be approved directly",
+        "Actual":  "HTTP 409",
+        "Evidence":  ""
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A04_Insecure_Design",
+        "CWE":  "CWE-841",
+        "Name":  "Duplicate transaction idempotency",
+        "Status":  "FAIL",
+        "Expected":  "Same idempotency key does not create duplicate comment",
+        "Actual":  "first=201; second=201",
+        "Evidence":  "Idempotency-Key=p08-idem-e24c995742534a85b4e6a696e5de694f"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A05_Misconfiguration",
+        "CWE":  "CWE-1021",
+        "Name":  "Clickjacking protection",
+        "Status":  "FAIL",
+        "Expected":  "UI sends X-Frame-Options or CSP frame-ancestors",
+        "Actual":  "HTTP 200; XFO=; CSP=",
+        "Evidence":  "GET /index.html"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A05_Misconfiguration",
+        "CWE":  "CWE-200",
+        "Name":  "Session secret exposure in login JSON",
+        "Status":  "FAIL",
+        "Expected":  "Session identifier is carried only by protected cookie, not returned in JSON",
+        "Actual":  "HTTP 200; session.id present=True",
+        "Evidence":  "{\"ok\":true,\"data\":{\"user\":{\"id\":12,\"username\":\"alice\",\"full_name\":\"Alice Anderson\",\"email\":\"alice@p08.test\",\"role\":\"employee\",\"department_id\":5,\"cost_center_id\":5,\"manager_id\":10,\"active\":true,\"created_at\":\"2026-08-21 14:35:36\"},\"dashboard\":{\"user\":{\"id\":12,\"username\":\"alice\",\"full_name\":\"Alice Anderson\",\"email\":\"alice@p08.test\",\"role\":\"employee\",\"department_id\":5,\"cost_center_id\":5,\"manager_id\":10,\"active\":true,\"created_at\":\"2026-08-21 14:35:36\"},\"role\":\"employee\",\"counts\":{\"draft\":4,\"submitted\":2,\"approved\":3,\"rejected\":0,\"changes_requested\":1,\"finance_approved\":1,\"finance_rejected\":0,\"reimbursed\":1},\"per_role\":{\"employee\":{\"my_reports\":6,\"my_total_amount\":2612.73},\"manager\":{\"pending_approvals\":0,\"direct_reports\":0},\"finance\":{\"pending_reviews\":3,\"enabled_policy_rules\":4},\"admin\":{\"enabled_policy_rules\":4,\"departments\":4}}},\"session\":{\"id\":\"0108033bd78dc078a4c91809e3eedaa725b50b439016be249801c0dc986ab0cd\",\"expires_at\":\"2026-08-21 22:35:54\"}}}"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A05_Misconfiguration",
+        "CWE":  "CWE-209",
+        "Name":  "Error detail exposure",
+        "Status":  "PASS",
+        "Expected":  "Malformed JSON returns stable error without stack/internal paths",
+        "Actual":  "HTTP 400; internalLeak=False",
+        "Evidence":  ""
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A05_Misconfiguration",
+        "CWE":  "CWE-942",
+        "Name":  "Credentialed cross-origin resource policy",
+        "Status":  "PASS",
+        "Expected":  "Hostile Origin is not granted credentialed API access",
+        "Actual":  "HTTP 200; ACAO=; ACAC=",
+        "Evidence":  "Origin=https://attacker.invalid"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A07_Authentication_Failures",
+        "CWE":  "CWE-1275",
+        "Name":  "SameSite session cookie",
+        "Status":  "PASS",
+        "Expected":  "Session cookie uses SameSite=Lax or Strict",
+        "Actual":  "SameSite=Lax",
+        "Evidence":  "Cookie/Set-Cookie after login"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A07_Authentication_Failures",
+        "CWE":  "CWE-204",
+        "Name":  "Login account enumeration",
+        "Status":  "PASS",
+        "Expected":  "Existing and nonexistent usernames produce indistinguishable failure",
+        "Actual":  "existing=401/ missing=401/",
+        "Evidence":  "Compared login failures"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A07_Authentication_Failures",
+        "CWE":  "CWE-307",
+        "Name":  "Excessive login attempts",
+        "Status":  "FAIL",
+        "Expected":  "Repeated failures trigger throttling/lockout",
+        "Actual":  "badCodes=401,401,401,401,401,401,401,401; valid=200",
+        "Evidence":  "8 failed attempts followed by valid credential"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A07_Authentication_Failures",
+        "CWE":  "CWE-384",
+        "Name":  "Session fixation",
+        "Status":  "PASS",
+        "Expected":  "Successful login replaces attacker-chosen session value",
+        "Actual":  "HTTP 200; cookieChanged=True",
+        "Evidence":  "prefixed cookie value was supplied before login"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A07_Authentication_Failures",
+        "CWE":  "CWE-521",
+        "Name":  "Weak password requirements",
+        "Status":  "FAIL",
+        "Expected":  "Trivially weak password 123456 is rejected",
+        "Actual":  "HTTP 201",
+        "Evidence":  "{\"ok\":true,\"data\":{\"id\":16,\"username\":\"weak256c3dc6a7\",\"full_name\":\"Weak Password Probe\",\"email\":\"weak256c3dc6a7@p08.test\",\"role\":\"employee\",\"department_id\":null,\"cost_center_id\":null,\"manager_id\":null,\"active\":true,\"created_at\":\"2026-08-21 14:36:02\"}}"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A07_Authentication_Failures",
+        "CWE":  "CWE-613",
+        "Name":  "Logout invalidates server session",
+        "Status":  "PASS",
+        "Expected":  "Captured session token cannot be replayed after logout",
+        "Actual":  "logout=200; replay=401",
+        "Evidence":  "old exp_session replayed"
+    },
+    {
+        "Layer":  "Core",
+        "Type":  "A07_Authentication_Failures",
+        "CWE":  "CWE-640",
+        "Name":  "Password reset recovery",
+        "Status":  "N/A",
+        "Expected":  "Evaluate reset-token lifecycle only when recovery surface exists",
+        "Actual":  "No password-reset/recovery endpoint is implemented in current P08",
+        "Evidence":  ""
+    },
+    {
+        "Layer":  "P08_Specific",
+        "Type":  "A09_Logging",
+        "CWE":  "CWE-778",
+        "Name":  "Approval action audit logging",
+        "Status":  "PASS",
+        "Expected":  "Manager approval creates auditable approval.approved event",
+        "Actual":  "approve=200; audit=200; found=True",
+        "Evidence":  "report_id=21"
+    }
+]

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Home — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}index{% endblock %}
+{% block content %}
+<h1>Welcome, {{ user.username }}</h1>
+
+{% if role == 'admin' %}
+<div class="grid stats">
+  <div class="card"><div class="stat">{{ users_count }}</div><div class="muted">Users</div></div>
+  <div class="card"><div class="stat">{{ datasets_count }}</div><div class="muted">Datasets</div></div>
+  <div class="card"><div class="stat">{{ shares_count }}</div><div class="muted">Shares</div></div>
+  <div class="card"><div class="stat">{{ settings.retention_days }}</div><div class="muted">Retention days</div></div>
+</div>
+<h2>Recent audit events</h2>
+<table class="data">
+  <thead><tr><th>#</th><th>Actor</th><th>Action</th><th>Entity</th><th>Detail</th><th>When</th></tr></thead>
+  <tbody>
+  {% for e in recent_events %}
+    <tr>
+      <td>{{ e.id }}</td>
+      <td>{{ e.user_id }}</td>
+      <td>{{ e.action }}</td>
+      <td>{{ e.entity_type }}#{{ e.entity_id or '' }}</td>
+      <td>{{ e.detail }}</td>
+      <td>{{ e.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6" class="muted">No audit events yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% elif role == 'analyst' %}
+<div class="grid stats">
+  <div class="card"><div class="stat">{{ counts.datasets }}</div><div class="muted">Datasets</div></div>
+  <div class="card"><div class="stat">{{ counts.filters }}</div><div class="muted">Filters</div></div>
+  <div class="card"><div class="stat">{{ counts.charts }}</div><div class="muted">Charts</div></div>
+  <div class="card"><div class="stat">{{ counts.calculated }}</div><div class="muted">Calculated columns</div></div>
+  <div class="card"><div class="stat">{{ counts.shares }}</div><div class="muted">Shares</div></div>
+  <div class="card"><div class="stat">{{ counts.exports }}</div><div class="muted">Exports</div></div>
+</div>
+<h2>Recent lineage</h2>
+<table class="data">
+  <thead><tr><th>#</th><th>Operation</th><th>Source</th><th>Output</th><th>Detail</th><th>When</th></tr></thead>
+  <tbody>
+  {% for l in recent_lineage %}
+    <tr>
+      <td>{{ l.id }}</td>
+      <td>{{ l.operation }}</td>
+      <td>{{ l.source_ref }}</td>
+      <td>{{ l.output_ref }}</td>
+      <td>{{ l.detail }}</td>
+      <td>{{ l.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6" class="muted">No lineage recorded yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+<div class="card">
+  <p><strong>{{ catalog_count }}</strong> datasets are visible to you. Browse the
+  <a href="{{ url_for('pages.datasets') }}">dataset catalog</a>, create
+  <a href="{{ url_for('pages.filters') }}">filters</a>, and open
+  <a href="{{ url_for('pages.sharing') }}">shared dashboards</a>.</p>
+</div>
+<h2>Visible datasets</h2>
+<table class="data">
+  <thead><tr><th>Name</th><th>Tags</th><th>Visibility</th><th>Rows</th></tr></thead>
+  <tbody>
+  {% for c in catalog %}
+    <tr>
+      <td><a href="{{ url_for('pages.dataset_preview', dataset_id=c.dataset_id) }}">{{ c.name }}</a></td>
+      <td>{{ c.tags }}</td>
+      <td>{{ c.visibility }}</td>
+      <td>{{ c.row_count }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="4" class="muted">No datasets visible.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

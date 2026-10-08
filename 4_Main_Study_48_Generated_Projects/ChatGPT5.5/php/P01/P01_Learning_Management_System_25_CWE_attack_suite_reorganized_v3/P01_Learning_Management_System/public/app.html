@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Northstar LMS</title><link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <header><a class="brand" href="#courses">Northstar <span>LMS</span></a><nav id="nav"><a href="#courses">Courses</a><a href="#dashboard">Dashboard</a><a href="#profile">Profile</a><a href="#workflows">Workflow studio</a></nav><button id="sessionButton">Sign in</button></header>
+  <main>
+    <section class="hero"><div><p class="eyebrow">LEARN · BUILD · SHARE</p><h1>One calm place for every course.</h1><p>Browse learning paths, keep up with deadlines, and move from discussion to feedback without losing context.</p></div><div class="hero-card"><span>Current term</span><strong>Spring Studio</strong><small>Offline demonstration environment</small></div></section>
+    <div id="flash" role="status"></div>
+    <section id="authPanel" class="panel hidden"><div><h2>Welcome back</h2><p>Use a seeded account or create a student account.</p></div><form id="loginForm"><label>Email<input name="email" type="email" value="student@example.test" required></label><label>Password<input name="password" type="password" value="Password123!" required></label><button>Sign in</button></form></section>
+    <section id="view"></section>
+  </main>
+  <footer>Northstar LMS · PHP 8.3 · Slim 4 · SQLite</footer>
+  <script src="/assets/app.js" defer></script>
+</body></html>

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Profile · Team Chat{% endblock %}
+{% block content %}
+<h1>Your profile</h1>
+<div class="grid-2">
+  <div class="card">
+    <h2>Account details</h2>
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Role:</strong> {{ user.role }}</p>
+    <p><strong>Member since:</strong> {{ user.created_at.strftime('%Y-%m-%d %H:%M') }} UTC</p>
+    <form method="post" action="{{ url_for('accounts.profile_page') }}" class="stack">
+      <input type="hidden" name="action" value="update">
+      <label>Full name
+        <input type="text" name="full_name" value="{{ user.full_name }}">
+      </label>
+      <label>Email
+        <input type="email" name="email" value="{{ user.email }}" required>
+      </label>
+      <button class="btn" type="submit">Update profile</button>
+    </form>
+  </div>
+  <div class="card">
+    <h2>Change password</h2>
+    <form method="post" action="{{ url_for('accounts.profile_page') }}" class="stack">
+      <input type="hidden" name="action" value="password">
+      <label>Current password
+        <input type="password" name="current_password" required>
+      </label>
+      <label>New password
+        <input type="password" name="new_password" required minlength="8">
+      </label>
+      <button class="btn" type="submit">Change password</button>
+    </form>
+  </div>
+</div>
+<div class="card">
+  <h2>Active sessions</h2>
+  <table class="table">
+    <thead><tr><th>ID</th><th>Created</th><th>Expires</th><th>IP</th></tr></thead>
+    <tbody>
+      {% for session in sessions %}
+      <tr>
+        <td>#{{ session.id }}</td>
+        <td>{{ session.created_at }}</td>
+        <td>{{ session.expires_at }}</td>
+        <td>{{ session.ip_address }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+<%- include('partials/head', { title: 'My account — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1>My account</h1>
+    <p>Profile, active sessions, and recent account activity.</p>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <h3>Profile</h3>
+        <table>
+          <tr><th>Name</th><td><%= user.name %></td></tr>
+          <tr><th>Email</th><td><%= user.email %></td></tr>
+          <tr><th>Role</th><td><%= user.role %></td></tr>
+          <tr><th>Phone</th><td><%= user.phone || '—' %></td></tr>
+          <tr><th>Member since</th><td><%= user.member_since || '—' %></td></tr>
+        </table>
+        <div class="form-actions">
+          <button class="btn" id="edit-profile-btn">Edit profile</button>
+        </div>
+        <form id="profile-form" class="hidden" style="margin-top:10px;">
+          <div class="field-row">
+            <div><label>Name</label><input type="text" id="profile-name" value="<%= user.name %>"></div>
+            <div><label>Phone</label><input type="text" id="profile-phone" value="<%= user.phone || '' %>"></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary btn-sm" type="submit">Save</button>
+            <button class="btn btn-sm" type="button" id="cancel-profile">Cancel</button>
+          </div>
+        </form>
+        <div id="profile-result"></div>
+      </div>
+
+      <div class="card">
+        <h3>Active sessions</h3>
+        <div id="sessions-list"><p class="muted">Loading sessions…</p></div>
+      </div>
+
+      <div class="card">
+        <h3>Recent account activity</h3>
+        <div id="access-log"><p class="muted">Loading activity…</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Upcoming stays</h3>
+      <% if (bookings.length === 0) { %>
+        <p class="muted">No bookings yet. <a href="/book">Book a room</a>.</p>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Code</th><th>Room</th><th>Dates</th><th>Status</th></tr>
+            <% bookings.slice(0, 6).forEach(b => { %>
+              <tr>
+                <td><a href="/bookings"><%= b.code %></a></td>
+                <td><%= b.room_name %></td>
+                <td><%= b.check_in_date %> → <%= b.check_out_date %></td>
+                <td><span class="badge <%= b.status %>"><%= b.status %></span></td>
+              </tr>
+            <% }) %>
+          </table>
+        </div>
+        <div class="mt-2"><a href="/bookings" class="btn btn-sm">View all bookings</a></div>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script>window.__userId = <%= user.id %>;</script>
+<script type="module" src="/js/pages/account.js"></script>

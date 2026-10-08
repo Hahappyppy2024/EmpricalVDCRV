@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Dataset catalog — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}datasets{% endblock %}
+{% block content %}
+<h1>Dataset catalog</h1>
+
+<div class="toolbar">
+  <form method="get" action="{{ url_for('pages.datasets') }}" class="inline grow">
+    <input type="text" name="q" value="{{ search }}" placeholder="Search name, description, tags…">
+    <input type="text" name="tag" value="{{ tag }}" placeholder="Filter by tag">
+    <button type="submit" class="btn">Search</button>
+    {% if search or tag %}<a class="btn ghost" href="{{ url_for('pages.datasets') }}">Clear</a>{% endif %}
+  </form>
+  {% if user.role in ('analyst', 'admin') %}
+    <a class="btn primary" href="{{ url_for('pages.dataset_upload') }}">Upload dataset</a>
+  {% endif %}
+</div>
+
+{% if user.role in ('analyst', 'admin') %}
+<div class="card">
+  <h2>Add a catalog entry</h2>
+  <form data-api method="post" action="{{ url_for('api.post_dataset_catalog') }}" class="grid form-grid">
+    <label>Dataset
+      <select name="dataset_id" required>
+        {% for d in owned %}
+          <option value="{{ d.id }}">{{ d.name }} ({{ d.row_count }} rows)</option>
+        {% else %}
+          <option value="" disabled>No datasets owned yet</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Name
+      <input type="text" name="name" placeholder="Catalog name">
+    </label>
+    <label class="span2">Description
+      <input type="text" name="description" placeholder="Short description">
+    </label>
+    <label>Tags
+      <input type="text" name="tags" placeholder="comma,separated,tags">
+    </label>
+    <label>Visibility
+      <select name="visibility">
+        <option value="private">private</option>
+        <option value="shared">shared</option>
+        <option value="public">public</option>
+      </select>
+    </label>
+    <div class="span2"><button type="submit" class="btn primary">Create catalog entry</button></div>
+  </form>
+</div>
+{% endif %}
+
+<div class="card">
+  <h2>Visible datasets</h2>
+  <table class="data">
+    <thead>
+      <tr>
+        <th>Name</th><th>Description</th><th>Tags</th><th>Visibility</th>
+        <th>Owner</th><th>Rows</th><th>Columns</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td><a href="{{ url_for('pages.dataset_preview', dataset_id=r.dataset_id) }}">{{ r.name }}</a></td>
+        <td class="muted">{{ r.description }}</td>
+        <td>
+          {% for t in r.tags %}
+            <a class="tag" href="{{ url_for('pages.datasets', tag=t) }}">{{ t }}</a>
+          {% endfor %}
+        </td>
+        <td>{{ r.visibility }}</td>
+        <td>{{ r.owner }}</td>
+        <td>{{ r.row_count }}</td>
+        <td>{{ r.column_count }}</td>
+        <td><a class="btn small" href="{{ url_for('pages.dataset_preview', dataset_id=r.dataset_id) }}">Preview</a></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="8" class="muted">No datasets match your search.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

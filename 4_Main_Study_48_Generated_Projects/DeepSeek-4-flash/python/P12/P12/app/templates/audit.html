@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Audit and lineage — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}audit_and_lineage{% endblock %}
+{% block content %}
+<h1>Audit and lineage</h1>
+
+<div class="card">
+  <h2>Lineage <span class="muted">(imports, transformations, exports)</span></h2>
+  <table class="data">
+    <thead><tr><th>#</th><th>Actor</th><th>Dataset</th><th>Operation</th><th>Source</th><th>Output</th><th>Detail</th><th>When</th></tr></thead>
+    <tbody>
+    {% for l in lineage %}
+      <tr>
+        <td>{{ l.id }}</td>
+        <td>{{ l.actor }}</td>
+        <td>{{ l.dataset_id or '' }}</td>
+        <td>{{ l.operation }}</td>
+        <td><code>{{ l.source_ref }}</code></td>
+        <td><code>{{ l.output_ref }}</code></td>
+        <td>{{ l.detail }}</td>
+        <td>{{ l.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="8" class="muted">No lineage records.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Audit events</h2>
+  <table class="data">
+    <thead><tr><th>#</th><th>Actor</th><th>Action</th><th>Entity</th><th>Entity ID</th><th>Detail</th><th>When</th></tr></thead>
+    <tbody>
+    {% for e in events %}
+      <tr>
+        <td>{{ e.id }}</td>
+        <td>{{ e.actor }}</td>
+        <td>{{ e.action }}</td>
+        <td>{{ e.entity_type }}</td>
+        <td>{{ e.entity_id or '' }}</td>
+        <td>{{ e.detail }}</td>
+        <td>{{ e.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="7" class="muted">No audit events.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{{define "header"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} — {{.SiteName}}</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><a href="/dashboard">{{.SiteName}}</a></div>
+  <nav>
+    {{if .User}}
+      <a href="/dashboard">Dashboard</a>
+      <a href="/projects">Projects</a>
+      <a href="/search">Search</a>
+      {{if or (eq .User.Role "maintainer") (eq .User.Role "admin")}}<a href="/projects/new">New project</a>{{end}}
+      {{if eq .User.Role "admin"}}<a href="/admin">Admin</a>{{end}}
+      <a href="/profile" class="pill">{{.User.DisplayName}} ({{.User.Role}})</a>
+      <form method="post" action="/logout" class="inline"><button type="submit" class="linkbtn">Sign out</button></form>
+    {{else}}
+      <a href="/login">Sign in</a>
+      <a href="/register">Register</a>
+    {{end}}
+  </nav>
+</header>
+{{if .Flash}}<div class="flash">{{.Flash}}</div>{{end}}
+<main class="container">
+{{end}}
+{{define "footer"}}
+</main>
+<footer class="foot">P09 Issue Tracking System — synthetic benchmark application</footer>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
+{{end}}
+
+{{define "issue_row"}}
+<div class="issue-row">
+  <a class="issue-link" href="/issues/{{.Issue.ID}}">
+    <span class="issue-num">#{{.Issue.Number}}</span>
+    <span class="issue-title">{{.Issue.Title}}</span>
+  </a>
+  <span class="badge status-{{.Issue.Status}}">{{.Issue.Status}}</span>
+  <span class="badge prio-{{.Issue.Priority}}">{{.Issue.Priority}}</span>
+  {{range .Labels}}<span class="badge label" style="background:#{{.Color}}">{{.Name}}</span>{{end}}
+  <span class="issue-meta">{{.Issue.CreatorName}} · {{formatTime .Issue.CreatedAt}}</span>
+</div>
+{{end}}

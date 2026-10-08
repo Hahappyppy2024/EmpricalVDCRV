@@ -1,0 +1,248 @@
+[
+  {
+    "layer": "Core",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-306",
+    "scenario": "Anonymous access to sites"
+  },
+  {
+    "layer": "Core",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-352",
+    "scenario": "Hostile-origin DNS mutation"
+  },
+  {
+    "layer": "Core",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-639",
+    "scenario": "Bob cannot browse Alice site files"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-639",
+    "scenario": "Bob cannot retrieve Alice backup"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-639",
+    "scenario": "Bob cannot read Alice support ticket"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-639",
+    "scenario": "Bob cannot delete Alice DNS record"
+  },
+  {
+    "layer": "Core",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-862",
+    "scenario": "Customer cannot access admin accounts"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-862",
+    "scenario": "Operator cannot access admin audit API"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-863",
+    "scenario": "Bob cannot modify Alice scheduled task"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-863",
+    "scenario": "Bob cannot delete Alice hosted database"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-863",
+    "scenario": "Bob cannot renew Alice certificate"
+  },
+  {
+    "layer": "Core",
+    "type": "A01_Access_Control",
+    "cwe": "CWE-915",
+    "scenario": "Site update cannot mass-assign ownership/runtime/status"
+  },
+  {
+    "layer": "Core",
+    "type": "A02_Cryptographic_Failures",
+    "cwe": "CWE-1004",
+    "scenario": "HttpOnly hosting_session"
+  },
+  {
+    "layer": "Core",
+    "type": "A02_Cryptographic_Failures",
+    "cwe": "CWE-614",
+    "scenario": "Secure hosting_session"
+  },
+  {
+    "layer": "Core",
+    "type": "A03_Injection",
+    "cwe": "CWE-20",
+    "scenario": "Invalid hostname validation"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A03_Injection",
+    "cwe": "CWE-20",
+    "scenario": "DNS type and TTL validation"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A03_Injection",
+    "cwe": "CWE-22",
+    "scenario": "Virtual file listing traversal rejection"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A03_Injection",
+    "cwe": "CWE-22",
+    "scenario": "Virtual file creation traversal rejection"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A03_Injection",
+    "cwe": "CWE-78",
+    "scenario": "Scheduled-task command allow-list"
+  },
+  {
+    "layer": "Core",
+    "type": "A03_Injection",
+    "cwe": "CWE-79",
+    "scenario": "Stored ticket markup rendered through textContent"
+  },
+  {
+    "layer": "Core",
+    "type": "A03_Injection",
+    "cwe": "CWE-89",
+    "scenario": "SQL injection login bypass"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A03_Injection",
+    "cwe": "CWE-89",
+    "scenario": "Virtual-file SQL query probe"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A04_Insecure_Design",
+    "cwe": "CWE-362",
+    "scenario": "Stale site version rejected"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A04_Insecure_Design",
+    "cwe": "CWE-434",
+    "scenario": "Active content isolated from control-panel origin"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A04_Insecure_Design",
+    "cwe": "CWE-770",
+    "scenario": "1 MiB site-file limit"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A04_Insecure_Design",
+    "cwe": "CWE-770",
+    "scenario": "Pagination limit above 100 rejected"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A04_Insecure_Design",
+    "cwe": "CWE-840",
+    "scenario": "Suspended site cannot deploy"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A04_Insecure_Design",
+    "cwe": "CWE-840",
+    "scenario": "Closed ticket cannot receive replies"
+  },
+  {
+    "layer": "Core",
+    "type": "A05_Misconfiguration",
+    "cwe": "CWE-1021",
+    "scenario": "Anti-framing response headers"
+  },
+  {
+    "layer": "Core",
+    "type": "A05_Misconfiguration",
+    "cwe": "CWE-200",
+    "scenario": "Development reset response exposes no usable token"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A05_Misconfiguration",
+    "cwe": "CWE-200",
+    "scenario": "Admin account listing omits credential/session hashes"
+  },
+  {
+    "layer": "Core",
+    "type": "A05_Misconfiguration",
+    "cwe": "CWE-209",
+    "scenario": "Malformed JSON error detail leakage"
+  },
+  {
+    "layer": "Core",
+    "type": "A05_Misconfiguration",
+    "cwe": "CWE-942",
+    "scenario": "Hostile-origin CORS policy"
+  },
+  {
+    "layer": "Core",
+    "type": "A07_Authentication_Failures",
+    "cwe": "CWE-204",
+    "scenario": "Password-reset account enumeration"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A07_Authentication_Failures",
+    "cwe": "CWE-284",
+    "scenario": "Disabled account login"
+  },
+  {
+    "layer": "Core",
+    "type": "A07_Authentication_Failures",
+    "cwe": "CWE-307",
+    "scenario": "15 failed login attempts"
+  },
+  {
+    "layer": "Core",
+    "type": "A07_Authentication_Failures",
+    "cwe": "CWE-384",
+    "scenario": "Session fixation"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A07_Authentication_Failures",
+    "cwe": "CWE-521",
+    "scenario": "Weak hosted-database password"
+  },
+  {
+    "layer": "Core",
+    "type": "A07_Authentication_Failures",
+    "cwe": "CWE-613",
+    "scenario": "Old session replay after logout"
+  },
+  {
+    "layer": "Core",
+    "type": "A07_Authentication_Failures",
+    "cwe": "CWE-1275",
+    "scenario": "SameSite hosting_session"
+  },
+  {
+    "layer": "P11_Specific",
+    "type": "A09_Logging",
+    "cwe": "CWE-778",
+    "scenario": "Site suspension audit logging"
+  }
+]

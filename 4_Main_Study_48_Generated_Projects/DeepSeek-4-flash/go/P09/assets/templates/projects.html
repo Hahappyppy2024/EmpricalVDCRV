@@ -1,0 +1,22 @@
+{{template "header" .}}
+<div class="card">
+  <div class="row between">
+    <h1>Projects</h1>
+    {{if .IsPrivileged}}<a href="/projects/new" class="btn primary">New project</a>{{end}}
+  </div>
+  <p class="hint">Public projects are visible to everyone; private projects only to their members.</p>
+  <table>
+    <thead><tr><th>Name</th><th>Visibility</th><th>Owner</th><th>Created</th></tr></thead>
+    <tbody>
+    {{range .Projects}}
+      <tr>
+        <td><a href="/projects/{{.Slug}}">{{.Name}}</a></td>
+        <td><span class="badge {{if eq .Visibility "private"}}priv{{else}}pub{{end}}">{{.Visibility}}</span></td>
+        <td>{{.OwnerName}}</td>
+        <td>{{formatTime .CreatedAt}}</td>
+      </tr>
+    {{end}}
+    </tbody>
+  </table>
+</div>
+{{template "footer" .}}

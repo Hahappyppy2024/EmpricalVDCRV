@@ -1,0 +1,42 @@
+{{define "base"}}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{block "title" .}}P14 Workflow Automation / Agentic Task Platform{{end}}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">P14 <span>Agentic</span></div>
+    {{if .User}}
+    <nav>
+      <a href="/">Dashboard</a>
+      <a href="/account">Account access</a>
+      <a href="/workflows">Workflows</a>
+      <a href="/tools">Tool catalog</a>
+      <a href="/runs">Task runs</a>
+      <a href="/schedules">Scheduled runs</a>
+      <a href="/files">Workspace files</a>
+      <a href="/webhooks">Webhook triggers</a>
+      <a href="/http-actions">HTTP actions</a>
+      <a href="/secrets">Secrets</a>
+      <a href="/logs">Run logs &amp; replay</a>
+      <a href="/templates">Templates</a>
+      {{if .Admin}}<a href="/admin" class="admin">Admin governance</a>{{end}}
+    </nav>
+    <div class="userbox">
+      <div class="who"><strong>{{.User.username}}</strong> <span class="role">{{.User.role}}</span></div>
+      <form method="post" action="/logout"><button type="submit" class="link">Sign out</button></form>
+    </div>
+    {{end}}
+  </aside>
+  <main class="content">
+    {{template "content" .}}
+  </main>
+</div>
+<div id="toast" class="toast hidden"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>{{end}}

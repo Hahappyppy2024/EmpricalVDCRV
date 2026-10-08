@@ -1,0 +1,20 @@
+<%- include('partials/head', { title: 'Recover password — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div style="max-width:420px;margin:0 auto;">
+    <div class="card">
+      <h2>Recover your password</h2>
+      <p class="muted mb-2">Enter your email and a reset link will be dispatched through the deterministic local email adapter.</p>
+      <form id="recover-form">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">Send reset link</button>
+        </div>
+      </form>
+      <div id="recover-result"></div>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/auth.js"></script>

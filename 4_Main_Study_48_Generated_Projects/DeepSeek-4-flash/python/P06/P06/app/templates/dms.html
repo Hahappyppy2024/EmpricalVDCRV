@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Direct messages · Team Chat{% endblock %}
+{% block content %}
+<div class="chat-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h3>Conversations</h3>
+      <div id="dm-threads" class="nav-list">Loading…</div>
+    </div>
+    <div class="sidebar-section">
+      <h3>Start a conversation</h3>
+      <form id="dm-start-form" class="stack small">
+        <label>Recipient username
+          <input type="text" id="dm-recipient" placeholder="alice">
+        </label>
+        <button class="btn btn-small" type="submit">Open</button>
+      </form>
+    </div>
+  </aside>
+
+  <section class="chat-main">
+    <header class="chat-header">
+      <div>
+        <h2 id="dm-title">Direct messages</h2>
+        <div class="muted small" id="dm-subtitle">Pick a conversation</div>
+      </div>
+      <div class="conn-status" id="conn-status">connecting…</div>
+    </header>
+    <div id="dm-message-list" class="message-list">
+      <div class="empty-state" id="dm-empty">Select a conversation to read it.</div>
+    </div>
+    <form id="dm-compose-form" class="compose">
+      <textarea id="dm-compose-input" rows="2" placeholder="Type a direct message… (Enter to send)"></textarea>
+      <div class="compose-actions">
+        <span class="muted small" id="dm-typing-indicator"></span>
+        <button class="btn btn-primary" type="submit">Send</button>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.DM_BOOT = { currentUser: {{ current_user.to_dict() | tojson }} };
+</script>
+<script src="{{ url_for('static', filename='js/dms.js') }}"></script>
+{% endblock %}

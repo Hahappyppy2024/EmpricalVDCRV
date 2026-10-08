@@ -1,0 +1,32 @@
+{{template "header" .}}
+<div class="card">
+  <h1>Issue search</h1>
+  <form method="get" action="/search" class="row wrap">
+    <input type="text" name="q" value="{{.Query}}" placeholder="Search text…">
+    <select name="status">
+      {{range .Statuses}}<option value="{{.}}" {{if eq . $.Status}}selected{{end}}>{{if .}}{{.}}{{else}}any status{{end}}</option>{{end}}
+    </select>
+    <select name="priority">
+      {{range .Priorities}}<option value="{{.}}" {{if eq . $.Priority}}selected{{end}}>{{if .}}{{.}}{{else}}any priority{{end}}</option>{{end}}
+    </select>
+    <select name="project_id">
+      <option value="">any project</option>
+      {{range .Projects}}<option value="{{.ID}}" {{if eq .ID $.ProjectID}}selected{{end}}>{{.Name}}</option>{{end}}
+    </select>
+    <select name="assignee_id">
+      <option value="">any assignee</option>
+      {{range .Users}}<option value="{{.ID}}" {{if eq .ID $.AssigneeID}}selected{{end}}>{{.Username}}</option>{{end}}
+    </select>
+    <button type="submit" class="primary">Search</button>
+  </form>
+</div>
+<div class="card">
+  <h2>Results ({{len .Results}})</h2>
+  <p class="hint">Private projects only appear if you are a member or owner.</p>
+  {{if .Results}}
+    {{range .Results}}{{template "issue_row" .}}{{end}}
+  {{else}}
+    <p class="hint">No matching issues.</p>
+  {{end}}
+</div>
+{{template "footer" .}}

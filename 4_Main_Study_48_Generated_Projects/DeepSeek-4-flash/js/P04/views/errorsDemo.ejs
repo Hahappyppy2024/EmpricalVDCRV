@@ -1,0 +1,52 @@
+<%- include('partials/head', { title: 'Frontend API integration & errors — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1>Frontend API integration &amp; errors</h1>
+    <p>Exercise how the UI handles unavailable dates, conflicts, and validation states.</p>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <h3>Simulated API response states</h3>
+        <p class="muted mb-2">Each button calls the real API and renders the deterministic outcome.</p>
+        <div class="grid" style="grid-template-columns:1fr 1fr;">
+          <button class="btn sim-btn" data-scenario="unavailable">Unavailable dates</button>
+          <button class="btn sim-btn" data-scenario="conflict">Date conflict</button>
+          <button class="btn sim-btn" data-scenario="validation">Validation error</button>
+          <button class="btn sim-btn" data-scenario="unauthorized">Unauthorized</button>
+          <button class="btn sim-btn" data-scenario="forbidden">Forbidden</button>
+        </div>
+        <div id="sim-result" style="margin-top:14px;"></div>
+      </div>
+
+      <div class="card">
+        <h3>Submit a real booking with an error state</h3>
+        <p class="muted mb-2">Try reserving <strong>R301 Corner Suite</strong> during its seeded maintenance block (+15 to +18 days) to see the 409 handling.</p>
+        <div id="live-error-demo"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h3>Record a frontend error report</h3>
+        <form id="error-report-form">
+          <label>Context</label>
+          <input type="text" name="context" placeholder="e.g. date-picker: check-out before check-in" required>
+          <label>Payload (JSON)</label>
+          <textarea name="payload">{"source":"date-picker","view":"/book"}</textarea>
+          <div class="form-actions"><button class="btn btn-primary" type="submit">Record</button></div>
+        </form>
+        <div id="error-report-result"></div>
+      </div>
+
+      <div class="card">
+        <h3>Recent error reports</h3>
+        <div id="error-reports"><p class="muted">Loading…</p></div>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/errors-demo.js"></script>

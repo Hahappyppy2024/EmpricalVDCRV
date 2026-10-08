@@ -1,0 +1,28 @@
+{
+    "name": "synthetic/cloud-file-sharing-system",
+    "description": "P07 Cloud File-Sharing System - synthetic benchmark web application (Slim 4 + SQLite)",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.3",
+        "slim/slim": "4.15.2",
+        "slim/psr7": "1.7.0",
+        "slim/php-view": "3.3.0",
+        "vlucas/phpdotenv": "5.6.1",
+        "workerman/workerman": "4.1.16"
+    },
+    "autoload": {
+        "psr-4": {
+            "CloudFS\\": "src/"
+        }
+    },
+    "scripts": {
+        "db:reset": "php bin/reset-db.php",
+        "realtime": "php bin/websocket.php",
+        "start": "php -S 127.0.0.1:8080 -t public public/index.php"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

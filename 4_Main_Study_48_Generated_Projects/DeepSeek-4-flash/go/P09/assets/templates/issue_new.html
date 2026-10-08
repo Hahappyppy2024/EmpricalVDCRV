@@ -1,0 +1,25 @@
+{{template "header" .}}
+<div class="card">
+  <h1>New issue — {{.Project.Name}}</h1>
+  <form method="post" action="/projects/{{.Project.Slug}}/issues/new" class="stack">
+    <label>Title
+      <input type="text" name="title" required>
+    </label>
+    <label>Body
+      <textarea name="body" rows="8"></textarea>
+    </label>
+    <label>Priority
+      <select name="priority">
+      {{range .Priorities}}<option value="{{.}}" {{if eq . "medium"}}selected{{end}}>{{.}}</option>{{end}}
+      </select>
+    </label>
+    <fieldset>
+      <legend>Labels</legend>
+      {{range .Labels}}
+        <label class="check"><input type="checkbox" name="label_ids" value="{{.ID}}"> <span class="badge label" style="background:#{{.Color}}">{{.Name}}</span></label>
+      {{end}}
+    </fieldset>
+    <button type="submit" class="primary">Create issue</button>
+  </form>
+</div>
+{{template "footer" .}}

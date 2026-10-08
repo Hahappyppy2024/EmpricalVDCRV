@@ -1,0 +1,12 @@
+Name                Stmts   Miss Branch BrPart  Cover   Missing
+---------------------------------------------------------------
+app/__init__.py         2      0      0      0   100%
+app/auth.py            25      0     14      1    97%   22->exit
+app/db.py              20      0      0      0   100%
+app/errors.py           6      0      0      0   100%
+app/factory.py         24      0     10      1    97%   25->exit
+app/repository.py      34      0     22      4    93%   18->exit, 22->exit, 28->exit, 32->exit
+app/routes.py         249      0    106      4    99%   158->exit, 174->exit, 180->exit, 245->exit
+app/seed.py            26      0      2      0   100%
+---------------------------------------------------------------
+TOTAL                 386      0    154     10    98%

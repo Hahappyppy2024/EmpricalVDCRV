@@ -1,0 +1,89 @@
+<%- include('partials/head', { title: 'Room inventory — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1>Room inventory</h1>
+    <p>Manage rooms, rates, availability blocks, and maintenance periods.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>Rooms</h3>
+      <div class="table-wrap">
+        <table id="rooms-table">
+          <thead><tr><th>Room</th><th>Type</th><th>Rate</th><th>Capacity</th><th>Status</th></tr></thead>
+          <tbody>
+            <% rooms.forEach(r => { %>
+              <tr data-room-id="<%= r.id %>">
+                <td><%= r.name %></td>
+                <td><%= r.type %></td>
+                <td class="money">$<%= r.price_per_night %></td>
+                <td><%= r.capacity %></td>
+                <td>
+                  <select class="status-select" data-id="<%= r.id %>">
+                    <% ['active', 'maintenance', 'retired'].forEach(s => { %>
+                      <option value="<%= s %>" <%= r.status === s ? 'selected' : '' %>><%= s %></option>
+                    <% }) %>
+                  </select>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h3>Add room</h3>
+        <form id="room-form">
+          <label>Name</label><input type="text" name="name" required>
+          <label>Type</label>
+          <select name="type">
+            <option value="single">single</option><option value="double">double</option>
+            <option value="suite">suite</option><option value="deluxe">deluxe</option><option value="family">family</option>
+          </select>
+          <label>Price per night ($)</label><input type="number" name="price_per_night" min="1" required>
+          <label>Capacity</label><input type="number" name="capacity" min="1" max="8" required>
+          <label>Description</label><textarea name="description" required></textarea>
+          <label>Amenities (comma separated)</label><input type="text" name="amenities" placeholder="Wi-Fi, Minibar">
+          <div class="form-actions"><button class="btn btn-primary" type="submit">Create room</button></div>
+        </form>
+        <div id="room-form-result"></div>
+      </div>
+
+      <div class="card">
+        <h3>Availability blocks</h3>
+        <table class="mb-2" style="width:100%;">
+          <thead><tr><th>Room</th><th>Dates</th><th>Reason</th><th></th></tr></thead>
+          <tbody>
+            <% blocks.forEach(b => { %>
+              <tr data-block-id="<%= b.id %>">
+                <td><%= b.room_name %></td>
+                <td><%= b.start_date %> → <%= b.end_date %></td>
+                <td><%= b.reason %></td>
+                <td><button class="btn btn-sm btn-danger remove-block" data-id="<%= b.id %>">Remove</button></td>
+              </tr>
+            <% }) %>
+            <% if (blocks.length === 0) { %><tr><td colspan="4" class="muted">No blocks.</td></tr><% } %>
+          </tbody>
+        </table>
+        <form id="block-form">
+          <label>Room</label>
+          <select name="room_id">
+            <% rooms.forEach(r => { %><option value="<%= r.id %>"><%= r.name %></option><% }) %>
+          </select>
+          <div class="field-row">
+            <div><label>Start date</label><input type="date" name="start_date" min="<%= today %>" required></div>
+            <div><label>End date</label><input type="date" name="end_date" min="<%= today %>" required></div>
+          </div>
+          <label>Reason</label><input type="text" name="reason" placeholder="maintenance" value="maintenance">
+          <div class="form-actions"><button class="btn" type="submit">Block dates</button></div>
+        </form>
+        <div id="block-form-result"></div>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/staff-inventory.js"></script>

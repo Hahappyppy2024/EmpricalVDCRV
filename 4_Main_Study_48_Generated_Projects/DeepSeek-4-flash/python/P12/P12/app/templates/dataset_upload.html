@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Upload dataset — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}dataset_upload{% endblock %}
+{% block content %}
+<h1>Upload a dataset</h1>
+<div class="card">
+  <p class="muted">Upload a <code>CSV</code> or <code>JSON</code> file. The server detects the schema
+  (integer, number, boolean, date, text) and stores the parsed rows for preview, filtering,
+  charting, and export.</p>
+  <form method="post" action="{{ url_for('pages.dataset_upload') }}" enctype="multipart/form-data" class="grid form-grid">
+    <label class="span2">File
+      <input type="file" name="file" accept=".csv,.json" required>
+    </label>
+    <label>Name
+      <input type="text" name="name" placeholder="Leave blank to use the filename">
+    </label>
+    <label>Visibility
+      <select name="visibility">
+        <option value="private">private</option>
+        <option value="shared">shared</option>
+        <option value="public">public</option>
+      </select>
+    </label>
+    <label class="span2">Description
+      <input type="text" name="description" placeholder="Short description">
+    </label>
+    <label class="span2">Tags
+      <input type="text" name="tags" placeholder="comma,separated,tags">
+    </label>
+    <div class="span2"><button type="submit" class="btn primary">Upload</button></div>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Recent uploads</h2>
+  <table class="data">
+    <thead><tr><th>#</th><th>File</th><th>Format</th><th>Rows</th><th>Columns</th><th>Status</th><th>When</th></tr></thead>
+    <tbody>
+    {% for u in uploads %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.filename }}</td>
+        <td>{{ u.format }}</td>
+        <td>{{ u.rows }}</td>
+        <td>{{ u.columns }}</td>
+        <td>{{ u.status }}</td>
+        <td>{{ u.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="7" class="muted">No uploads yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

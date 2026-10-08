@@ -1,0 +1,56 @@
+{{template "header" .}}
+<section class="grid-2">
+  <div>
+    <div class="card">
+      <h2>Your projects</h2>
+      {{if .Projects}}
+        <ul class="plain">
+        {{range .Projects}}
+          <li>
+            <a href="/projects/{{.Slug}}">{{.Name}}</a>
+            <span class="badge {{if eq .Visibility "private"}}priv{{else}}pub{{end}}">{{.Visibility}}</span>
+            <span class="issue-meta">owned by {{.OwnerName}}</span>
+          </li>
+        {{end}}
+        </ul>
+      {{else}}
+        <p class="hint">No visible projects.</p>
+      {{end}}
+    </div>
+    <div class="card">
+      <h2>Recent account activity</h2>
+      <table>
+        <thead><tr><th>Action</th><th>Detail</th><th>When</th></tr></thead>
+        <tbody>
+        {{range .Records}}
+          <tr><td>{{.Action}}</td><td>{{.Summary}}</td><td>{{formatTime .CreatedAt}}</td></tr>
+        {{end}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Assigned to you</h2>
+      {{if .MyIssues}}
+        {{range .MyIssues}}
+          <div class="issue-row">
+            <a class="issue-link" href="/issues/{{.ID}}"><span class="issue-num">#{{.Number}}</span> <span class="issue-title">{{.Title}}</span></a>
+            <span class="badge status-{{.Status}}">{{.Status}}</span>
+          </div>
+        {{end}}
+      {{else}}
+        <p class="hint">Nothing assigned to you.</p>
+      {{end}}
+    </div>
+    <div class="card">
+      <h2>Quick search</h2>
+      <form method="get" action="/search" class="row">
+        <input type="text" name="q" placeholder="Search issues…">
+        <button type="submit" class="primary">Search</button>
+      </form>
+      <p class="hint">Supports filters: status, priority, project, assignee.</p>
+    </div>
+  </div>
+</section>
+{{template "footer" .}}

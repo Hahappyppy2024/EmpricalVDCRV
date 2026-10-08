@@ -1,0 +1,31 @@
+{{template "header" .}}
+<div class="card">
+  <h1>Account</h1>
+  <p class="hint">Account access — manage your profile. Your role and sign-in state are shown below.</p>
+  <dl class="kv">
+    <dt>Username</dt><dd>{{.AccountUser.Username}}</dd>
+    <dt>Email</dt><dd>{{.AccountUser.Email}}</dd>
+    <dt>Display name</dt><dd>{{.AccountUser.DisplayName}}</dd>
+    <dt>Role</dt><dd>{{.AccountUser.Role}}</dd>
+    <dt>Active</dt><dd>{{.AccountUser.Active}}</dd>
+  </dl>
+  <form method="post" action="/api/issue/account_access" class="stack" data-js-api data-js-redirect="/profile">
+    <input type="hidden" name="action" value="profile">
+    <label>Display name
+      <input type="text" name="display_name" value="{{.AccountUser.DisplayName}}" required>
+    </label>
+    <button type="submit" class="primary">Update profile</button>
+  </form>
+</div>
+<div class="card">
+  <h2>Recent account records</h2>
+  <table>
+    <thead><tr><th>Action</th><th>Summary</th><th>Status</th><th>When</th></tr></thead>
+    <tbody>
+    {{range .Records}}
+      <tr><td>{{.Action}}</td><td>{{.Summary}}</td><td>{{.Status}}</td><td>{{formatTime .CreatedAt}}</td></tr>
+    {{end}}
+    </tbody>
+  </table>
+</div>
+{{template "footer" .}}

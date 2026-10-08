@@ -1,0 +1,13 @@
+services:
+  shop:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      DB_PATH: /data/shop.sqlite
+      UPLOAD_DIR: /data/product-images
+      APP_ENV: production
+    volumes:
+      - shop-data:/data
+volumes:
+  shop-data:

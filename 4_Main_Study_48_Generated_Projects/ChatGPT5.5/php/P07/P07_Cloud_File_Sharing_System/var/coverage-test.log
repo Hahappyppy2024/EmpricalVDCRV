@@ -1,0 +1,14 @@
+PASS FILE01AccountAccessTest (20 assertions)
+PASS FILE02FileUploadTest (12 assertions)
+PASS FILE03FolderManagementTest (17 assertions)
+PASS FILE04DownloadPreviewTest (13 assertions)
+PASS FILE05SharingLinksTest (14 assertions)
+PASS FILE06TeamSpacesTest (16 assertions)
+PASS FILE07SearchTest (14 assertions)
+PASS FILE08VersionHistoryTest (13 assertions)
+PASS FILE09TrashRestoreTest (16 assertions)
+PASS FILE10StorageQuotaTest (15 assertions)
+PASS FILE11AuditLogExportsTest (14 assertions)
+PASS FILE12AdminConsoleTest (19 assertions)
+
+12 use-case files, 183 assertions, 0 failures.

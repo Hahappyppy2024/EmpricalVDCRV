@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Sign in · Team Chat{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card auth-card">
+    <h1>Sign in to Team Chat</h1>
+    <p class="muted">Use a seed account, for example <code>owner / password123</code>.</p>
+    <form method="post" action="{{ url_for('accounts.login_page') }}" class="stack">
+      <label>Username or email
+        <input type="text" name="username_or_email" required autofocus>
+      </label>
+      <label>Password
+        <input type="password" name="password" required>
+      </label>
+      <button class="btn btn-primary" type="submit">Sign in</button>
+    </form>
+    <div class="auth-links">
+      <a href="{{ url_for('accounts.register_page') }}">Create an account</a>
+      <a href="{{ url_for('accounts.forgot_password_page') }}">Forgot password?</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

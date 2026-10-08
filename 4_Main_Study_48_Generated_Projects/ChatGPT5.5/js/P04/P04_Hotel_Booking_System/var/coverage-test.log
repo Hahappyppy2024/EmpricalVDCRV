@@ -1,0 +1,36 @@
+✔ HOTEL-01 account access (1014.867948ms)
+✔ HOTEL-02 room search (525.500853ms)
+✔ HOTEL-03 room details and rates (718.680282ms)
+✔ HOTEL-04 quote and booking transaction (884.634508ms)
+✔ HOTEL-05 booking management and cancellation (1006.108252ms)
+✔ HOTEL-06 staff check-in and check-out (1323.71215ms)
+✔ HOTEL-07 room inventory roles and states (870.069913ms)
+✔ HOTEL-08 booking-scoped immutable messages (2015.869109ms)
+✔ HOTEL-09 completed-stay reviews and moderation (1342.877755ms)
+✔ HOTEL-10 invoice and receipt authorization (811.65923ms)
+✔ HOTEL-11 bounded admin reports (1070.847735ms)
+✔ HOTEL-12 rate plans and cancellation policies (1385.283471ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16898.426973
+ℹ start of coverage report
+ℹ ---------------------------------------------------------------
+ℹ file           | line % | branch % | funcs % | uncovered lines
+ℹ ---------------------------------------------------------------
+ℹ src            |        |          |         | 
+ℹ  app.js        | 100.00 |    88.67 |   98.53 | 
+ℹ  auth.js       | 100.00 |    93.33 |  100.00 | 
+ℹ  database.js   | 100.00 |   100.00 |  100.00 | 
+ℹ  errors.js     | 100.00 |   100.00 |  100.00 | 
+ℹ  repository.js | 100.00 |   100.00 |  100.00 | 
+ℹ  security.js   | 100.00 |   100.00 |  100.00 | 
+ℹ  seed.js       | 100.00 |   100.00 |   50.00 | 
+ℹ ---------------------------------------------------------------
+ℹ all files      | 100.00 |    90.48 |   97.85 | 
+ℹ ---------------------------------------------------------------
+ℹ end of coverage report

@@ -1,0 +1,3 @@
+<?php
+declare(strict_types=1);require dirname(__DIR__).'/vendor/autoload.php';use Tests\Functional\FunctionalTestCase;
+$root=dirname(__DIR__);$files=glob($root.'/tests/Functional/HOST*.php')?:[];sort($files,SORT_STRING);$failed=0;$assertions=0;foreach($files as$file){$t=new FunctionalTestCase($root);$name=basename($file,'.php');try{$scenario=require$file;$scenario($t);$assertions+=$t->assertions();echo "PASS {$name} ({$t->assertions()} assertions)\n";}catch(Throwable$e){$failed++;echo "FAIL {$name}: {$e->getMessage()}\n";}finally{$t->close();}}echo sprintf("\n%d use-case files, %d assertions, %d failures.\n",count($files),$assertions,$failed);exit($failed===0?0:1);

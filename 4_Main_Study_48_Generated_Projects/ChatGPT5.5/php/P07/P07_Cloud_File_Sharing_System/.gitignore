@@ -1,0 +1,5 @@
+/.env
+/var/*.sqlite
+/var/*.sqlite-*
+/var/uploads/*
+!/var/uploads/.gitkeep

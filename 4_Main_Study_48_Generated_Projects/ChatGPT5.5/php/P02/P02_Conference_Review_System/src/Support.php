@@ -1,0 +1,5 @@
+<?php
+declare(strict_types=1);
+namespace App;
+use PDO;use Psr\Http\Message\ServerRequestInterface;
+trait Support{private static function body(ServerRequestInterface $r):array{return Http::data($r->getParsedBody());}private static function required(array $d,array $fields):void{$bad=[];foreach($fields as $f)if(!isset($d[$f])||(is_string($d[$f])&&trim($d[$f])===''))$bad[$f]='Required.';if($bad)throw new ApiException(422,'validation_failed','Please correct the highlighted fields.',$bad);}private static function one(PDO $db,string $sql,array $p=[],string $code='resource_not_found'):array{$s=$db->prepare($sql);$s->execute($p);$x=$s->fetch();if(!$x)throw new ApiException(404,$code,'Resource not found.');return $x;}private static function all(PDO $db,string $sql,array $p=[]):array{$s=$db->prepare($sql);$s->execute($p);return $s->fetchAll();}private static function page(ServerRequestInterface $r):array{$q=$r->getQueryParams();$limit=max(1,min(100,(int)($q['limit']??25)));$page=max(1,(int)($q['page']??1));return[$limit,($page-1)*$limit,$page];}}

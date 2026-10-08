@@ -1,0 +1,22 @@
+{{define "content"}}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1>{{if eq .Mode "login"}}Sign in{{else}}Create account{{end}}</h1>
+    {{if .Error}}<div class="alert error">{{.Error}}</div>{{end}}
+    {{if .Notice}}<div class="notice">{{.Notice}}</div>{{end}}
+    <form id="auth-form" data-mode="{{.Mode}}">
+      {{if eq .Mode "register"}}
+      <label>Username<input name="username" type="text" required minlength="3" maxlength="20" autocomplete="username"></label>
+      <label>Email<input name="email" type="email" required autocomplete="email"></label>
+      <label>Password<input name="password" type="password" required minlength="6" autocomplete="new-password"></label>
+      {{else}}
+      <label>Username or email<input name="username" type="text" required autocomplete="username"></label>
+      <label>Password<input name="password" type="password" required autocomplete="current-password"></label>
+      {{end}}
+      <button type="submit" class="btn primary">{{if eq .Mode "login"}}Sign in{{else}}Register{{end}}</button>
+    </form>
+    <p class="muted">{{if eq .Mode "login"}}No account yet? <a href="/register">Register</a>{{else}}Already registered? <a href="/login">Sign in</a>{{end}}</p>
+    <p class="muted seed-hint">Seed accounts: <code>admin/admin123</code> &middot; <code>alice/alice123</code> &middot; <code>bob/bob123</code></p>
+  </div>
+</div>
+{{end}}

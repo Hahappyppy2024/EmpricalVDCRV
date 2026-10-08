@@ -1,0 +1,9 @@
+/vendor/
+/data/*.sqlite
+/data/*.sqlite-*
+/data/uploads/*
+/data/exports/*
+!/data/uploads/.gitkeep
+!/data/exports/.gitkeep
+/.env
+composer.phar

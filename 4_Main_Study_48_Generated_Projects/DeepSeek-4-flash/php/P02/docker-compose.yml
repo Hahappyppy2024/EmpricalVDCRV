@@ -1,0 +1,22 @@
+services:
+  conference-review:
+    build: .
+    container_name: conference-review-system
+    ports:
+      - "8080:8080"
+      - "8090:8090"
+    environment:
+      APP_ENV: local
+      APP_URL: http://localhost:8080
+      DB_PATH: database/conference.sqlite
+      SESSION_NAME: conf_session
+      SESSION_LIFETIME: "86400"
+      STORAGE_PATH: storage
+      MAIL_TO_FILE: storage/mail.log
+      ERROR_LOG: storage/errors.log
+      WS_PORT: "8090"
+      WS_URL: ws://localhost:8090
+      APP_KEY: local-dev-key
+    volumes:
+      - ./storage:/app/storage
+    restart: unless-stopped

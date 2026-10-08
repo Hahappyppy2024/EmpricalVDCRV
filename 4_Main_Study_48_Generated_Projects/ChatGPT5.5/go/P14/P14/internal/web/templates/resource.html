@@ -1,0 +1,97 @@
+{{define "content"}}
+<div class="page-head">
+  <h1>{{.Config.Title}}</h1>
+  <p class="muted">{{.Config.Description}}</p>
+</div>
+
+{{if .Config.ExtraNote}}<div class="notice">{{.Config.ExtraNote}}</div>{{end}}
+{{if .Config.JsonEchoHint}}<div class="notice">Offline hint: the deterministic local adapter lives at <code>/internal/echo</code> and always returns a stable JSON response.</div>{{end}}
+
+{{if .Config.ReplayForm}}
+<div class="panel">
+  <h3>Replay a run</h3>
+  <form class="inline-form" id="replay-form">
+    <label>Run ID<input type="number" name="run_id" min="1" required placeholder="123"></label>
+    <button class="btn" type="submit">Replay</button>
+  </form>
+</div>
+{{end}}
+
+<div class="panel">
+  <h3>Filters</h3>
+  <form class="inline-form" id="filter-form">
+    {{range .Config.Filters}}
+    <label>{{.Label}}
+      <select name="{{.Key}}">
+        <option value="">All</option>
+        {{range .Options}}<option value="{{.}}">{{.}}</option>{{end}}
+      </select>
+    </label>
+    {{end}}
+    <label>Search<input name="q" placeholder="search"></label>
+    <button class="btn" type="submit">Apply</button>
+    <a class="btn ghost" href="?" id="clear-filters">Clear</a>
+  </form>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>Records</h3>
+    <button class="btn small" id="new-btn" type="button">{{.Config.CreateLabel}}</button>
+  </div>
+
+  <div id="new-form" class="hidden">
+    {{if .Config.CanCreate}}
+    <form id="create-form" class="form-grid">
+      {{range .Config.Fields}}
+      <div class="field">
+        {{if eq .Type "select"}}
+        <label>{{.Label}}
+          <select name="{{.Key}}"{{if .Required}} required{{end}}>
+            <option value="">Select…</option>
+            {{range .Options}}<option value="{{.}}">{{.}}</option>{{end}}
+          </select>
+        </label>
+        {{else if eq .Type "textarea"}}
+        <label>{{.Label}}<textarea name="{{.Key}}"{{if .Required}} required{{end}} placeholder="{{.Placeholder}}" rows="4"></textarea></label>
+        {{else if eq .Type "checkbox"}}
+        <label class="check"><input type="checkbox" name="{{.Key}}" value="true"> {{.Label}}</label>
+        {{else}}
+        <label>{{.Label}}<input type="{{.Type}}" name="{{.Key}}"{{if .Required}} required{{end}} placeholder="{{.Placeholder}}"></label>
+        {{end}}
+        {{if .Help}}<small class="help">{{.Help}}</small>{{end}}
+      </div>
+      {{end}}
+      <div class="field full">
+        <button class="btn primary" type="submit">Create</button>
+        <button class="btn ghost" id="cancel-new" type="button">Cancel</button>
+      </div>
+    </form>
+    {{else}}
+    <p class="muted">Only admins can create records here. Browse the visible catalog below.</p>
+    {{end}}
+  </div>
+
+  {{if eq .Config.Resource "workspace_files"}}
+  <div class="panel inner">
+    <h4>Upload file content</h4>
+    <form id="upload-form" enctype="multipart/form-data" class="inline-form">
+      <input type="file" name="file" required>
+      <label>Path<input type="text" name="path" placeholder="e.g. uploads/report.txt"></label>
+      <button class="btn" type="submit">Upload</button>
+    </form>
+  </div>
+  {{end}}
+
+  <table class="grid">
+    <thead><tr>
+      {{range .Config.Columns}}<th>{{.Label}}</th>{{end}}
+      <th class="actions-col">Actions</th>
+    </tr></thead>
+    <tbody id="rows"><tr><td colspan="99" class="muted">Loading…</td></tr></tbody>
+  </table>
+</div>
+
+<div id="alert-box"></div>
+<script>window.PAGE = {{.Cfg}};</script>
+{{end}}

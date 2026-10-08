@@ -1,0 +1,36 @@
+✔ CMS-01 account access and recovery (730.716172ms)
+✔ CMS-02 content authoring ownership and versions (471.481204ms)
+✔ CMS-03 structured rich text and escaped preview (417.817843ms)
+✔ CMS-04 media upload, metadata, content and deletion (456.74496ms)
+✔ CMS-05 publishing state machine (420.024673ms)
+✔ CMS-06 public published-content discovery (322.365403ms)
+✔ CMS-07 public comments and moderation (437.925521ms)
+✔ CMS-08 template creation, editing and assignment (453.823742ms)
+✔ CMS-09 admin user and role management (427.036575ms)
+✔ CMS-10 allow-listed settings and passive integrations (440.937503ms)
+✔ CMS-11 atomic content import and JSON export (510.976861ms)
+✔ CMS-12 navigation and redirect management (470.971626ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7426.460179
+ℹ start of coverage report
+ℹ ---------------------------------------------------------------
+ℹ file           | line % | branch % | funcs % | uncovered lines
+ℹ ---------------------------------------------------------------
+ℹ src            |        |          |         | 
+ℹ  app.js        | 100.00 |    87.20 |  100.00 | 
+ℹ  auth.js       | 100.00 |    84.62 |  100.00 | 
+ℹ  database.js   | 100.00 |   100.00 |  100.00 | 
+ℹ  errors.js     | 100.00 |   100.00 |  100.00 | 
+ℹ  repository.js | 100.00 |   100.00 |  100.00 | 
+ℹ  security.js   | 100.00 |   100.00 |  100.00 | 
+ℹ  seed.js       | 100.00 |   100.00 |  100.00 | 
+ℹ ---------------------------------------------------------------
+ℹ all files      | 100.00 |    88.50 |  100.00 | 
+ℹ ---------------------------------------------------------------
+ℹ end of coverage report

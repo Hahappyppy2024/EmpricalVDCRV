@@ -1,0 +1,3 @@
+export class ApiError extends Error{constructor(status,code,message,fields={}){super(message);this.status=status;this.code=code;this.fields=fields;}}
+export function required(body,names){const fields={};for(const name of names)if(body[name]===undefined||body[name]===null||body[name]==='')fields[name]='required';if(Object.keys(fields).length)throw new ApiError(422,'validation_error','Required fields are missing.',fields);}
+export function integer(value,min,max,name){if(!Number.isInteger(value)||value<min||value>max)throw new ApiError(422,'validation_error',`Invalid ${name}.`,{[name]:'invalid'});return value;}

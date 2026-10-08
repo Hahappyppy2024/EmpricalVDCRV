@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Invitation · Team Chat{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card auth-card">
+    <h1>Invitation</h1>
+    <p class="muted">Accept this invitation by submitting the token, or visit the members page for the workspace to accept it there.</p>
+    <form method="post" action="{{ url_for('membership.members_page', slug='acme') }}" class="stack">
+      <input type="hidden" name="action" value="accept">
+      <input type="hidden" name="token" value="{{ token }}">
+      <button class="btn btn-primary" type="submit">Accept invitation</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

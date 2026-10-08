@@ -1,0 +1,17 @@
+{
+  "name": "p04-hotel-booking-system",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": "22.x"},
+  "scripts": {
+    "db:reset": "node scripts/reset-database.js",
+    "start": "node src/server.js",
+    "test:functional": "node --test --test-concurrency=1 tests/functional/*.test.js",
+    "test:coverage": "node --test --test-concurrency=1 --experimental-test-coverage --test-coverage-include=src/** --test-coverage-exclude=src/server.js --test-coverage-branches=85 tests/functional/*.test.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "12.2.0",
+    "express": "5.1.0"
+  }
+}

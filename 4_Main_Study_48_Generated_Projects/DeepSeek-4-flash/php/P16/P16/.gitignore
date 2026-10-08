@@ -1,0 +1,19 @@
+# Runtime artifacts
+storage/*.sqlite
+storage/*.sqlite-journal
+storage/*.sqlite-wal
+storage/*.sqlite-shm
+storage/uploads/*
+storage/backups/*
+storage/logs/*.log
+
+# Environment (keep .env.example committed)
+.env
+
+# Dependencies are installed locally by composer
+/vendor/
+
+# OS / editor cruft
+Thumbs.db
+.DS_Store
+*.log.swp

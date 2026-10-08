@@ -1,0 +1,50 @@
+[
+  {
+    "customer": "alice",
+    "rating": 5,
+    "channel": "email",
+    "comment": "Fast delivery"
+  },
+  {
+    "customer": "bob",
+    "rating": 3,
+    "channel": "chat",
+    "comment": "Average"
+  },
+  {
+    "customer": "carol",
+    "rating": 4,
+    "channel": "phone",
+    "comment": "Helpful support"
+  },
+  {
+    "customer": "dave",
+    "rating": 2,
+    "channel": "email",
+    "comment": "Late shipment"
+  },
+  {
+    "customer": "erin",
+    "rating": 5,
+    "channel": "chat",
+    "comment": "Excellent"
+  },
+  {
+    "customer": "frank",
+    "rating": 4,
+    "channel": "email",
+    "comment": "Good quality"
+  },
+  {
+    "customer": "grace",
+    "rating": 1,
+    "channel": "phone",
+    "comment": "Damaged item"
+  },
+  {
+    "customer": "henry",
+    "rating": 4,
+    "channel": "chat",
+    "comment": "Nice experience"
+  }
+]

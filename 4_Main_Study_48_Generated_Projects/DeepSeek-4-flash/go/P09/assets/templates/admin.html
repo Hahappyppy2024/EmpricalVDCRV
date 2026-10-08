@@ -1,0 +1,112 @@
+{{template "header" .}}
+<h1>Admin operations</h1>
+<p class="hint">Manage users, project ownership and global settings. Every privileged action is written to the audit log.</p>
+
+<div class="grid-2">
+  <div class="card">
+    <h2>Users</h2>
+    <table>
+      <thead><tr><th>Username</th><th>Role</th><th>Active</th><th>Actions</th></tr></thead>
+      <tbody>
+      {{range .Users}}
+        <tr>
+          <td>{{.Username}}</td>
+          <td>
+            <form method="post" action="/api/issue/admin_operations" class="inline" data-js-api>
+              <input type="hidden" name="action" value="user.update">
+              <input type="hidden" name="user_id" value="{{.ID}}">
+              <select name="role">
+                <option value="developer" {{if eq .Role "developer"}}selected{{end}}>developer</option>
+                <option value="reporter" {{if eq .Role "reporter"}}selected{{end}}>reporter</option>
+                <option value="member" {{if eq .Role "member"}}selected{{end}}>member</option>
+                <option value="maintainer" {{if eq .Role "maintainer"}}selected{{end}}>maintainer</option>
+                <option value="admin" {{if eq .Role "admin"}}selected{{end}}>admin</option>
+              </select>
+              <select name="active">
+                <option value="true" {{if .Active}}selected{{end}}>active</option>
+                <option value="false" {{if not .Active}}selected{{end}}>inactive</option>
+              </select>
+              <button type="submit" class="primary">Save</button>
+            </form>
+          </td>
+        </tr>
+      {{end}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Project ownership</h2>
+    <table>
+      <thead><tr><th>Project</th><th>Owner</th><th>Transfer to</th></tr></thead>
+      <tbody>
+      {{range .Projects}}
+      {{$proj := .}}
+        <tr>
+          <td>{{.Name}} <span class="badge {{if eq .Visibility "private"}}priv{{else}}pub{{end}}">{{.Visibility}}</span></td>
+          <td>{{.OwnerName}}</td>
+          <td>
+            <form method="post" action="/api/issue/admin_operations" class="inline" data-js-api>
+              <input type="hidden" name="action" value="project.transfer">
+              <input type="hidden" name="project_id" value="{{.ID}}">
+              <select name="new_owner_id">
+                {{range $.Users}}<option value="{{.ID}}" {{if eq .ID $proj.OwnerID}}disabled{{end}}>{{.Username}}</option>{{end}}
+              </select>
+              <button type="submit" class="primary">Transfer</button>
+            </form>
+          </td>
+        </tr>
+      {{end}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h2>Global settings</h2>
+    <table>
+      <thead><tr><th>Key</th><th>Value</th><th></th></tr></thead>
+      <tbody>
+      {{range .Settings}}
+        <tr>
+          <td><code>{{.Key}}</code></td>
+          <td>
+            <form method="post" action="/api/issue/admin_operations" class="inline" data-js-api>
+              <input type="hidden" name="action" value="setting.update">
+              <input type="hidden" name="key" value="{{.Key}}">
+              <input type="text" name="value" value="{{.Value}}" required>
+              <button type="submit" class="primary">Save</button>
+            </form>
+          </td>
+        </tr>
+      {{end}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Audit log</h2>
+    <table>
+      <thead><tr><th>Actor</th><th>Action</th><th>Detail</th><th>When</th></tr></thead>
+      <tbody>
+      {{range .AuditEvents}}
+        <tr><td>{{.ActorName}}</td><td>{{.Action}}</td><td>{{.Detail}}</td><td>{{formatTime .CreatedAt}}</td></tr>
+      {{end}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Recent admin operations</h2>
+  <table>
+    <thead><tr><th>Action</th><th>Summary</th><th>Status</th><th>When</th></tr></thead>
+    <tbody>
+    {{range .Records}}
+      <tr><td>{{.Action}}</td><td>{{.Summary}}</td><td>{{.Status}}</td><td>{{formatTime .CreatedAt}}</td></tr>
+    {{end}}
+    </tbody>
+  </table>
+</div>
+{{template "footer" .}}

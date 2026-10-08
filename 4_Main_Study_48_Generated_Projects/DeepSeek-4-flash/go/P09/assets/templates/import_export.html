@@ -1,0 +1,41 @@
+{{template "header" .}}
+<div class="row between">
+  <h1>Import / export — {{.Project.Name}}</h1>
+  {{if .CanManage}}<a href="/projects/{{.Project.Slug}}" class="btn">Back to project</a>{{end}}
+</div>
+
+<div class="grid-2">
+  {{if .CanManage}}
+  <div class="card">
+    <h2>Import issues (CSV)</h2>
+    <p class="hint">Columns: <code>title,body,priority,status,label names (comma separated)</code>. Optional header row. Priorities: low, medium, high, urgent. Statuses: open, in_progress, resolved, closed.</p>
+    <form class="stack" id="import-form" data-js-upload action="/api/issue/import_export">
+      <input type="hidden" name="project_id" value="{{.Project.ID}}">
+      <input type="file" name="file" accept=".csv,text/csv" required>
+      <button type="submit" class="primary">Import CSV</button>
+    </form>
+  </div>
+  <div class="card">
+    <h2>Export report</h2>
+    <p class="hint">Downloads a CSV report of all issues in this project.</p>
+    <a class="btn primary" href="/api/issue/import_export?action=export&project_id={{.Project.ID}}">Download CSV report</a>
+  </div>
+  {{else}}
+  <div class="card">
+    <p class="hint">Import and export require maintainer rights on this project.</p>
+  </div>
+  {{end}}
+</div>
+
+<div class="card">
+  <h2>Recent import/export activity</h2>
+  <table>
+    <thead><tr><th>Action</th><th>Summary</th><th>Detail</th><th>When</th></tr></thead>
+    <tbody>
+    {{range .Records}}
+      <tr><td>{{.Action}}</td><td>{{.Summary}}</td><td>{{.Detail}}</td><td>{{formatTime .CreatedAt}}</td></tr>
+    {{end}}
+    </tbody>
+  </table>
+</div>
+{{template "footer" .}}

@@ -1,0 +1,145 @@
+:root {
+    --bg: #f4f7fb;
+    --panel: #ffffff;
+    --border: #d6e2ef;
+    --text: #1b2a41;
+    --muted: #5b6b82;
+    --accent: #2f6fed;
+    --accent-dark: #2459c4;
+    --danger: #b91c1c;
+    --ok: #15803d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.8rem 1.5rem;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+}
+
+.brand { font-weight: 700; font-size: 1.15rem; }
+.brand a { color: var(--text); }
+
+.nav { display: flex; gap: 0.9rem; flex-wrap: wrap; font-size: 0.92rem; }
+.nav a { color: var(--muted); }
+.nav a:hover { color: var(--accent); }
+
+.userbox { margin-left: auto; display: flex; align-items: center; gap: 0.6rem; }
+
+.pill {
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+.pill-admin { background: #fff3cd; color: #7a5b00; border: 1px solid #f0d488; }
+.pill-user { background: #e7f0fd; color: var(--accent-dark); border: 1px solid #c3d8f7; }
+
+.container { max-width: 1100px; margin: 1.5rem auto; padding: 0 1.5rem; }
+
+.footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    padding: 2rem 1rem;
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+.card h2 { margin-top: 0; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+th, td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 600; }
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 0.95rem;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn:hover { background: var(--accent-dark); text-decoration: none; }
+.btn-ghost { background: transparent; color: var(--accent); border-color: var(--border); }
+.btn-ghost:hover { background: #eef4fe; }
+.btn-danger { background: var(--danger); }
+.btn-sm { padding: 0.25rem 0.6rem; font-size: 0.8rem; }
+
+.inline { display: inline; }
+
+label { display: block; font-size: 0.85rem; color: var(--muted); margin: 0.6rem 0 0.25rem; }
+input[type=text], input[type=email], input[type=password], input[type=number], input[type=date], select, textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font: inherit;
+    background: #fff;
+}
+textarea { min-height: 64px; }
+
+.alert { border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.92rem; }
+.alert-error { background: #fdecec; color: var(--danger); border: 1px solid #f5c6c6; }
+.alert-ok { background: #ecfdf3; color: var(--ok); border: 1px solid #bce7cd; }
+
+.auth-wrap { max-width: 420px; margin: 4rem auto; }
+.auth-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; }
+.auth-links { margin-top: 1rem; text-align: center; font-size: 0.9rem; color: var(--muted); }
+
+.meta { color: var(--muted); font-size: 0.82rem; }
+.badge { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+.badge-blue { background: #e7f0fd; color: var(--accent-dark); }
+.badge-green { background: #ecfdf3; color: var(--ok); }
+.badge-red { background: #fdecec; color: var(--danger); }
+
+.searchbar { display: flex; gap: 0.5rem; }
+.searchbar input[type=text] { flex: 1; }
+
+.toolbar { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+.row-actions { display: flex; gap: 0.35rem; }
+
+.toast {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    background: #101828;
+    color: #fff;
+    padding: 0.75rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    z-index: 50;
+}
+
+.preview-image { max-width: 100%; border-radius: 8px; }

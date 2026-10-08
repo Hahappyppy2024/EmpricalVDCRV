@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Connection & message handling · Team Chat{% endblock %}
+{% block content %}
+<h1>Connection and message handling</h1>
+<p class="muted">Reconnects, duplicate sends and delivery states (sent / delivered / read / failed).</p>
+
+<div class="grid-2">
+  <div class="card">
+    <h2>Delivery summary</h2>
+    <div id="delivery-summary" class="summary-grid">Loading…</div>
+  </div>
+  <div class="card">
+    <h2>Record an event</h2>
+    <form id="event-form" class="stack small">
+      <label>Event type
+        <select id="event-type">
+          <option value="connect">connect</option>
+          <option value="disconnect">disconnect</option>
+          <option value="reconnect">reconnect</option>
+          <option value="duplicate">duplicate</option>
+          <option value="retry">retry</option>
+          <option value="delivered">delivered</option>
+          <option value="read">read</option>
+          <option value="failed">failed</option>
+        </select>
+      </label>
+      <label>Message ID (optional)
+        <input type="number" id="event-message-id" min="1">
+      </label>
+      <button class="btn" type="submit">Record</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Delivery records</h2>
+  <div id="delivery-records" class="list-scroll">Loading…</div>
+</div>
+
+<div class="card">
+  <h2>Connection events</h2>
+  <div id="connection-events" class="list-scroll">Loading…</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.CONNECTION_BOOT = { currentUser: {{ current_user.to_dict() | tojson }} };
+</script>
+<script src="{{ url_for('static', filename='js/connection.js') }}"></script>
+{% endblock %}

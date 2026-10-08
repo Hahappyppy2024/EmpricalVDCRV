@@ -1,0 +1,52 @@
+<%- include('partials/head', { title: room.name + ' — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1><%= room.name %></h1>
+    <p><a href="/search">← Back to search</a></p>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <% if (room.image_url) { %>
+        <img src="<%= room.image_url %>" alt="<%= room.name %>" style="width:100%;border-radius:8px;">
+      <% } %>
+      <h3 style="margin-top:16px;">About this room</h3>
+      <p><%= room.description %></p>
+      <table>
+        <tr><th>Type</th><td><%= room.type %></td></tr>
+        <tr><th>Price</th><td class="money">$<%= room.price_per_night %> / night</td></tr>
+        <tr><th>Capacity</th><td><%= room.capacity %> <%= room.capacity === 1 ? 'guest' : 'guests' %></td></tr>
+        <tr><th>Status</th><td><span class="badge <%= room.status %>"><%= room.status %></span></td></tr>
+      </table>
+      <h3>Amenities</h3>
+      <div>
+        <% room.amenities.forEach(a => { %><span class="tag"><%= a %></span><% }) %>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h3>Check availability</h3>
+        <form id="availability-form">
+          <div class="field-row">
+            <div><label>Check in</label><input type="date" id="avail-in" min="<%= today %>" value="<%= today %>"></div>
+            <div><label>Check out</label><input type="date" id="avail-out"></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn" type="submit">Check dates</button>
+          </div>
+        </form>
+        <div id="availability-result"></div>
+      </div>
+
+      <div class="card no-print">
+        <h3>Book this room</h3>
+        <p class="muted mb-2">Ready to reserve? Pick dates on the booking page.</p>
+        <a class="btn btn-primary" href="/book?room_id=<%= room.id %>">Book <%= room.name %></a>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/room.js"></script>

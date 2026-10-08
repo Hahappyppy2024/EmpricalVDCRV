@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}About · Team Chat{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>About this system</h1>
+  <p>
+    P06 — Real-Time Team Chat System is a synthetic benchmark application aligned with
+    the workflow anchors of Zulip: organizations/workspaces, streams/channels, topics,
+    private conversations, messages, attachments, realtime events and channel administration.
+  </p>
+  <p>
+    It implements 12 use cases (CHAT-01 to CHAT-12) on a Python 3.12 / Flask 3 /
+    SQLAlchemy 2 / SQLite / Flask-Sock stack with deterministic local adapters for
+    email, storage and link-preview metadata so it runs fully offline.
+  </p>
+</div>
+{% endblock %}

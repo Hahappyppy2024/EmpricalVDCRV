@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shared dashboard — P12 Data Analytics Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-page="shared">
+<header class="topbar">
+  <div class="brand"><a href="{{ url_for('pages.index') }}">P12 Data Analytics Dashboard</a></div>
+  <div class="session"><span class="who">public share</span></div>
+</header>
+<main class="container">
+  <h1>Shared dashboard</h1>
+  <p class="muted">
+    Shared by <strong>{{ owner.username if owner else 'an analyst' }}</strong>
+    via a <strong>{{ share.share_type }}</strong> share.
+    {% if share.target %}(target: {{ share.target }}){% endif %}
+  </p>
+
+  {% if chart %}
+  <div class="card">
+    <h2>Chart — {{ chart.name }}</h2>
+    <div class="chart-render" data-chart='{{ chart.config_json.series | tojson }}' data-type="{{ chart.chart_type }}"></div>
+    <p class="muted">{{ chart.config_json.x }} by {{ chart.config_json.y }} ({{ chart.config_json.agg }})</p>
+  </div>
+  {% endif %}
+
+  {% if dataset %}
+  <div class="card">
+    <h2>Dataset — {{ dataset.name }}
+      <span class="muted">({{ dataset.row_count }} rows, first 50 shown)</span></h2>
+    <div class="table-scroll">
+    <table class="data compact">
+      <thead><tr>{% for c in dataset.columns %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for row in dataset.rows %}
+        <tr>{% for v in row %}<td>{{ v if v is not none else '' }}</td>{% endfor %}</tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </div>
+  {% else %}
+  <p class="muted">This share does not include a dataset.</p>
+  {% endif %}
+
+  <p><a class="btn" href="{{ url_for('pages.login') }}">Sign in to explore more</a></p>
+</main>
+<footer class="footer">P12 Data Analytics Dashboard — synthetic benchmark application</footer>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Data source connections — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}data_source_connections{% endblock %}
+{% block content %}
+<h1>Data source connections</h1>
+<div class="grid two">
+  <div>
+    <div class="card">
+      <h2>New connection</h2>
+      <p class="muted">Deterministic local adapters: a mock database or a mock API. No external service is contacted.</p>
+      <form data-api method="post" action="{{ url_for('api.post_data_source_connections') }}" class="grid form-grid">
+        <label>Name
+          <input type="text" name="name" placeholder="e.g. Sales Warehouse" required>
+        </label>
+        <label>Kind
+          <select name="kind">
+            <option value="mockdb">mockdb</option>
+            <option value="mockapi">mockapi</option>
+          </select>
+        </label>
+        <label class="span2">Config (JSON, optional)
+          <input type="text" name="config" placeholder='{"seed": 7}'>
+        </label>
+        <div class="span2"><button type="submit" class="btn primary">Create connection</button></div>
+      </form>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Connections</h2>
+      <table class="data">
+        <thead><tr><th>Name</th><th>Kind</th><th>Owner</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for r in records %}
+          <tr>
+            <td>{{ r.name }}</td>
+            <td>{{ r.kind }}</td>
+            <td>{{ r.owner_name }}</td>
+            <td>{{ r.status }}</td>
+            <td class="nowrap">
+              <form data-inline data-target="source-result-{{ r.id }}" method="post"
+                    action="{{ url_for('api.post_data_source_connections') }}" class="inline">
+                <input type="hidden" name="action" value="test">
+                <input type="hidden" name="id" value="{{ r.id }}">
+                <button type="submit" class="btn small">Test</button>
+              </form>
+              {% if r.owner_id == user.id %}
+              <form data-api method="post" action="{{ url_for('api.post_data_source_connections') }}" class="inline">
+                <input type="hidden" name="action" value="import">
+                <input type="hidden" name="id" value="{{ r.id }}">
+                <input type="hidden" name="dataset_name" value="{{ r.name }} snapshot">
+                <button type="submit" class="btn small ghost">Import</button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          <tr><td colspan="5"><div id="source-result-{{ r.id }}" class="inline-result"></div></td></tr>
+        {% else %}
+          <tr><td colspan="5" class="muted">No connections yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

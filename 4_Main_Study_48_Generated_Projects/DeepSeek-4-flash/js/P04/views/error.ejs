@@ -1,0 +1,11 @@
+<%- include('partials/head', { title: 'Error — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div style="max-width:520px;margin:60px auto;text-align:center;">
+    <h1 style="font-size:64px;color:var(--primary);margin:0;"><%= statusCode %></h1>
+    <h2><%= code %></h2>
+    <p class="muted"><%= message %></p>
+    <a href="/" class="btn btn-primary">Back to home</a>
+  </div>
+</main>
+<%- include('partials/footer') %>

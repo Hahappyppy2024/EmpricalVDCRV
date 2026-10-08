@@ -1,0 +1,44 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 773 >>
+stream
+BT /F1 11 Tf 40 780 Td (Data Analytics Dashboard - Export Report) Tj ET
+BT /F1 11 Tf 40 764 Td () Tj ET
+BT /F1 11 Tf 40 748 Td (Dataset: Retail Sales) Tj ET
+BT /F1 11 Tf 40 732 Td (Rows: 5   Columns: 5) Tj ET
+BT /F1 11 Tf 40 716 Td (Filter: sales > 200) Tj ET
+BT /F1 11 Tf 40 700 Td () Tj ET
+BT /F1 11 Tf 40 684 Td (Data preview \(first 25 rows\):) Tj ET
+BT /F1 11 Tf 40 668 Td (region | product | sales | quantity | date) Tj ET
+BT /F1 11 Tf 40 652 Td (West | Gadget | 230 | 2 | 2026-01-07) Tj ET
+BT /F1 11 Tf 40 636 Td (South | Gadget | 310.75 | 4 | 2026-02-03) Tj ET
+BT /F1 11 Tf 40 620 Td (West | Widget | 410 | 5 | 2026-03-02) Tj ET
+BT /F1 11 Tf 40 604 Td (South | Gizmo | 275.5 | 3 | 2026-04-01) Tj ET
+BT /F1 11 Tf 40 588 Td (West | Gizmo | 330 | 4 | 2026-05-09) Tj ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1135
+%%EOF

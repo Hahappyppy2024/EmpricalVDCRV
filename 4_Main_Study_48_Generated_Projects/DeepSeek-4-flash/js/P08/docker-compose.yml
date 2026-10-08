@@ -1,0 +1,19 @@
+services:
+  p08-expense:
+    build: .
+    container_name: p08-expense-approval
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - HOST=0.0.0.0
+      - DB_PATH=/app/data/app.db
+      - DATA_DIR=/app/data
+      - UPLOAD_DIR=/app/data/uploads
+      - NODE_ENV=production
+    volumes:
+      - p08-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  p08-data:

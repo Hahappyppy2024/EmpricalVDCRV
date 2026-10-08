@@ -1,0 +1,36 @@
+✔ AI-01 registration, login, logout and recovery (553.636262ms)
+✔ AI-02 owned conversation lifecycle (439.99996ms)
+✔ AI-03 personal and global prompt templates (1640.156717ms)
+✔ AI-04 enabled models and bounded settings (431.583525ms)
+✔ AI-05 owned knowledge file upload and deletion (1356.780385ms)
+✔ AI-06 retrieval collections, ingestion, search and attachment (394.825007ms)
+✔ AI-07 approved tool registry and conversation assignment (419.966929ms)
+✔ AI-08 masked provider credential lifecycle (432.078204ms)
+✔ AI-09 deterministic chat, SSE and cancellation (454.748951ms)
+✔ AI-10 read-only share links and revocation (409.696031ms)
+✔ AI-11 scoped usage and admin audit logs (394.378427ms)
+✔ AI-12 allow-listed settings and moderation resolution (397.503491ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9494.837036
+ℹ start of coverage report
+ℹ ---------------------------------------------------------------
+ℹ file           | line % | branch % | funcs % | uncovered lines
+ℹ ---------------------------------------------------------------
+ℹ src            |        |          |         | 
+ℹ  app.js        | 100.00 |    84.39 |   98.51 | 
+ℹ  auth.js       | 100.00 |    84.62 |  100.00 | 
+ℹ  database.js   | 100.00 |   100.00 |  100.00 | 
+ℹ  errors.js     | 100.00 |   100.00 |  100.00 | 
+ℹ  repository.js | 100.00 |   100.00 |   92.31 | 
+ℹ  security.js   | 100.00 |   100.00 |  100.00 | 
+ℹ  seed.js       | 100.00 |   100.00 |  100.00 | 
+ℹ ---------------------------------------------------------------
+ℹ all files      | 100.00 |    86.80 |   98.06 | 
+ℹ ---------------------------------------------------------------
+ℹ end of coverage report

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480">
+  <rect width="640" height="480" fill="#dbeafe"/>
+  <rect x="40" y="40" width="560" height="400" rx="24" fill="#2563eb"/>
+  <circle cx="320" cy="170" r="60" fill="#fff" opacity="0.9"/>
+  <rect x="250" y="160" width="140" height="16" rx="8" fill="#dbeafe"/>
+  <text x="320" y="330" text-anchor="middle" font-family="sans-serif" font-size="42" font-weight="bold" fill="#ffffff">Electronics</text>
+  <text x="320" y="380" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#dbeafe">P03 seed image</text>
+</svg>

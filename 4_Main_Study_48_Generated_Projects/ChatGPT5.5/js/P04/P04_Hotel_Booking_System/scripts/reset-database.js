@@ -1,0 +1,2 @@
+import path from 'node:path';import {fileURLToPath} from 'node:url';import {resetDatabase} from '../src/database.js';import {seedDatabase} from '../src/seed.js';
+const root=path.dirname(path.dirname(fileURLToPath(import.meta.url))),file=process.env.DATABASE_PATH||path.join(root,'var/hotel.sqlite');const db=resetDatabase(file,root);seedDatabase(db);db.close();console.log(`Database reset: ${file}`);

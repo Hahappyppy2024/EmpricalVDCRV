@@ -1,0 +1,35 @@
+{
+    "name": "hosting/control-panel",
+    "description": "P11 Hosting Control Panel - Slim 4 + SQLite hosting management application",
+    "type": "project",
+    "license": "MIT",
+    "keywords": ["hosting", "control-panel", "slim", "sqlite"],
+    "require": {
+        "php": ">=8.1",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "slim/slim": "4.15.2",
+        "slim/psr7": "1.8.0",
+        "vlucas/phpdotenv": "5.6.4",
+        "workerman/workerman": "4.1.17"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "8.3.0"
+        }
+    },
+    "scripts": {
+        "db:reset": "@php bin/seed.php",
+        "serve": "@php bin/serve.php",
+        "websocket": "@php bin/websocket.php"
+    }
+}

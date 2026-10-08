@@ -1,0 +1,17 @@
+services:
+  netd:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: p15-netd:latest
+    container_name: p15-netd
+    ports:
+      - "${NETD_PORT:-9090}:9090"
+    volumes:
+      - ./data:/data
+      - ./logs:/logs
+      - ./run:/run
+      - ./config/netd.docker.conf:/etc/netd/netd.conf:ro
+    restart: unless-stopped
+    environment:
+      NETD_PORT: "${NETD_PORT:-9090}"

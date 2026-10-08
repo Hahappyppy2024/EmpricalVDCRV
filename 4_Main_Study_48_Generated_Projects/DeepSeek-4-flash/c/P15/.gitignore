@@ -1,0 +1,7 @@
+build/
+*.o
+*.a
+data/
+logs/
+run/
+.env

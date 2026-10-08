@@ -1,0 +1,53 @@
+<%- include('partials/head', { title: 'Invoices and receipts — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1>Invoices and receipts</h1>
+    <p>Generate and download invoices for completed stays.</p>
+  </div>
+
+  <div class="card">
+    <h3>Generate invoice for a completed stay</h3>
+    <p class="muted mb-2">Enter a booking code from a stay that has been checked out.</p>
+    <form id="invoice-form" style="display:flex;gap:10px;align-items:end;max-width:520px;">
+      <div style="flex:1;"><label>Booking code</label><input type="text" id="invoice_code" placeholder="BK-XXXXXXX" required></div>
+      <button class="btn btn-primary" type="submit">Generate</button>
+    </form>
+    <div id="invoice-result" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="card no-print">
+    <div class="flex-between">
+      <h3 style="margin:0;">Invoices</h3>
+      <a class="btn btn-sm" href="/api/hotel/invoice_and_receipt?format=csv">Export CSV</a>
+    </div>
+    <div class="table-wrap" style="margin-top:12px;">
+      <table>
+        <thead><tr><th>Number</th><th>Booking</th><th>Guest</th><th>Room</th><th>Total</th><th>Status</th><th>Issued</th><th></th></tr></thead>
+        <tbody>
+          <% if (invoices.length === 0) { %>
+            <tr><td colspan="8" class="muted">No invoices yet. Generate one above.</td></tr>
+          <% } %>
+          <% invoices.forEach(inv => { %>
+            <tr data-invoice-id="<%= inv.id %>" data-booking-id="<%= inv.booking_id %>">
+              <td><%= inv.number %></td>
+              <td><%= inv.booking_code %></td>
+              <td><%= inv.guest_name %></td>
+              <td><%= inv.room_name %></td>
+              <td class="money">$<%= inv.total %></td>
+              <td><span class="badge <%= inv.status %>"><%= inv.status %></span></td>
+              <td><%= inv.issued_at %></td>
+              <td>
+                <button class="btn btn-sm print-receipt" data-id="<%= inv.id %>">Receipt</button>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" id="receipt" style="display:none;"></div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/invoices.js"></script>

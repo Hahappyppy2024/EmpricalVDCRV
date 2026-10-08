@@ -1,0 +1,36 @@
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="/" class="brand">Meridian<span>Grand</span> Hotel</a>
+    <div class="nav-links">
+      <a href="/search" class="<%= page === 'search' ? 'active' : '' %>">Search</a>
+      <% if (isAuthenticated) { %>
+        <a href="/book" class="<%= page === 'book' ? 'active' : '' %>">Book a room</a>
+        <a href="/bookings" class="<%= page === 'bookings' ? 'active' : '' %>">My bookings</a>
+        <a href="/messages" class="<%= page === 'messages' ? 'active' : '' %>">Messages</a>
+        <a href="/invoices" class="<%= page === 'invoices' ? 'active' : '' %>">Invoices</a>
+        <% if (user.role === 'staff' || user.role === 'admin') { %>
+          <a href="/staff/check-in" class="<%= page === 'staff' ? 'active' : '' %>">Check-in/out</a>
+          <a href="/staff/inventory" class="<%= page === 'inventory' ? 'active' : '' %>">Inventory</a>
+        <% } %>
+        <% if (user.role === 'admin') { %>
+          <a href="/admin/reports" class="<%= page === 'admin' ? 'active' : '' %>">Reports</a>
+        <% } %>
+        <% if (user.role === 'moderator' || user.role === 'admin') { %>
+          <a href="/reviews" class="<%= page === 'reviews' ? 'active' : '' %>">Reviews</a>
+        <% } %>
+      <% } %>
+      <a href="/reviews" class="<%= page === 'reviews' ? 'active' : '' %>">Guest reviews</a>
+      <a href="/errors" class="<%= page === 'errors' ? 'active' : '' %>">API demo</a>
+    </div>
+    <div class="nav-user">
+      <% if (isAuthenticated) { %>
+        <span class="role-pill"><%= user.role %></span>
+        <a href="/account"><%= user.name %></a>
+        <button class="btn btn-sm" id="nav-logout">Sign out</button>
+      <% } else { %>
+        <a href="/account/login">Sign in</a>
+        <a href="/account/register"><button class="btn btn-primary btn-sm">Register</button></a>
+      <% } %>
+    </div>
+  </div>
+</nav>

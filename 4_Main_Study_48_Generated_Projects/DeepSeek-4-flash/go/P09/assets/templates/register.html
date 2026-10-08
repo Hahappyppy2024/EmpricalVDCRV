@@ -1,0 +1,21 @@
+{{template "header" .}}
+<div class="card auth-card">
+  <h1>Register</h1>
+  <p class="hint">New accounts are created with the <code>developer</code> role.</p>
+  <form method="post" action="/register" class="stack">
+    <label>Username
+      <input type="text" name="username" required minlength="3">
+    </label>
+    <label>Email
+      <input type="email" name="email" required>
+    </label>
+    <label>Display name
+      <input type="text" name="display_name">
+    </label>
+    <label>Password
+      <input type="password" name="password" required minlength="8">
+    </label>
+    <button type="submit" class="primary">Create account</button>
+  </form>
+</div>
+{{template "footer" .}}

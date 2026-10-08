@@ -1,0 +1,53 @@
+<%- include('partials/head', { title: 'Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="hero">
+    <h1>Welcome to Meridian Grand Hotel</h1>
+    <p>Search rooms, check live availability, book a stay, and manage everything from one account.</p>
+    <div style="margin-top:16px;">
+      <a href="/search" class="btn btn-primary">Search rooms</a>
+      <% if (isAuthenticated) { %>
+        <a href="/book" class="btn" style="background:rgba(255,255,255,0.9);">Book a room</a>
+      <% } else { %>
+        <a href="/account/register" class="btn" style="background:rgba(255,255,255,0.9);">Create an account</a>
+      <% } %>
+    </div>
+  </div>
+
+  <h2>Featured rooms</h2>
+  <div class="grid">
+    <% popular.forEach(room => { %>
+      <%- include('partials/roomCard', { room }) %>
+    <% }) %>
+  </div>
+
+  <div class="two-col" style="margin-top:10px;">
+    <div class="card">
+      <h3>Seed accounts</h3>
+      <p class="muted mb-2">Use these deterministic accounts to explore every role.</p>
+      <table>
+        <tr><th>Role</th><th>Email</th><th>Password</th></tr>
+        <tr><td>Admin</td><td>admin@hotel.test</td><td>admin123</td></tr>
+        <tr><td>Staff</td><td>staff@hotel.test</td><td>staff123</td></tr>
+        <tr><td>Moderator</td><td>moderator@hotel.test</td><td>mod123</td></tr>
+        <tr><td>Guest</td><td>guest@hotel.test</td><td>guest123</td></tr>
+        <tr><td>Guest</td><td>alice@hotel.test</td><td>alice123</td></tr>
+        <tr><td>Guest</td><td>bob@hotel.test</td><td>bob123</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>What you can do</h3>
+      <ul>
+        <li>Search rooms by date, capacity, price, and amenities</li>
+        <li>Create bookings with simulated payment</li>
+        <li>Modify or cancel your own bookings under policy</li>
+        <li>Staff check guests in and out in real time</li>
+        <li>Manage inventory, availability blocks, and rates</li>
+        <li>Send special requests and get staff replies</li>
+        <li>Post stay reviews and moderate them</li>
+        <li>Generate invoices and export reports</li>
+      </ul>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>

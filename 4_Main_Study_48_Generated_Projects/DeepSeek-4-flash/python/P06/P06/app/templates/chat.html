@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Chat · Team Chat{% endblock %}
+{% block content %}
+<div class="chat-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h3>Workspaces</h3>
+      <div id="workspace-list" class="nav-list">Loading…</div>
+    </div>
+    <div class="sidebar-section">
+      <h3>Channels</h3>
+      <div id="channel-list" class="nav-list">Select a workspace</div>
+    </div>
+    <div class="sidebar-section">
+      <h3>Presence</h3>
+      <div id="presence-list" class="nav-list muted small">Connecting…</div>
+    </div>
+  </aside>
+
+  <section class="chat-main">
+    <header class="chat-header">
+      <div>
+        <h2 id="chat-title">Chat</h2>
+        <div class="muted small" id="chat-subtitle">Select a channel to start talking</div>
+      </div>
+      <div class="conn-status" id="conn-status">connecting…</div>
+    </header>
+
+    <div class="toolbar">
+      <span>Topic:</span>
+      <select id="topic-select">
+        <option value="__general__">general</option>
+      </select>
+      <input type="text" id="search-input" placeholder="Search history (keyword)…">
+      <button class="btn btn-small" id="search-btn">Search</button>
+    </div>
+
+    <div id="search-results" class="search-results hidden">
+      <h3>Search results</h3>
+      <div id="search-results-body"></div>
+      <button class="btn btn-small" id="search-close">Close</button>
+    </div>
+
+    <div id="message-list" class="message-list">
+      <div class="empty-state" id="empty-state">Select a channel on the left to begin.</div>
+    </div>
+
+    <form id="compose-form" class="compose">
+      <textarea id="compose-input" rows="2" placeholder="Type a message… (Enter to send)"></textarea>
+      <div class="compose-actions">
+        <span class="muted small" id="typing-indicator"></span>
+        <span class="muted small" id="send-state"></span>
+        <button class="btn btn-primary" type="submit">Send</button>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.CHAT_BOOT = {
+    currentUser: {{ current_user.to_dict() | tojson }},
+    workspaceSlug: {{ (request.args.get('slug') or '') | tojson }},
+    channelId: {{ (request.args.get('channel', request.args.get('channel_id', 0, type=int)) | int) | tojson }},
+    searchMode: {{ 'true' if search_mode is defined and search_mode else 'false' }}
+  };
+</script>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Chart builder — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}chart_builder{% endblock %}
+{% block content %}
+<h1>Chart builder</h1>
+<div class="card">
+  <h2>New chart</h2>
+  <form data-api method="post" action="{{ url_for('api.post_chart_builder') }}" class="grid form-grid">
+    <label>Dataset
+      <select name="dataset_id" id="ch-dataset" required>
+        {% for d in datasets %}
+          <option value="{{ d.id }}">{{ d.name }}</option>
+        {% else %}
+          <option value="" disabled>No datasets available</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Chart type
+      <select name="chart_type" id="ch-type">
+        <option value="bar">bar</option>
+        <option value="line">line</option>
+        <option value="pie">pie</option>
+      </select>
+    </label>
+    <label>X column
+      <select name="x_col" id="ch-x" required><option value="">Select dataset first</option></select>
+    </label>
+    <label>Y column
+      <select name="y_col" id="ch-y" required><option value="">Select dataset first</option></select>
+    </label>
+    <label>Aggregation
+      <select name="agg" id="ch-agg">
+        <option value="sum">sum</option>
+        <option value="count">count</option>
+        <option value="avg">avg</option>
+        <option value="min">min</option>
+        <option value="max">max</option>
+      </select>
+    </label>
+    <label>Name
+      <input type="text" name="name" placeholder="e.g. Sales by region" required>
+    </label>
+    <div class="span2"><button type="submit" class="btn primary">Save chart</button></div>
+  </form>
+  <div id="chart-preview" class="preview-box muted">Select a dataset and columns to preview the chart.</div>
+</div>
+
+<h2>Saved charts</h2>
+<div class="grid cards">
+  {% for r in records %}
+    <div class="card">
+      <h3>{{ r.name }} <span class="muted">({{ r.dataset_name }})</span></h3>
+      <div class="chart-render" data-chart='{{ r.config_json.series | tojson }}' data-type="{{ r.chart_type }}"></div>
+      <p class="muted">{{ r.config_json.x }} by {{ r.config_json.y }} ({{ r.config_json.agg }})</p>
+    </div>
+  {% else %}
+    <div class="card muted">No saved charts yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}

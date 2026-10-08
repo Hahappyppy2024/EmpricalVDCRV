@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  p14-agentic:
+    build: .
+    container_name: p14-agentic
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ADDR: ":8080"
+      DB_PATH: "/app/data/p14.db"
+      DATA_DIR: "/app/data"
+      WEB_BASE_URL: "http://localhost:8080"
+      SEED_DB: "true"
+      SESSION_COOKIE: "p14_session"
+      SESSION_TTL_SECONDS: "86400"
+    volumes:
+      - p14-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  p14-data:

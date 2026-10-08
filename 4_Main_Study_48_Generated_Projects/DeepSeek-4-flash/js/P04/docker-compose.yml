@@ -1,0 +1,18 @@
+services:
+  hotel:
+    build: .
+    container_name: p04-hotel-booking
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOST: "0.0.0.0"
+      PUBLIC_BASE_URL: "http://localhost:3000"
+      DB_PATH: "/app/data/hotel.db"
+    volumes:
+      - hotel-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  hotel-data:

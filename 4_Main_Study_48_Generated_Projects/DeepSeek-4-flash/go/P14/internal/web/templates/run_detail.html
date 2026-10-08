@@ -1,0 +1,18 @@
+{{define "content"}}
+<div class="page-head">
+  <h1>Run #{{.RunID}} <span id="run-status" class="badge">…</span></h1>
+  <p class="muted" id="run-meta"></p>
+</div>
+
+<div class="panel">
+  <h3>Live log stream</h3>
+  <pre id="log-stream" class="log">Connecting…</pre>
+  <div class="row">
+    <button class="btn" id="replay-run" type="button">Replay run</button>
+    <a class="btn ghost" href="/runs">Back to runs</a>
+    <a class="btn ghost" href="/logs">Run logs &amp; replay</a>
+  </div>
+</div>
+
+<script>window.RUN_ID = {{.RunID}};</script>
+{{end}}

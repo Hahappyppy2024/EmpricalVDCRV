@@ -1,0 +1,36 @@
+✔ EXP-01 enterprise account access (548.945289ms)
+✔ EXP-02 draft report and line-item lifecycle (518.05426ms)
+✔ EXP-03 owned draft receipt storage (460.333711ms)
+✔ EXP-04 complete policy-aware submission (440.104636ms)
+✔ EXP-05 manager assigned approval decisions (548.925374ms)
+✔ EXP-06 finance verification and return (449.310026ms)
+✔ EXP-07 dated category and receipt policies (536.149811ms)
+✔ EXP-08 authorized report comments and timeline (505.461812ms)
+✔ EXP-09 self, reporting-line and finance data scopes (523.891891ms)
+✔ EXP-10 deterministic reimbursement batch export (478.450295ms)
+✔ EXP-11 departments, reporting lines, roles and currencies (500.24758ms)
+✔ EXP-12 role dashboards and owned notifications (531.39203ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7866.837962
+ℹ start of coverage report
+ℹ ---------------------------------------------------------------
+ℹ file           | line % | branch % | funcs % | uncovered lines
+ℹ ---------------------------------------------------------------
+ℹ src            |        |          |         | 
+ℹ  app.js        | 100.00 |    83.96 |   98.57 | 
+ℹ  auth.js       | 100.00 |    84.85 |  100.00 | 
+ℹ  database.js   | 100.00 |   100.00 |  100.00 | 
+ℹ  errors.js     | 100.00 |   100.00 |  100.00 | 
+ℹ  repository.js | 100.00 |   100.00 |  100.00 | 
+ℹ  security.js   | 100.00 |   100.00 |  100.00 | 
+ℹ  seed.js       | 100.00 |   100.00 |  100.00 | 
+ℹ ---------------------------------------------------------------
+ℹ all files      | 100.00 |    86.38 |   99.01 | 
+ℹ ---------------------------------------------------------------
+ℹ end of coverage report

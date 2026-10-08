@@ -1,0 +1,23 @@
+services:
+  cloudfs:
+    build: .
+    container_name: p07-cloud-file-sharing-system
+    ports:
+      - "8080:8080"   # web application
+      - "8282:8282"   # Workerman WebSocket real-time
+    volumes:
+      - cloudfs_data:/app/storage
+    environment:
+      APP_ENV: production
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8080
+      DB_PATH: storage/db/cloudfs.sqlite
+      STORAGE_PATH: storage/files
+      WS_HOST: 0.0.0.0
+      WS_PORT: 8282
+      SESSION_COOKIE_NAME: cfss_session
+      SESSION_LIFETIME_SECONDS: 7200
+    command: ["sh", "-c", "php bin/reset-db.php && php -S 0.0.0.0:8080 -t public public/index.php & php bin/websocket.php start"]
+
+volumes:
+  cloudfs_data:

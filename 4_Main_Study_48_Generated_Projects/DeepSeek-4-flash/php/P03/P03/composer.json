@@ -1,0 +1,28 @@
+{
+    "name": "emse/p03-ecommerce-system",
+    "description": "P03 E-commerce System - synthetic benchmark web application (PHP 8.3 / Slim 4 / SQLite / Workerman)",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.3",
+        "ext-pdo": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-fileinfo": "*",
+        "slim/slim": "^4.12",
+        "slim/psr7": "^1.6",
+        "vlucas/phpdotenv": "^5.6",
+        "workerman/workerman": "^4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shop\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}

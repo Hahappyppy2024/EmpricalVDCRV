@@ -1,0 +1,24 @@
+{
+  "name": "p05-content-management-system",
+  "version": "1.0.0",
+  "description": "P05 Content Management System - a synthetic CMS benchmark application (Express 5, SQLite, vanilla JS browser client)",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "reset-db": "node scripts/reset-db.js",
+    "seed": "node scripts/seed.js",
+    "setup": "npm run reset-db && npm run seed"
+  },
+  "dependencies": {
+    "better-sqlite3": "11.9.1",
+    "dotenv": "16.4.7",
+    "express": "5.1.0",
+    "multer": "2.0.1",
+    "ws": "8.18.0"
+  }
+}

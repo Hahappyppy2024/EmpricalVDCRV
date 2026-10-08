@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Channel management · Team Chat{% endblock %}
+{% block content %}
+<h1>Channel management — {{ data.workspace.name }}</h1>
+<p class="muted">Your role: {{ data.my_role }}. Only owners and admins can change channels.</p>
+<div class="card">
+  <h2>Channels</h2>
+  <table class="table">
+    <thead><tr><th>Channel</th><th>Visibility</th><th>Archived</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for channel in data.channels %}
+      <tr>
+        <td>
+          <strong>#{{ channel.name }}</strong>
+          <div class="muted small">{{ channel.description }}</div>
+        </td>
+        <td>{{ channel.visibility }}</td>
+        <td>{{ 'yes' if channel.archived else 'no' }}</td>
+        <td>
+          <div class="action-row">
+            <form method="post" class="inline">
+              <input type="hidden" name="action" value="rename">
+              <input type="hidden" name="channel_id" value="{{ channel.id }}">
+              <input type="text" name="name" value="{{ channel.name }}" class="input-small">
+              <button class="btn btn-small" type="submit">Rename</button>
+            </form>
+            {% if channel.archived %}
+            <form method="post" class="inline">
+              <input type="hidden" name="action" value="unarchive">
+              <input type="hidden" name="channel_id" value="{{ channel.id }}">
+              <button class="btn btn-small" type="submit">Unarchive</button>
+            </form>
+            {% else %}
+            <form method="post" class="inline" onsubmit="return confirm('Archive this channel?')">
+              <input type="hidden" name="action" value="archive">
+              <input type="hidden" name="channel_id" value="{{ channel.id }}">
+              <button class="btn btn-small btn-danger" type="submit">Archive</button>
+            </form>
+            {% endif %}
+            <form method="post" class="inline">
+              <input type="hidden" name="action" value="configure">
+              <input type="hidden" name="channel_id" value="{{ channel.id }}">
+              <input type="text" name="description" value="{{ channel.description }}" placeholder="description" class="input-small">
+              <select name="visibility">
+                <option value="public" {% if channel.visibility == 'public' %}selected{% endif %}>public</option>
+                <option value="private" {% if channel.visibility == 'private' %}selected{% endif %}>private</option>
+              </select>
+              <button class="btn btn-small" type="submit">Configure</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Calculated columns — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}calculated_columns{% endblock %}
+{% block content %}
+<h1>Calculated columns</h1>
+<div class="grid two">
+  <div>
+    <div class="card">
+      <h2>New calculated field</h2>
+      <form data-api method="post" action="{{ url_for('api.post_calculated_columns') }}" class="grid form-grid">
+        <label>Dataset
+          <select name="dataset_id" id="cc-dataset" required>
+            {% for d in datasets %}
+              <option value="{{ d.id }}">{{ d.name }}</option>
+            {% else %}
+              <option value="" disabled>No datasets available</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>Name
+          <input type="text" name="name" placeholder="e.g. Sales tax" required>
+        </label>
+        <label>Column name
+          <input type="text" name="column_name" placeholder="e.g. sales_tax" required>
+        </label>
+        <label>Expression
+          <input type="text" name="expression" id="cc-expression" placeholder="e.g. sales * 0.1" required>
+        </label>
+        <div class="span2"><button type="submit" class="btn primary">Save calculated column</button></div>
+      </form>
+      <div id="calc-preview" class="preview-box muted">Type an expression to preview computed values for the first rows.</div>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <h2>Saved calculated columns</h2>
+      <table class="data">
+        <thead><tr><th>Name</th><th>Dataset</th><th>Column</th><th>Expression</th></tr></thead>
+        <tbody>
+        {% for r in records %}
+          <tr>
+            <td>{{ r.name }}</td>
+            <td>{{ r.dataset_name }}</td>
+            <td><code>{{ r.column_name }}</code></td>
+            <td><code>{{ r.expression }}</code></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="4" class="muted">No calculated columns yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

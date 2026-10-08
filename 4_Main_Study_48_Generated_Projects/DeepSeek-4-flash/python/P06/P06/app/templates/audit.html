@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Audit log · Team Chat{% endblock %}
+{% block content %}
+<h1>Audit log</h1>
+<div class="card">
+  <p class="muted">Privileged channel-management operations are auditable. Choose a workspace:</p>
+  <form method="get" class="stack small">
+    <label>Workspace slug
+      <input type="text" name="slug" placeholder="acme" value="{{ request.args.get('slug', '') }}">
+    </label>
+    <button class="btn" type="submit">Show audit events</button>
+  </form>
+</div>
+{% if data is defined %}
+<div class="card">
+  <h2>Events for {{ data.workspace.name }}</h2>
+  <table class="table">
+    <thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th><th>Details</th></tr></thead>
+    <tbody>
+      {% for event in data.audit %}
+      <tr>
+        <td>{{ event.created_at }}</td>
+        <td>{{ event.actor.display_name if event.actor else '—' }}</td>
+        <td>{{ event.action }}</td>
+        <td>{{ event.target_type }} #{{ event.target_id }}</td>
+        <td class="small">{{ event.details }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="muted">No events.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

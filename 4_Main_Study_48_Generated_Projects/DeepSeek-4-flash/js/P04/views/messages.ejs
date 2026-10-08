@@ -1,0 +1,48 @@
+<%- include('partials/head', { title: 'Messages — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div class="page-title">
+    <h1>Guest messages</h1>
+    <p><%= isStaff ? 'Staff view — respond to guest special requests.' : 'Send special requests for your stays and get staff replies.' %></p>
+  </div>
+
+  <% if (conversations.length === 0) { %>
+    <div class="alert alert-info">No conversations yet. Create a booking to start messaging.</div>
+  <% } %>
+
+  <% conversations.forEach(convo => { %>
+    <div class="card" data-booking-id="<%= convo.booking_id %>">
+      <div class="flex-between">
+        <div>
+          <h3 style="margin:0;">Booking <%= convo.booking_code %></h3>
+          <span class="muted" style="font-size:13px;">
+            <%= convo.room_name %> · <%= convo.check_in_date %> → <%= convo.check_out_date %>
+            <% if (isStaff) { %> · Guest: <%= convo.guest_name %><% } %>
+          </span>
+        </div>
+        <span class="badge <%= convo.status %>"><%= convo.status %></span>
+      </div>
+      <div class="chat-box" style="margin-top:12px;">
+        <% if (convo.messages.length === 0) { %>
+          <p class="muted">No messages yet.</p>
+        <% } %>
+        <% convo.messages.forEach(m => { %>
+          <div class="msg-bubble <%= m.sender_role %>">
+            <div><%= m.body %></div>
+            <div class="msg-meta"><%= m.author_name %> · <%= m.created_at %></div>
+          </div>
+        <% }) %>
+      </div>
+      <% if (convo.status !== 'cancelled') { %>
+        <form class="msg-form" data-booking-id="<%= convo.booking_id %>" style="margin-top:10px;display:flex;gap:10px;align-items:end;">
+          <div style="flex:1;"><label class="mb-0"><%= isStaff ? 'Reply' : 'Send a special request' %></label>
+            <textarea name="body" rows="2" style="min-height:44px;" required></textarea>
+          </div>
+          <button class="btn btn-primary" type="submit">Send</button>
+        </form>
+      <% } %>
+    </div>
+  <% }) %>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/messages.js"></script>

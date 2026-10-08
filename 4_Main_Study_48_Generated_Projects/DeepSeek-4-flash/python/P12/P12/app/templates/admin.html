@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Admin — P12 Data Analytics Dashboard{% endblock %}
+{% block page %}admin_operations{% endblock %}
+{% block content %}
+<h1>Admin operations</h1>
+
+<div class="card">
+  <h2>Users and roles</h2>
+  <table class="data">
+    <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for u in users %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.role }}</td>
+        <td>{{ 'enabled' if u.enabled else 'disabled' }}</td>
+        <td class="nowrap">
+          {% if u.id != user.id %}
+            <form data-api method="post" action="{{ url_for('api.post_admin_operations') }}" class="inline">
+              <input type="hidden" name="action" value="{{ 'user.enable' if not u.enabled else 'user.disable' }}">
+              <input type="hidden" name="target" value="{{ u.username }}">
+              <button type="submit" class="btn small {{ 'primary' if not u.enabled else 'ghost' }}">{{ 'Enable' if not u.enabled else 'Disable' }}</button>
+            </form>
+            <form data-api method="post" action="{{ url_for('api.post_admin_operations') }}" class="inline">
+              <input type="hidden" name="action" value="user.role">
+              <input type="hidden" name="target" value="{{ u.username }}">
+              <select name="detail" class="mini">
+                <option value="viewer" {{ 'selected' if u.role == 'viewer' }}>viewer</option>
+                <option value="analyst" {{ 'selected' if u.role == 'analyst' }}>analyst</option>
+                <option value="admin" {{ 'selected' if u.role == 'admin' }}>admin</option>
+              </select>
+              <button type="submit" class="btn small ghost">Set role</button>
+            </form>
+          {% else %}
+            <span class="muted">you</span>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="grid two">
+  <div class="card">
+    <h2>Retention</h2>
+    <form data-api method="post" action="{{ url_for('api.post_admin_operations') }}" class="grid form-grid">
+      <input type="hidden" name="action" value="retention.run">
+      <label>Delete sessions / audit events older than (days)
+        <input type="number" name="target" value="{{ settings.retention_days }}" min="1">
+      </label>
+      <div><button type="submit" class="btn primary">Run retention</button></div>
+    </form>
+  </div>
+  <div class="card">
+    <h2>Limits</h2>
+    <form data-api method="post" action="{{ url_for('api.post_admin_operations') }}" class="grid form-grid">
+      <input type="hidden" name="action" value="setting.update">
+      <label>Setting key
+        <select name="target">
+          <option value="max_datasets_per_analyst">max_datasets_per_analyst</option>
+          <option value="max_upload_mb">max_upload_mb</option>
+          <option value="retention_days">retention_days</option>
+        </select>
+      </label>
+      <label>Value
+        <input type="text" name="value" placeholder="e.g. 50">
+      </label>
+      <div><button type="submit" class="btn primary">Update setting</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Operations log</h2>
+  <table class="data">
+    <thead><tr><th>#</th><th>Admin</th><th>Action</th><th>Target</th><th>Detail</th><th>When</th></tr></thead>
+    <tbody>
+    {% for o in ops %}
+      <tr>
+        <td>{{ o.id }}</td>
+        <td>{{ o.admin_id }}</td>
+        <td>{{ o.action }}</td>
+        <td>{{ o.target }}</td>
+        <td>{{ o.detail }}</td>
+        <td>{{ o.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6" class="muted">No admin operations recorded.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

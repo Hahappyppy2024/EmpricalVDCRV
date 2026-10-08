@@ -1,0 +1,7 @@
+services:
+  app:
+    build: .
+    ports: ["8080:8080"]
+    environment: ["APP_ENV=production","DB_PATH=/app/var/mail_console.sqlite"]
+    volumes: ["mail-data:/app/var"]
+volumes: {mail-data: {}}

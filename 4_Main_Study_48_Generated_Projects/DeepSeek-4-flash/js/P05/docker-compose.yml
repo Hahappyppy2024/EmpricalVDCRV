@@ -1,0 +1,19 @@
+services:
+  cms:
+    build: .
+    container_name: p05-cms
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOST: 0.0.0.0
+      DB_PATH: ./data/cms.db
+      UPLOAD_DIR: ./data/uploads
+      EXPORT_DIR: ./data/exports
+      PUBLIC_BASE_URL: http://localhost:3000
+    volumes:
+      - ./data:/app/data
+    command: >
+      sh -c "node scripts/reset-db.js && node src/server.js"
+    restart: unless-stopped

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Team Chat{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card auth-card error-card">
+    <div class="error-code">{{ code }}</div>
+    <h1>{{ title }}</h1>
+    <p class="muted">{{ message }}</p>
+    <a class="btn" href="{{ url_for('pages.index') }}">Back to the app</a>
+  </div>
+</div>
+{% endblock %}

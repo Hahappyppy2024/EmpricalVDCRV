@@ -1,0 +1,20 @@
+<div id="toast-area"></div>
+<footer>P04 Hotel Booking System &mdash; synthetic benchmark application. All data is deterministic and local.</footer>
+<script type="module" src="/js/main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('nav-logout');
+    if (btn) {
+      btn.addEventListener('click', async () => {
+        await fetch('/api/hotel/account_access', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'logout' }),
+        });
+        window.location.href = '/';
+      });
+    }
+  });
+</script>
+</body>
+</html>

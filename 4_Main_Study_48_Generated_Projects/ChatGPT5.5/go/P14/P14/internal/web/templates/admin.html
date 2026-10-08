@@ -1,0 +1,50 @@
+{{define "content"}}
+<div class="page-head">
+  <h1>Admin governance</h1>
+  <p class="muted">Manage users, tool permissions, quotas and disabled actions. Every privileged change is audited.</p>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>Governance settings</h3>
+    <button class="btn small" id="setting-new-btn" type="button">Add setting</button>
+  </div>
+  <form class="inline-form hidden" id="setting-new-form">
+    <label>Key<input name="setting_key" required placeholder="e.g. allow_registration"></label>
+    <label>Value<input name="setting_value" required placeholder="e.g. true"></label>
+    <button class="btn" type="submit">Save</button>
+  </form>
+  <table class="grid">
+    <thead><tr><th>Key</th><th>Value</th><th>Updated by</th><th>Updated at</th><th></th></tr></thead>
+    <tbody id="settings-rows"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h3>Scheduler</h3>
+  <p class="muted">Force the scheduled-run loop to evaluate due schedules now.</p>
+  <button class="btn" id="run-scheduler-btn" type="button">Run due schedules</button>
+</div>
+
+<div class="panel">
+  <h3>Users</h3>
+  <form class="inline-form" id="users-filter-form">
+    <label>Search<input name="q" placeholder="username or email"></label>
+    <button class="btn" type="submit">Apply</button>
+  </form>
+  <table class="grid">
+    <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Active</th><th>Actions</th></tr></thead>
+    <tbody id="users-rows"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h3>Audit events</h3>
+  <table class="grid">
+    <thead><tr><th>ID</th><th>Actor</th><th>Action</th><th>Entity</th><th>Detail</th><th>When</th></tr></thead>
+    <tbody id="audit-rows"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+  </table>
+</div>
+
+<div id="alert-box"></div>
+{{end}}

@@ -1,0 +1,27 @@
+<%- include('partials/head', { title: 'Sign in — Meridian Grand Hotel' }) %>
+<%- include('partials/header') %>
+<main class="container">
+  <div style="max-width:420px;margin:0 auto;">
+    <div class="card">
+      <h2>Sign in</h2>
+      <p class="muted mb-0">Use your hotel account to access bookings, invoices, and messages.</p>
+      <form id="login-form">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">Sign in</button>
+          <a href="/account/recover" class="muted" style="font-size:13px;">Forgot password?</a>
+        </div>
+      </form>
+      <div id="login-result"></div>
+      <hr>
+      <p class="muted" style="font-size:13px;margin:8px 0 0;">
+        No account yet? <a href="/account/register">Register as a guest</a>
+      </p>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>
+<script type="module" src="/js/pages/auth.js"></script>

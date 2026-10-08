@@ -1,0 +1,8 @@
+/vendor/
+/data/*.db
+/data/*.db-*
+/storage/logs/*.log
+/.env
+composer.phar
+.DS_Store
+Thumbs.db

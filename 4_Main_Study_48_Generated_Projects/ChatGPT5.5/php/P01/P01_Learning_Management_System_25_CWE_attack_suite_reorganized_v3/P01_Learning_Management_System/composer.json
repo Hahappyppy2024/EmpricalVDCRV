@@ -1,0 +1,34 @@
+{
+  "name": "research/p01-learning-management-system",
+  "description": "Offline-capable LMS implemented with PHP 8.3, Slim 4 and SQLite",
+  "license": "proprietary",
+  "type": "project",
+  "require": {
+    "php": "8.3.*",
+    "ext-pdo": "*",
+    "ext-pdo_sqlite": "*",
+    "slim/slim": "4.15.2",
+    "slim/psr7": "1.8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/",
+      "Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "db:reset": "php bin/reset-database.php",
+    "start": "php -S 0.0.0.0:8080 -t public public/router.php",
+    "functional:test": "php bin/run-functional-tests.php",
+    "security:attack": "php bin/run-attack-tests.php"
+  },
+  "config": {
+    "sort-packages": true,
+    "platform": {
+      "php": "8.3.0"
+    },
+    "allow-plugins": {}
+  },
+  "prefer-stable": true,
+  "minimum-stability": "stable"
+}

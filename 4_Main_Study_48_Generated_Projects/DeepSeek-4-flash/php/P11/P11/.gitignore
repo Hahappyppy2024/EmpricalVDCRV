@@ -1,0 +1,12 @@
+/vendor/
+/.env
+/data/*.db
+/data/*.db-journal
+/data/*.db-wal
+/data/*.db-shm
+/data/logs/
+/storage/files/
+/storage/backups/
+/storage/restore_logs/
+composer.phar
+.DS_Store
