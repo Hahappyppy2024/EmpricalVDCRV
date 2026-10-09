@@ -36,11 +36,25 @@ tmp/
 temp/
 *.tmp
 *.log
+*.err
+*.out
 *.pid
+*.sqlite
+*.db
 *.sqlite-shm
 *.sqlite-wal
 *.db-shm
 *.db-wal
+
+# App runtime storage and uploaded/exported files
+**/storage/uploads/*
+!**/storage/uploads/.gitkeep
+**/storage/exports/*
+!**/storage/exports/.gitkeep
+**/var/storage/*
+!**/var/storage/.gitkeep
+**/var/db/*
+!**/var/db/.gitkeep
 
 # Local OS/editor noise
 .DS_Store
