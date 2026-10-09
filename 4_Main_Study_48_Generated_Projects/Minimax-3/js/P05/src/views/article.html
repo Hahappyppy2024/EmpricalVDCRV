@@ -1,0 +1,46 @@
+<section class="cms-article-page">
+  <article id="articleDetail">Loading...</article>
+  <section class="cms-comments-section">
+    <h3>Comments</h3>
+    <form id="commentForm" class="cms-form-inline">
+      <label>Name <input name="authorName" required></label>
+      <label>Email <input name="authorEmail" type="email"></label>
+      <label>Comment <textarea name="body" rows="2" required></textarea></label>
+      <button class="btn" type="submit">Submit</button>
+    </form>
+    <ul id="commentList" class="cms-comments-public"></ul>
+  </section>
+</section>
+<script>
+  const slug = window.location.pathname.split('/').pop();
+  let article = null;
+  async function loadArticle() {
+    const r = await fetch('/api/cms/public_site/page/' + encodeURIComponent(slug));
+    if (!r.ok) { document.getElementById('articleDetail').innerHTML = '<h1>Not found</h1>'; return; }
+    const data = await r.json();
+    article = data.page;
+    document.getElementById('articleDetail').innerHTML = `
+      <h1>${article.title}</h1>
+      <p class="cms-meta">By ${article.authorName || ''} &middot; ${article.updatedAt || ''}</p>
+      <div class="cms-prose">${article.body || ''}</div>
+    `;
+  }
+  async function loadComments() {
+    const r = await fetch('/api/cms/comments?articleId=' + (article ? article.id : ''));
+    const data = await r.json();
+    document.getElementById('commentList').innerHTML = (data.comments || []).map(c => `<li><strong>${c.author_name}</strong>: ${c.body}</li>`).join('') || '<li>No comments yet.</li>';
+  }
+  document.getElementById('commentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!article) return;
+    const fd = new FormData(e.target);
+    const body = Object.fromEntries(fd.entries());
+    body.articleId = article.id;
+    const r = await fetch('/api/cms/comments', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    });
+    if (r.ok) { e.target.reset(); alert('Comment submitted for moderation.'); loadComments(); }
+    else { const d = await r.json(); alert(d.message || 'Submit failed'); }
+  });
+  loadArticle().then(loadComments);
+</script>

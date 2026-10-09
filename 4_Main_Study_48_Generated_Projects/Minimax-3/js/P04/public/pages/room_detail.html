@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Room detail — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card">
+      <h2>Room detail</h2>
+      <div id="flash"></div>
+      <div id="content"></div>
+    </section>
+  </main>
+  <footer class="app-footer">HOTEL-03</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const params = new URLSearchParams(location.search);
+      const id = params.get('id');
+      if (!id) { document.getElementById('content').innerHTML = '<div class="empty-state">No room selected.</div>'; return; }
+      const r = await HBS.api('/api/hotel/room_details?id=' + encodeURIComponent(id));
+      if (!r.ok) { HBS.flash(document.getElementById('flash'), 'error', r.data?.message || 'Failed'); return; }
+      const room = r.data.room;
+      const out = document.getElementById('content');
+      out.innerHTML = `
+        <div class="room-card" style="max-width:520px">
+          <div class="img">${escape(room.code)}</div>
+          <div class="body">
+            <h3>${escape(room.name)}</h3>
+            <p>${escape(room.description)}</p>
+            <div class="amenities">Amenities: ${escape(room.amenities)}</div>
+            <div class="price">${HBS.formatCents(room.nightly_rate_cents)} / night · sleeps ${room.capacity}</div>
+            <div>Status: <span class="status-badge status-${room.status}">${room.status}</span></div>
+          </div>
+          <div class="actions">
+            <a class="btn" href="/pages/booking_new.html?room_id=${room.id}">Book this room</a>
+          </div>
+        </div>
+        <h3 style="margin-top:24px">Upcoming bookings</h3>
+        <table><thead><tr><th>Code</th><th>Check-in</th><th>Check-out</th><th>Status</th></tr></thead>
+          <tbody>${(r.data.future_bookings || []).map(b => `<tr><td>${escape(b.code)}</td><td>${escape(b.check_in)}</td><td>${escape(b.check_out)}</td><td><span class="status-badge status-${b.status}">${b.status}</span></td></tr>`).join('') || '<tr><td colspan="4" class="empty-state">No upcoming bookings</td></tr>'}</tbody>
+        </table>
+        <h3 style="margin-top:24px">Reviews</h3>
+        <div>${(r.data.reviews || []).map(rv => `<div class="card" style="margin-bottom:8px"><strong>${rv.rating}/5</strong> — ${escape(rv.author)}<br>${escape(rv.body)}</div>`).join('') || '<div class="empty-state">No reviews yet.</div>'}</div>`;
+    })();
+  </script>
+</body>
+</html>

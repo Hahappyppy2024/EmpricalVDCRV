@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoice & Receipt — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card">
+      <h2>Invoice & receipt</h2>
+      <div id="flash"></div>
+      <form id="inv-form">
+        <label><span>Booking ID</span><input type="number" name="booking_id" required></label>
+        <button type="submit">View invoice</button>
+        <button type="button" id="rcpt-btn" class="secondary">Generate receipt</button>
+        <a id="dl" class="btn" style="display:none" href="#" download>Download invoice</a>
+      </form>
+      <iframe id="preview" style="width:100%;height:480px;border:1px solid var(--border);margin-top:16px"></iframe>
+    </section>
+  </main>
+  <footer class="app-footer">HOTEL-10</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const user = await HBS.requireRole(['guest', 'staff', 'admin']);
+      if (!user) return;
+      const params = new URLSearchParams(location.search);
+      const form = document.getElementById('inv-form');
+      if (params.get('booking_id')) form.elements.booking_id.value = params.get('booking_id');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = form.elements.booking_id.value;
+        const r = await HBS.api('/api/hotel/invoice_and_receipt?booking_id=' + encodeURIComponent(id));
+        const iframe = document.getElementById('preview');
+        if (r.ok) {
+          iframe.srcdoc = r.text;
+          const dl = document.getElementById('dl');
+          dl.href = '/api/hotel/invoice_and_receipt?booking_id=' + encodeURIComponent(id);
+          dl.style.display = 'inline-block';
+          HBS.flash(document.getElementById('flash'), 'success', 'Invoice ready.');
+        } else {
+          HBS.flash(document.getElementById('flash'), 'error', r.data?.message || 'Failed');
+        }
+      });
+      document.getElementById('rcpt-btn').addEventListener('click', async () => {
+        const id = form.elements.booking_id.value;
+        const r = await HBS.api('/api/hotel/invoice_and_receipt', { method: 'POST', body: { booking_id: Number(id) } });
+        HBS.flash(document.getElementById('flash'), r.ok ? 'success' : 'error', r.ok ? 'Receipt ' + r.data.receipt.number + ' issued' : (r.data?.message || 'Failed'));
+      });
+    })();
+  </script>
+</body>
+</html>

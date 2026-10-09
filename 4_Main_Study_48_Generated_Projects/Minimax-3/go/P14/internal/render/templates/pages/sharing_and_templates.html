@@ -1,0 +1,62 @@
+{{define "content"}}
+<section class="card">
+  <h1>Sharing &amp; templates</h1>
+  {{if .error}}<div class="alert error">{{.error}}</div>{{end}}
+  {{if .notice}}<div class="alert ok">{{.notice}}</div>{{end}}
+  <details {{if .create_open}}open{{end}}>
+    <summary>Publish template</summary>
+    <form method="post" action="/sharing_and_templates" class="form">
+      <label>Name <input name="name" type="text" required value="{{.form.name}}"></label>
+      <label>Description <input name="description" type="text" value="{{.form.description}}"></label>
+      <label>Workflow
+        <select name="workflow_id">
+          <option value="">— none —</option>
+          {{range .workflows}}<option value="{{.ID}}">{{.Name}}</option>{{end}}
+        </select>
+      </label>
+      <label>Visibility
+        <select name="visibility">
+          <option value="private" {{if eq .form.visibility "private"}}selected{{end}}>private</option>
+          <option value="shared" {{if eq .form.visibility "shared"}}selected{{end}}>shared</option>
+          <option value="public" {{if eq .form.visibility "public"}}selected{{end}}>public</option>
+        </select>
+      </label>
+      <label>Body JSON <textarea name="body_json" rows="6">{}</textarea></label>
+      <button class="btn primary" type="submit">Publish</button>
+    </form>
+  </details>
+</section>
+
+<section class="card">
+  <h2>Available templates</h2>
+  <table class="table">
+    <thead><tr><th>Name</th><th>Owner</th><th>Visibility</th><th>Description</th><th>Body</th><th></th></tr></thead>
+    <tbody>
+    {{range .templates}}
+      <tr>
+        <td><strong>{{.Name}}</strong></td>
+        <td><code>{{.UserID}}</code></td>
+        <td><code>{{.Visibility}}</code></td>
+        <td>{{.Description}}</td>
+        <td><code>{{.Body | short 120}}</code></td>
+        <td>
+          {{if or (eq $.user.ID .UserID) (eq $.user.Role "admin")}}
+          <form method="post" action="/sharing_and_templates/{{.ID}}/visibility" style="display:inline">
+            <select name="visibility">
+              <option value="private" {{if eq .Visibility "private"}}selected{{end}}>private</option>
+              <option value="shared" {{if eq .Visibility "shared"}}selected{{end}}>shared</option>
+              <option value="public" {{if eq .Visibility "public"}}selected{{end}}>public</option>
+            </select>
+            <button class="btn small" type="submit">Update</button>
+          </form>
+          <form method="post" action="/sharing_and_templates/{{.ID}}/delete" style="display:inline">
+            <button class="btn small" type="submit">Delete</button>
+          </form>
+          {{end}}
+        </td>
+      </tr>
+    {{else}}<tr><td colspan="6">No templates.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}

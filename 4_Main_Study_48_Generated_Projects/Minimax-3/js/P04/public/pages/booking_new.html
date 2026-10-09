@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New booking — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card">
+      <h2>Create booking</h2>
+      <div id="flash"></div>
+      <form id="booking-form">
+        <div class="toolbar">
+          <label><span>Room ID</span><input type="number" name="room_id" min="1" required></label>
+          <label><span>Check-in</span><input type="date" name="check_in" required></label>
+          <label><span>Check-out</span><input type="date" name="check_out" required></label>
+          <label><span>Guests</span><input type="number" name="guests" min="1" value="1" required></label>
+        </div>
+        <label><span>Cardholder name</span><input name="card_holder" required></label>
+        <label><span>Card number</span><input name="card_number" minlength="4" required placeholder="4242 4242 4242 4242"></label>
+        <label><span>Notes</span><textarea name="notes" placeholder="Special requests…"></textarea></label>
+        <button type="submit">Reserve</button>
+      </form>
+    </section>
+  </main>
+  <footer class="app-footer">HOTEL-04</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const user = await HBS.requireRole(['guest']);
+      if (!user) return;
+      const params = new URLSearchParams(location.search);
+      const form = document.getElementById('booking-form');
+      if (params.get('room_id')) form.elements.room_id.value = params.get('room_id');
+      if (params.get('check_in')) form.elements.check_in.value = params.get('check_in');
+      if (params.get('check_out')) form.elements.check_out.value = params.get('check_out');
+      if (params.get('guests')) form.elements.guests.value = params.get('guests');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = Object.fromEntries(new FormData(form).entries());
+        const r = await HBS.api('/api/hotel/booking_creation', { method: 'POST', body });
+        if (r.ok) {
+          HBS.flash(document.getElementById('flash'), 'success', `Booking ${r.data.booking.code} confirmed. Total ${HBS.formatCents(r.data.booking.total_cents)}.`);
+          setTimeout(() => location.href = '/pages/bookings.html', 1000);
+        } else {
+          HBS.flash(document.getElementById('flash'), 'error', (r.data?.errors ? r.data.errors.map(x => x.message).join(', ') : null) || r.data?.message || 'Booking failed');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

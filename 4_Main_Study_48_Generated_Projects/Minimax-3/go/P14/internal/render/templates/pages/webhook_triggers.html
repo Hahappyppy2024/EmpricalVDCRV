@@ -1,0 +1,46 @@
+{{define "content"}}
+<section class="card">
+  <h1>Webhook triggers</h1>
+  {{if .error}}<div class="alert error">{{.error}}</div>{{end}}
+  {{if .notice}}<div class="alert ok">{{.notice}}</div>{{end}}
+  <details {{if .create_open}}open{{end}}>
+    <summary>Create webhook</summary>
+    <form method="post" action="/webhook_triggers" class="form">
+      <label>Workflow
+        <select name="workflow_id">
+          {{range .workflows}}<option value="{{.ID}}">{{.Name}} ({{.TriggerKind}})</option>{{else}}<option value="">(none)</option>{{end}}
+        </select>
+      </label>
+      <label>Description <input name="description" type="text" value="{{.form.description}}"></label>
+      <button class="btn primary" type="submit">Create token</button>
+    </form>
+  </details>
+</section>
+
+<section class="card">
+  <h2>Your webhooks</h2>
+  <table class="table">
+    <thead><tr><th>Token</th><th>Workflow</th><th>Description</th><th>Status</th><th>Created</th><th></th></tr></thead>
+    <tbody>
+    {{range .webhooks}}
+      <tr>
+        <td><code>{{.Token}}</code></td>
+        <td>{{.WorkflowID}}</td>
+        <td>{{.Description}}</td>
+        <td>{{if .Revoked}}revoked{{else}}active{{end}}</td>
+        <td>{{.CreatedAt.Format "2006-01-02 15:04"}}</td>
+        <td>
+          <form method="post" action="/webhook_triggers/{{.ID}}/revoke" style="display:inline">
+            <button class="btn small" type="submit">Revoke</button>
+          </form>
+          <form method="post" action="/webhooks/invoke" style="display:inline">
+            <input type="hidden" name="token" value="{{.Token}}">
+            <button class="btn small" type="submit">Test</button>
+          </form>
+        </td>
+      </tr>
+    {{else}}<tr><td colspan="6">No webhooks yet.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}

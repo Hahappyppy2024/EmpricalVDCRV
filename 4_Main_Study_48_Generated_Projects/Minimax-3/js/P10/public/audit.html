@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Usage & Audit — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h2>Usage & Audit logs</h2>
+      <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="card"><div class="muted">Prompt tokens</div><div class="mono" id="prompt-tokens">–</div></div>
+        <div class="card"><div class="muted">Completion tokens</div><div class="mono" id="completion-tokens">–</div></div>
+        <div class="card"><div class="muted">Total executions</div><div class="mono" id="executions">–</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Audit events</h3>
+      <table id="audit-table">
+        <thead><tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th><th>Outcome</th><th>Details</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Recent usage</h3>
+      <table id="usage-table">
+        <thead><tr><th>Time</th><th>Conversation</th><th>Model</th><th>Prompt tok.</th><th>Completion tok.</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import { mountNav } from '/js/nav.js';
+    const user = await mountNav();
+    const { api, el } = AI;
+
+    const data = await api('GET', '/api/ai/usage_and_audit_logs');
+    document.getElementById('prompt-tokens').textContent = data.aggregate.prompt_tokens;
+    document.getElementById('completion-tokens').textContent = data.aggregate.completion_tokens;
+    document.getElementById('executions').textContent = data.aggregate.executions;
+
+    const auditBody = document.querySelector('#audit-table tbody');
+    data.audit.forEach(ev => {
+      const tr = el('tr', {},
+        el('td', { className: 'mono' }, new Date(ev.created_at).toLocaleString()),
+        el('td', { className: 'muted' }, ev.actor_id || 'system'),
+        el('td', {}, ev.action),
+        el('td', { className: 'muted' }, ev.target_kind || ''),
+        el('td', {}, el('span', { className: 'badge ' +
+          (ev.outcome === 'success' ? 'success' : ev.outcome === 'failure' ? 'danger' : '') }, ev.outcome)),
+        el('td', { className: 'muted mono' }, ev.details || '')
+      );
+      auditBody.appendChild(tr);
+    });
+
+    const usageBody = document.querySelector('#usage-table tbody');
+    data.usage.forEach(u => {
+      const tr = el('tr', {},
+        el('td', { className: 'mono' }, new Date(u.created_at).toLocaleString()),
+        el('td', { className: 'mono' }, u.conversation_id || ''),
+        el('td', {}, u.model_id),
+        el('td', { className: 'mono' }, u.prompt_tokens),
+        el('td', { className: 'mono' }, u.completion_tokens)
+      );
+      usageBody.appendChild(tr);
+    });
+  </script>
+</body>
+</html>

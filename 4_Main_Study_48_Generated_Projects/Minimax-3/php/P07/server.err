@@ -1,0 +1,16 @@
+[Mon Aug 24 16:57:44 2026] PHP 8.3.33 Development Server (http://127.0.0.1:8090) started
+[Mon Aug 24 16:57:47 2026] 127.0.0.1:58888 Accepted
+[Mon Aug 24 16:57:47 2026] 127.0.0.1:58888 Closed without sending a request; it was probably just an unused speculative preconnection
+[Mon Aug 24 16:57:47 2026] 127.0.0.1:58888 Closing
+[Mon Aug 24 16:57:47 2026] 127.0.0.1:58889 Accepted
+[Mon Aug 24 16:57:47 2026] 127.0.0.1:58889 Closing
+[Mon Aug 24 16:58:43 2026] 127.0.0.1:54675 Accepted
+[Mon Aug 24 16:58:43 2026] 127.0.0.1:52189 Accepted
+[Mon Aug 24 16:58:43 2026] 127.0.0.1:54675 Closing
+[Mon Aug 24 16:58:43 2026] 127.0.0.1:52189 [200]: GET /assets/style.css
+[Mon Aug 24 16:58:43 2026] 127.0.0.1:52189 Closing
+[Mon Aug 24 16:58:43 2026] 127.0.0.1:50675 Accepted
+[Mon Aug 24 16:58:43 2026] 127.0.0.1:50675 [200]: GET /assets/app.js
+[Mon Aug 24 16:58:43 2026] 127.0.0.1:50675 Closing
+[Mon Aug 24 16:58:46 2026] 127.0.0.1:54591 Accepted
+[Mon Aug 24 16:58:46 2026] 127.0.0.1:54591 Closing

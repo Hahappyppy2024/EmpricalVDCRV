@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My bookings — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card">
+      <h2>My bookings</h2>
+      <div id="flash"></div>
+      <div id="bookings"></div>
+    </section>
+  </main>
+  <footer class="app-footer">HOTEL-04 · HOTEL-05</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const user = await HBS.requireRole(['guest']);
+      if (!user) return;
+      const list = document.getElementById('bookings');
+      async function load() {
+        const r = await HBS.api('/api/hotel/booking_management');
+        if (!r.ok) { HBS.flash(document.getElementById('flash'), 'error', r.data?.message || 'Failed'); return; }
+        const bs = r.data.bookings;
+        if (!bs.length) { list.innerHTML = '<div class="empty-state">No bookings yet.</div>'; return; }
+        list.innerHTML = bs.map(b => `
+          <div class="card" style="margin-bottom:12px">
+            <div class="flex">
+              <div><strong>${escape(b.code)}</strong> — ${escape(b.room_name)} (${escape(b.room_code)})</div>
+              <div class="spacer"></div>
+              <div><span class="status-badge status-${b.status}">${b.status}</span>
+                <span class="status-badge status-${b.payment_status}">${b.payment_status}</span></div>
+            </div>
+            <div class="dl-inline" style="margin-top:8px">
+              <div><strong>Stay:</strong> ${b.check_in} → ${b.check_out}</div>
+              <div><strong>Guests:</strong> ${b.guests}</div>
+              <div><strong>Total:</strong> ${HBS.formatCents(b.total_cents)}</div>
+              <div><strong>Card:</strong> **** ${b.card_last4}</div>
+            </div>
+            ${b.notes ? `<div style="margin-top:6px"><em>${escape(b.notes)}</em></div>` : ''}
+            ${['pending','confirmed'].includes(b.status) ? `
+              <div class="flex" style="margin-top:8px">
+                <button data-modify="${b.id}" class="secondary">Modify</button>
+                <button data-cancel="${b.id}" class="danger">Cancel</button>
+              </div>` : ''}
+            ${b.status === 'checked_out' ? `<div class="flex" style="margin-top:8px"><a class="btn" href="/pages/review_new.html?booking_id=${b.id}">Write review</a></div>` : ''}
+            <div class="flex" style="margin-top:8px">
+              <a href="/pages/messages.html?booking_id=${b.id}">Messages</a>
+              ${b.status === 'checked_out' ? `<a href="/pages/invoice.html?booking_id=${b.id}">Invoice</a>` : ''}
+            </div>
+          </div>`).join('');
+        list.querySelectorAll('button[data-cancel]').forEach(btn => btn.addEventListener('click', async () => {
+          if (!confirm('Cancel this booking?')) return;
+          const r2 = await HBS.api('/api/hotel/booking_management', { method: 'POST', body: { booking_id: Number(btn.dataset.cancel), action: 'cancel', reason: 'guest self-service' } });
+          HBS.flash(document.getElementById('flash'), r2.ok ? 'success' : 'error', r2.ok ? 'Cancelled' : (r2.data?.message || 'Failed'));
+          load();
+        }));
+        list.querySelectorAll('button[data-modify]').forEach(btn => btn.addEventListener('click', async () => {
+          const id = btn.dataset.modify;
+          const check_in = prompt('New check-in (YYYY-MM-DD)');
+          if (!check_in) return;
+          const check_out = prompt('New check-out (YYYY-MM-DD)');
+          if (!check_out) return;
+          const r2 = await HBS.api('/api/hotel/booking_management', { method: 'POST', body: { booking_id: Number(id), action: 'modify', check_in, check_out } });
+          HBS.flash(document.getElementById('flash'), r2.ok ? 'success' : 'error', r2.ok ? 'Modified' : (r2.data?.message || 'Failed'));
+          load();
+        }));
+      }
+      load();
+    })();
+  </script>
+</body>
+</html>

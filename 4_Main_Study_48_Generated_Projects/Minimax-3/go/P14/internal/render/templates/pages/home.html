@@ -1,0 +1,22 @@
+{{define "content"}}
+<section class="card hero">
+  <h1>P14 Workflow Automation</h1>
+  <p class="lead">A synthetic, offline-runnable benchmark for workflow automation and agentic task platforms aligned with Woodpecker CI anchors.</p>
+  <div class="cta-row">
+    {{if .user}}
+      <a class="btn primary" href="/dashboard">Open dashboard</a>
+    {{else}}
+      <a class="btn primary" href="/account_access/sign_in">Sign in</a>
+      <a class="btn" href="/account_access/register">Create account</a>
+    {{end}}
+  </div>
+</section>
+<section class="grid">
+  <div class="card"><h3>Workflows</h3><p>Compose triggers, steps, and conditions. Manual, webhook, or scheduled.</p><a href="/workflow_creation">Manage workflows →</a></div>
+  <div class="card"><h3>Tool catalog</h3><p>Inspect built-in tools: HTTP, file IO, delays, structured logs, sandboxed shell.</p><a href="/tool_catalog">Browse tools →</a></div>
+  <div class="card"><h3>Runs &amp; replay</h3><p>Run workflows manually and replay every step's log output.</p><a href="/task_execution">Run history →</a></div>
+  <div class="card"><h3>Webhooks</h3><p>Issue inbound tokens that drive workflow triggers.</p><a href="/webhook_triggers">Webhooks →</a></div>
+  <div class="card"><h3>Secrets</h3><p>Store masked tokens and surface them only to step configurations.</p><a href="/secrets_manager">Secrets →</a></div>
+  <div class="card"><h3>Admin governance</h3><p>Quotas, disabled features, audit log. Admin-only.</p><a href="/admin_governance">Governance →</a></div>
+</section>
+{{end}}

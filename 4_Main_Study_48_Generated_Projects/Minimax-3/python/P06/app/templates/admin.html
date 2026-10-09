@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Admin · Real-Time Team Chat{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Administration</h1>
+  <h2>Errors</h2>
+  <table class="data-table">
+    <thead><tr><th>ID</th><th>User</th><th>Code</th><th>Message</th><th>Source</th><th>When</th></tr></thead>
+    <tbody id="errors-table"></tbody>
+  </table>
+  <h2>Active sessions</h2>
+  <ul id="admin-sessions" class="list"></ul>
+  <h2>Frontend state log</h2>
+  <ul id="frontend-states" class="list"></ul>
+  <h2>Audit events</h2>
+  <ul id="admin-audit" class="list"></ul>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

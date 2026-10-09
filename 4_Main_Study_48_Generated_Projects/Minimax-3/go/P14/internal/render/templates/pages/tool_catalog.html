@@ -1,0 +1,57 @@
+{{define "content"}}
+<section class="card">
+  <h1>Tool catalog</h1>
+  {{if .error}}<div class="alert error">{{.error}}</div>{{end}}
+  {{if .notice}}<div class="alert ok">{{.notice}}</div>{{end}}
+  <form method="get" action="/tool_catalog" class="row inline-form">
+    <input name="q" type="search" placeholder="filter by name or description" value="{{.q}}">
+    <label class="inline"><input type="checkbox" name="enabled_only" value="1" {{if .enabled_only}}checked{{end}}> enabled only</label>
+    <button class="btn" type="submit">Apply</button>
+  </form>
+  {{if .user.IsAdmin}}
+  <details {{if .create_open}}open{{end}}>
+    <summary>Add a new tool (admin)</summary>
+    <form method="post" action="/tool_catalog" class="form">
+      <label>Name <input name="name" type="text" required value="{{.form.name}}"></label>
+      <label>Kind
+        <select name="kind">
+          <option value="http">http</option>
+          <option value="shell">shell</option>
+          <option value="file_write">file_write</option>
+          <option value="file_read">file_read</option>
+          <option value="delay">delay</option>
+          <option value="log">log</option>
+        </select>
+      </label>
+      <label>Description <input name="description" type="text" value="{{.form.description}}"></label>
+      <label>Default config (JSON object) <textarea name="default_json" rows="3">{}</textarea></label>
+      <label class="inline"><input type="checkbox" name="enabled" value="1" checked> enabled</label>
+      <button class="btn primary" type="submit">Save tool</button>
+    </form>
+  </details>
+  {{end}}
+</section>
+
+<section class="card">
+  <h2>Available tools</h2>
+  <table class="table">
+    <thead><tr><th>Name</th><th>Kind</th><th>Description</th><th>Enabled</th><th>Default</th>{{if .user.IsAdmin}}<th></th>{{end}}</tr></thead>
+    <tbody>
+    {{range .tools}}
+      <tr>
+        <td><strong>{{.Name}}</strong></td>
+        <td><code>{{.Kind}}</code></td>
+        <td>{{.Description}}</td>
+        <td>{{if .Enabled}}yes{{else}}no{{end}}</td>
+        <td><code>{{.DefaultStr}}</code></td>
+        {{if $.user.IsAdmin}}<td>
+          <form method="post" action="/tool_catalog/{{.ID}}/toggle">
+            <button class="btn small" type="submit">{{if .Enabled}}Disable{{else}}Enable{{end}}</button>
+          </form>
+        </td>{{end}}
+      </tr>
+    {{else}}<tr><td colspan="6">No tools match.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}

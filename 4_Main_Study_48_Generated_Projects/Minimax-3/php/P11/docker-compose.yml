@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    image: aetherpanel-p11
+    container_name: aetherpanel-p11
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_PATH: /app/storage/data/panel.sqlite
+      UPLOAD_DIR: /app/storage/uploads
+      BACKUP_DIR: /app/storage/backups
+    volumes:
+      - ./storage:/app/storage
+    restart: unless-stopped

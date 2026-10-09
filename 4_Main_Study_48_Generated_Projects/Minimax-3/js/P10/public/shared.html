@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shared conversation — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Shared conversation</h1>
+    <div class="muted">Public read-only viewer</div>
+  </header>
+  <main>
+    <div class="card">
+      <h2 id="conv-title">Loading…</h2>
+      <p class="muted" id="conv-meta"></p>
+      <div id="thread" class="chat-thread"></div>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    const { el, flash } = AI;
+    const token = window.location.pathname.split('/').pop();
+    try {
+      const res = await fetch('/api/ai/public/share/' + token);
+      const json = await res.json();
+      if (!res.ok || !json.ok) throw new Error(json?.error?.message || 'Share unavailable');
+      const { conversation, messages, share } = json.data;
+      document.getElementById('conv-title').textContent = conversation.title;
+      document.getElementById('conv-meta').textContent =
+        `model=${conversation.model_id} · shared=${share.created_at} · expires=${share.expires_at || 'never'} · views=${share.view_count}`;
+      const thread = document.getElementById('thread');
+      messages.forEach(m => {
+        const bubble = el('div', { className: 'bubble ' + m.role }, m.content);
+        thread.appendChild(bubble);
+      });
+    } catch (err) {
+      flash('Could not load share: ' + err.message, 'error');
+      document.getElementById('conv-title').textContent = 'Share unavailable';
+    }
+  </script>
+</body>
+</html>

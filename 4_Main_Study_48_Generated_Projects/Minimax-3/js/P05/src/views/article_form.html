@@ -1,0 +1,97 @@
+<section class="cms-editor">
+  <h1>{{modeLabel}}</h1>
+  <form id="articleForm" class="cms-form">
+    <label>Title <input type="text" name="title" required minlength="3"></label>
+    <label>Summary <textarea name="summary" rows="2"></textarea></label>
+    <label>Tags (comma-separated) <input type="text" name="tags"></label>
+    <label>Category
+      <select name="categoryId">
+        <option value="">(none)</option>
+        {{#each categories as cat}}<option value="{{cat.id}}">{{cat.name}}</option>{{/each}}
+      </select>
+    </label>
+    <label>Template
+      <select name="templateId">
+        <option value="">(none)</option>
+        {{#each templates as tpl}}<option value="{{tpl.id}}">{{tpl.name}}</option>{{/each}}
+      </select>
+    </label>
+    <label>Body (rich text)
+      <div class="cms-toolbar-mini">
+        <button type="button" data-cmd="bold"><strong>B</strong></button>
+        <button type="button" data-cmd="italic"><em>I</em></button>
+        <button type="button" data-cmd="heading">H</button>
+        <button type="button" data-cmd="link">Link</button>
+        <button type="button" data-cmd="list">List</button>
+        <button type="button" data-cmd="code">Code</button>
+      </div>
+      <textarea id="articleBody" name="body" rows="12"></textarea>
+    </label>
+    <div class="cms-preview"><h3>Preview</h3><div id="previewArea" class="cms-prose"></div></div>
+    <div class="cms-actions">
+      <button class="btn primary" type="submit">{{submitLabel}}</button>
+      <a class="btn" href="/articles">Cancel</a>
+    </div>
+  </form>
+</section>
+<script>
+  document.querySelectorAll('.cms-toolbar-mini button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const ta = document.getElementById('articleBody');
+      const cmd = btn.dataset.cmd;
+      const wrap = { bold: ['<strong>', '</strong>'], italic: ['<em>', '</em>'], heading: ['<h2>', '</h2>'], link: ['<a href="https://">', '</a>'], list: ['<ul><li>', '</li></ul>'], code: ['<code>', '</code>'] }[cmd];
+      const start = ta.selectionStart, end = ta.selectionEnd;
+      const text = ta.value.substring(start, end) || 'text';
+      ta.value = ta.value.substring(0, start) + wrap[0] + text + wrap[1] + ta.value.substring(end);
+      updatePreview();
+    });
+  });
+  function updatePreview() {
+    const v = document.getElementById('articleBody').value;
+    document.getElementById('previewArea').innerHTML = v;
+  }
+  document.getElementById('articleBody').addEventListener('input', updatePreview);
+
+  const articleId = window.location.pathname.match(/\/articles\/edit\/(\d+)/)?.[1];
+  if (articleId) {
+    fetch('/api/cms/content_authoring/' + articleId).then(r => r.json()).then(d => {
+      const a = d.article;
+      document.querySelector('[name=title]').value = a.title;
+      document.querySelector('[name=summary]').value = a.summary || '';
+      document.querySelector('[name=tags]').value = (a.tags || []).join(',');
+      document.querySelector('[name=categoryId]').value = a.categoryId || '';
+      document.querySelector('[name=templateId]').value = a.templateId || '';
+      document.getElementById('articleBody').value = a.body || '';
+      updatePreview();
+    });
+    document.getElementById('articleForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = Object.fromEntries(fd.entries());
+      body.categoryId = body.categoryId ? Number(body.categoryId) : null;
+      body.templateId = body.templateId ? Number(body.templateId) : null;
+      body.tags = body.tags ? body.tags.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const r = await fetch('/api/cms/content_authoring/' + articleId, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+      });
+      const data = await r.json();
+      if (!r.ok) { alert(data.message || 'Save failed'); return; }
+      window.location.href = '/articles';
+    });
+  } else {
+    document.getElementById('articleForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = Object.fromEntries(fd.entries());
+      body.categoryId = body.categoryId ? Number(body.categoryId) : null;
+      body.templateId = body.templateId ? Number(body.templateId) : null;
+      body.tags = body.tags ? body.tags.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const r = await fetch('/api/cms/content_authoring', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+      });
+      const data = await r.json();
+      if (!r.ok) { alert(data.message || 'Create failed'); return; }
+      window.location.href = '/articles';
+    });
+  }
+</script>

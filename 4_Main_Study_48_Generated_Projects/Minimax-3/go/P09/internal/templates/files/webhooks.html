@@ -1,0 +1,75 @@
+{{ define "title" }}Webhooks{{ end }}
+{{ define "body" }}
+<h1>Webhooks</h1>
+<p class="muted">Outbound webhooks notify external systems about issue events.</p>
+{{ template "partials/errors.html" . }}
+
+<section class="card">
+  <h3>Add webhook to project {{ .Project.Name }}</h3>
+  <form method="POST" action="/api/issue/webhooks/{{ .Project.ID }}" class="grid three">
+    {{ csrf .CSRFToken }}
+    <label>URL<input type="url" name="url" required placeholder="https://example.com/hook"></label>
+    <label>Secret<input type="text" name="secret" placeholder="optional shared secret"></label>
+    <label>Events
+      <select name="events">
+        <option value="issue.opened,issue.closed,issue.commented">All events</option>
+        <option value="issue.opened">Only opened</option>
+        <option value="issue.closed">Only closed</option>
+        <option value="issue.commented">Only commented</option>
+      </select>
+    </label>
+    <div><button class="btn btn-primary" type="submit">Add webhook</button></div>
+  </form>
+</section>
+
+<section class="card">
+  <h3>Project webhooks</h3>
+  {{ if .Webhooks }}
+  <table class="table">
+    <thead><tr><th>URL</th><th>Events</th><th>Active</th><th></th></tr></thead>
+    <tbody>
+      {{ range .Webhooks }}
+      <tr>
+        <td><code>{{ .URL }}</code></td>
+        <td>{{ .Events }}</td>
+        <td>{{ if .Active }}<span class="tag tag-info">active</span>{{ else }}<span class="tag">disabled</span>{{ end }}</td>
+        <td>
+          <form method="POST" action="/api/issue/webhooks/{{ .ID }}/toggle" class="inline">
+            {{ csrf $.CSRFToken }}
+            <button class="btn btn-sm" type="submit">{{ if .Active }}Disable{{ else }}Enable{{ end }}</button>
+          </form>
+          <form method="POST" action="/api/issue/webhooks/{{ .ID }}/delete" class="inline">
+            {{ csrf $.CSRFToken }}
+            <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+  {{ else }}
+  <p class="muted">No webhooks yet.</p>
+  {{ end }}
+</section>
+
+{{ if .Deliveries }}
+<section class="card">
+  <h3>Recent deliveries</h3>
+  <table class="table">
+    <thead><tr><th>When</th><th>Event</th><th>Status</th><th>Response code</th><th>Body</th></tr></thead>
+    <tbody>
+      {{ range .Deliveries }}
+      <tr>
+        <td>{{ .CreatedAt }}</td>
+        <td>{{ .Event }}</td>
+        <td><span class="tag tag-{{ .Status }}">{{ .Status }}</span></td>
+        <td>{{ .ResponseCode }}</td>
+        <td><code>{{ truncate .ResponseBody 80 }}</code></td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</section>
+{{ end }}
+{{ end }}
+{{ template "layout.html" . }}

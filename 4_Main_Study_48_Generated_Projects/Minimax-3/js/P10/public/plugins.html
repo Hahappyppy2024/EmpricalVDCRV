@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Plugins — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h2>Tool / plugin registry</h2>
+      <p class="muted">Admins can register new plugins. Users can toggle the ones enabled for their account.</p>
+      <form id="new-plugin">
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+          <label>Identifier<input type="text" name="identifier" required maxlength="64" /></label>
+          <label>Name<input type="text" name="name" required maxlength="120" /></label>
+          <label>Kind
+            <select name="kind">
+              <option value="retrieval">retrieval</option>
+              <option value="calculator">calculator</option>
+              <option value="translator">translator</option>
+              <option value="time">time</option>
+              <option value="webhook">webhook</option>
+            </select>
+          </label>
+          <label>Config schema (JSON)<input type="text" name="config_schema" value="{}" /></label>
+        </div>
+        <label>Description<textarea name="description" required></textarea></label>
+        <button type="submit">Register plugin</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Available plugins</h3>
+      <table id="plugin-table">
+        <thead><tr><th>Identifier</th><th>Name</th><th>Kind</th><th>Global</th><th>You</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import { mountNav } from '/js/nav.js';
+    const user = await mountNav();
+    const { api, el, flash } = AI;
+
+    async function refresh() {
+      const { items } = await api('GET', '/api/ai/tool_plugin_registry');
+      const tbody = document.querySelector('#plugin-table tbody');
+      tbody.innerHTML = '';
+      items.forEach(p => {
+        const tr = el('tr', {},
+          el('td', { className: 'mono' }, p.identifier),
+          el('td', {}, p.name),
+          el('td', {}, el('span', { className: 'badge accent' }, p.kind)),
+          el('td', {}, el('span', { className: 'badge ' + (p.global_enabled ? 'success' : 'danger') },
+            p.global_enabled ? 'enabled' : 'disabled')),
+          el('td', {}, el('span', { className: 'badge ' + (p.user_enabled ? 'success' : '') },
+            p.user_enabled ? 'enabled' : 'disabled')),
+          el('td', {},
+            el('button', { className: 'secondary', disabled: !p.global_enabled, onClick: () => toggle(p) },
+              p.user_enabled ? 'Disable' : 'Enable'),
+            user.role === 'admin' ? el('button', { className: 'danger', onClick: () => remove(p) }, 'Delete') : null
+          )
+        );
+        tbody.appendChild(tr);
+      });
+    }
+    async function toggle(p) {
+      try {
+        await api('POST', `/api/ai/tool_plugin_registry/${p.id}/toggle`,
+          { enabled: !p.user_enabled });
+        await refresh();
+      } catch (err) { flash(err.message, 'error'); }
+    }
+    async function remove(p) {
+      if (!confirm(`Delete plugin ${p.name}?`)) return;
+      try { await api('DELETE', `/api/ai/tool_plugin_registry/${p.id}`); await refresh(); }
+      catch (err) { flash(err.message, 'error'); }
+    }
+
+    document.getElementById('new-plugin').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      try { await api('POST', '/api/ai/tool_plugin_registry', data); e.currentTarget.reset(); await refresh(); }
+      catch (err) { flash(err.message, 'error'); }
+    });
+
+    await refresh();
+  </script>
+</body>
+</html>

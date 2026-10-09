@@ -1,0 +1,23 @@
+services:
+  app:
+    build: .
+    image: data-analytics-dashboard:p12
+    container_name: data-analytics-dashboard
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-docker-secret-change-me}
+      DATABASE_URI: sqlite:////app/data/app.db
+      HOST: 0.0.0.0
+      PORT: "5000"
+      FLASK_DEBUG: "0"
+      DATASET_RETENTION_DAYS: "90"
+      MAX_DATASETS_PER_USER: "25"
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:5000/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

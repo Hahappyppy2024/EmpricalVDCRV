@@ -1,0 +1,13 @@
+/vendor/
+/data/
+/.env
+.DS_Store
+tmp_*.log
+tmp_*.html
+tmp_*.json
+tmp_*.txt
+tmp_*.payload
+tmp_*.bin
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal

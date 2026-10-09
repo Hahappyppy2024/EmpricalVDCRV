@@ -5,13 +5,42 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
 
 # Node dependencies and generated reports
 node_modules/
 coverage/
+dist/
 
 # PHP Composer dependencies
 vendor/
+
+# C/C++/CMake build artifacts
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+CTestTestfile.cmake
+*.o
+*.obj
+*.d
+*.a
+*.so
+*.dll
+*.exe
+a.out
+
+# Runtime scratch files and local databases
+tmp/
+temp/
+*.tmp
+*.log
+*.pid
+*.sqlite-shm
+*.sqlite-wal
+*.db-shm
+*.db-wal
 
 # Local OS/editor noise
 .DS_Store

@@ -1,0 +1,22 @@
+services:
+  app:
+    build: .
+    container_name: p03-ecommerce
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_PATH: data/shop.sqlite
+      SESSION_NAME: SHOP_SESSION
+      SESSION_LIFETIME: "86400"
+      PAYMENT_FIXTURE_MODE: always_approve
+      EMAIL_TRANSPORT: fixture-log
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped

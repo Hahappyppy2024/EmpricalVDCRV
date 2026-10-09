@@ -1,0 +1,18 @@
+[Mon Aug 24 16:42:31 2026] PHP 8.3.33 Development Server (http://127.0.0.1:8080) started
+[Mon Aug 24 16:42:45 2026] 127.0.0.1:62385 Accepted
+[Mon Aug 24 16:42:45 2026] 127.0.0.1:62385 Closing
+[Mon Aug 24 16:42:45 2026] 127.0.0.1:62387 Accepted
+[Mon Aug 24 16:42:45 2026] 127.0.0.1:62387 Closing
+[Mon Aug 24 16:42:45 2026] 127.0.0.1:62388 Accepted
+[Mon Aug 24 16:42:45 2026] 127.0.0.1:62388 Closing
+[Mon Aug 24 16:42:46 2026] 127.0.0.1:62389 Accepted
+[Mon Aug 24 16:42:46 2026] 127.0.0.1:62389 Closing
+[Mon Aug 24 16:45:10 2026] 127.0.0.1:56360 Accepted
+[Mon Aug 24 16:45:10 2026] 127.0.0.1:56360 Closing
+[Mon Aug 24 16:45:10 2026] 127.0.0.1:56361 Accepted
+[Mon Aug 24 16:45:10 2026] 127.0.0.1:56362 Accepted
+[Mon Aug 24 16:45:10 2026] 127.0.0.1:56361 Closing
+[Mon Aug 24 16:45:10 2026] 127.0.0.1:56362 Closing
+[Mon Aug 24 16:45:13 2026] 127.0.0.1:64035 Accepted
+[Mon Aug 24 16:45:18 2026] 127.0.0.1:64035 Closed without sending a request; it was probably just an unused speculative preconnection
+[Mon Aug 24 16:45:18 2026] 127.0.0.1:64035 Closing

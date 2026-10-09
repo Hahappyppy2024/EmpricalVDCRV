@@ -1,0 +1,12 @@
+{{ define "partials/errors.html" }}
+{{ if .Errors }}
+<div class="errors">
+  <strong>{{ .Title }}</strong>
+  <ul>
+    {{ range .Errors }}
+    <li>{{ . }}</li>
+    {{ end }}
+  </ul>
+</div>
+{{ end }}
+{{ end }}

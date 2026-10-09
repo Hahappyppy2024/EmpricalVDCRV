@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>API Keys — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h2>API keys</h2>
+      <p class="muted">Secrets are stored hashed and never displayed again. Rotation produces a new masked preview.</p>
+      <form id="new-key">
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+          <label>Label<input type="text" name="label" required maxlength="120" /></label>
+          <label>Provider
+            <select name="provider">
+              <option value="openai-compatible">openai-compatible</option>
+              <option value="anthropic">anthropic</option>
+              <option value="azure">azure</option>
+              <option value="google">google</option>
+              <option value="internal">internal</option>
+            </select>
+          </label>
+        </div>
+        <label>Secret<input type="text" name="secret" required minlength="8" /></label>
+        <button type="submit">Save key</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Stored keys</h3>
+      <table id="key-table">
+        <thead><tr><th>Label</th><th>Provider</th><th>Masked</th><th>Last rotated</th><th>Revoked</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import { mountNav } from '/js/nav.js';
+    await mountNav();
+    const { api, el, flash } = AI;
+
+    async function refresh() {
+      const { items } = await api('GET', '/api/ai/api_key_management');
+      const tbody = document.querySelector('#key-table tbody');
+      tbody.innerHTML = '';
+      items.forEach(k => {
+        const tr = el('tr', {},
+          el('td', { className: 'mono' }, k.label),
+          el('td', {}, k.provider),
+          el('td', { className: 'mono' }, k.masked_key),
+          el('td', { className: 'mono' }, k.last_rotated_at ? new Date(k.last_rotated_at).toLocaleString() : '—'),
+          el('td', {}, k.revoked_at ? 'yes' : 'no'),
+          el('td', {},
+            el('button', { className: 'secondary', disabled: !!k.revoked_at, onClick: () => rotate(k) }, 'Rotate'),
+            el('button', { className: 'danger', disabled: !!k.revoked_at, onClick: () => revoke(k) }, 'Revoke')
+          )
+        );
+        tbody.appendChild(tr);
+      });
+    }
+    async function rotate(k) {
+      const secret = prompt(`New secret value for "${k.label}" (min 8 chars)`);
+      if (!secret || secret.length < 8) return;
+      try { await api('PATCH', `/api/ai/api_key_management/${k.id}`, { secret }); await refresh(); }
+      catch (err) { flash(err.message, 'error'); }
+    }
+    async function revoke(k) {
+      if (!confirm(`Revoke "${k.label}"? This cannot be undone.`)) return;
+      try { await api('DELETE', `/api/ai/api_key_management/${k.id}`); await refresh(); }
+      catch (err) { flash(err.message, 'error'); }
+    }
+
+    document.getElementById('new-key').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      try { await api('POST', '/api/ai/api_key_management', data); e.currentTarget.reset(); await refresh(); }
+      catch (err) { flash(err.message, 'error'); }
+    });
+    await refresh();
+  </script>
+</body>
+</html>

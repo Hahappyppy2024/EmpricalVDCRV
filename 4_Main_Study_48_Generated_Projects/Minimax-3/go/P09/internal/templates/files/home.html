@@ -1,0 +1,44 @@
+{{ define "title" }}Home{{ end }}
+{{ define "body" }}
+<section class="hero">
+  <h1>Issue Tracking System</h1>
+  <p class="lead">Synthetic benchmark inspired by lightweight self-hosted forge platforms. Manage projects, track issues, collaborate, and automate.</p>
+  {{ if not .User }}
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="/register">Create an account</a>
+    <a class="btn" href="/login">Sign in</a>
+  </div>
+  {{ else }}
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="/projects">Browse projects</a>
+    <a class="btn" href="/projects/new">New project</a>
+  </div>
+  {{ end }}
+</section>
+<section class="grid">
+  <div class="card">
+    <h3>12 workflows</h3>
+    <p>Account access, project management, issue creation, search, comments, assignment, attachments, private projects, webhooks, import/export, admin tools, and live frontend error reporting.</p>
+  </div>
+  <div class="card">
+    <h3>Deterministic seed</h3>
+    <p>Roles, projects, milestones, labels, and seed users are created automatically so you can explore the system immediately after <code>go run ./cmd/seed</code>.</p>
+  </div>
+  <div class="card">
+    <h3>WebSocket activity</h3>
+    <p>Issue events are streamed live. Open the same issue in two tabs and watch new comments and state transitions appear without refresh.</p>
+  </div>
+</section>
+{{ if .Stats }}
+<section class="stats card">
+  <h3>Workspace at a glance</h3>
+  <ul>
+    <li><strong>{{ index .Stats "projects" }}</strong> projects</li>
+    <li><strong>{{ index .Stats "issues" }}</strong> issues</li>
+    <li><strong>{{ index .Stats "users" }}</strong> users</li>
+    <li><strong>{{ index .Stats "comments" }}</strong> comments</li>
+  </ul>
+</section>
+{{ end }}
+{{ end }}
+{{ template "layout.html" . }}

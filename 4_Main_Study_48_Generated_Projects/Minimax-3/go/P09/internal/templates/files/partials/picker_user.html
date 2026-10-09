@@ -1,0 +1,8 @@
+{{ define "partials/picker_user.html" }}
+<select name="{{ .Name }}" id="{{ .ID }}">
+  {{ if .AllowEmpty }}<option value="">-- none --</option>{{ end }}
+  {{ range .Users }}
+  <option value="{{ .ID }}" {{ if eq (printf "%v" .ID) (printf "%v" $.Selected) }}selected{{ end }}>{{ .Username }} ({{ .Role }})</option>
+  {{ end }}
+</select>
+{{ end }}

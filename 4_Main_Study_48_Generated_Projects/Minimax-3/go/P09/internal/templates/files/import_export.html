@@ -1,0 +1,66 @@
+{{ define "title" }}Import / Export{{ end }}
+{{ define "body" }}
+<h1>Import / Export</h1>
+<p class="muted">Download workspace snapshots or import issues from JSON.</p>
+{{ template "partials/errors.html" . }}
+
+<section class="grid two">
+  <div class="card">
+    <h3>Export</h3>
+    <form method="POST" action="/api/issue/import_export">
+      {{ csrf .CSRFToken }}
+      <input type="hidden" name="action" value="export">
+      <label>Project
+        <select name="project_id" required>
+          {{ range .Projects }}<option value="{{ .ID }}">{{ .Name }}</option>{{ end }}
+        </select>
+      </label>
+      <label>Format
+        <select name="format">
+          <option value="json">JSON</option>
+          <option value="csv">CSV</option>
+        </select>
+      </label>
+      <button class="btn btn-primary" type="submit">Generate export</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Import</h3>
+    <form method="POST" action="/api/issue/import_export" enctype="multipart/form-data">
+      {{ csrf .CSRFToken }}
+      <input type="hidden" name="action" value="import">
+      <label>Project
+        <select name="project_id" required>
+          {{ range .Projects }}<option value="{{ .ID }}">{{ .Name }}</option>{{ end }}
+        </select>
+      </label>
+      <label>JSON file<input type="file" name="file" accept="application/json,.json" required></label>
+      <button class="btn btn-primary" type="submit">Import issues</button>
+    </form>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Recent jobs</h3>
+  {{ if .Jobs }}
+  <table class="table">
+    <thead><tr><th>When</th><th>Direction</th><th>Project</th><th>Status</th><th>Detail</th><th>Artifact</th></tr></thead>
+    <tbody>
+      {{ range .Jobs }}
+      <tr>
+        <td>{{ .CreatedAt }}</td>
+        <td>{{ .Direction }}</td>
+        <td>{{ .ProjectName }}</td>
+        <td><span class="tag tag-{{ .Status }}">{{ .Status }}</span></td>
+        <td>{{ .Detail }}</td>
+        <td>{{ if .ArtifactPath }}<a href="/api/issue/import_export/{{ .ID }}/download">download</a>{{ else }}-{{ end }}</td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+  {{ else }}
+  <p class="muted">No import/export jobs yet.</p>
+  {{ end }}
+</section>
+{{ end }}
+{{ template "layout.html" . }}

@@ -1,0 +1,32 @@
+<section class="cms-hero">
+  <h1>Synthetic CMS</h1>
+  <p>A benchmark content management system with all 12 use cases wired together.</p>
+  <p><a class="btn primary" href="/articles">Browse articles</a> <a class="btn" href="/login">Sign in</a></p>
+</section>
+<section class="cms-cards">
+  <article class="cms-card">
+    <h3>Authoring &amp; publishing</h3>
+    <p>Drafts, rich text editing, media library, publishing workflow.</p>
+  </article>
+  <article class="cms-card">
+    <h3>Public site &amp; comments</h3>
+    <p>Browse published posts, search, leave comments; moderators approve them.</p>
+  </article>
+  <article class="cms-card">
+    <h3>Administration</h3>
+    <p>User &amp; role management, plugin settings, templates, import/export.</p>
+  </article>
+</section>
+<section class="cms-list">
+  <h2>Latest articles</h2>
+  <ul id="latestArticles"><li>Loading...</li></ul>
+</section>
+<script>
+  fetch('/api/cms/public_site').then(r => r.json()).then(d => {
+    const el = document.getElementById('latestArticles');
+    if (!d.articles || !d.articles.length) { el.innerHTML = '<li>No published articles yet.</li>'; return; }
+    el.innerHTML = d.articles.slice(0, 5).map(a => `<li><a href="/articles/${a.slug}">${a.title}</a> &mdash; ${a.summary || ''}</li>`).join('');
+  }).catch(err => {
+    document.getElementById('latestArticles').innerHTML = '<li>Could not load articles.</li>';
+  });
+</script>

@@ -1,0 +1,86 @@
+<section class="cms-list-page">
+  <h1>User &amp; role management</h1>
+  <h2>Users</h2>
+  <table class="cms-table">
+    <thead><tr><th>ID</th><th>Username</th><th>Display name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+    <tbody id="userRows"><tr><td colspan="7">Loading...</td></tr></tbody>
+  </table>
+  <h3>Create user</h3>
+  <form id="newUserForm" class="cms-form">
+    <label>Username <input name="username" required></label>
+    <label>Display name <input name="displayName" required></label>
+    <label>Email <input name="email" type="email" required></label>
+    <label>Password <input name="password" type="password" required minlength="6"></label>
+    <label>Role
+      <select name="roleName" id="newUserRole" required></select>
+    </label>
+    <button class="btn primary" type="submit">Create user</button>
+  </form>
+  <h3>Assign role</h3>
+  <form id="assignRoleForm" class="cms-form-inline">
+    <label>User <select name="userId" id="assignUserId" required></select></label>
+    <label>Role <select name="roleName" id="assignRoleName" required></select></label>
+    <button class="btn" type="submit">Assign</button>
+  </form>
+  <h2>Recent management history</h2>
+  <ul id="historyList" class="cms-history"></ul>
+</section>
+<script>
+  let state = { users: [], roles: [] };
+  async function load() {
+    const r = await fetch('/api/cms/user_and_role_management');
+    const data = await r.json();
+    state.users = data.users || [];
+    state.roles = data.roles || [];
+    const tbody = document.getElementById('userRows');
+    tbody.innerHTML = state.users.map(u => `<tr>
+      <td>${u.id}</td>
+      <td>${u.username}</td>
+      <td>${u.display_name}</td>
+      <td>${u.email}</td>
+      <td><select data-id="${u.id}" class="roleSelect">${state.roles.map(r => `<option value="${r.name}" ${r.name === u.role_name ? 'selected' : ''}>${r.name}</option>`).join('')}</select></td>
+      <td>${u.status}</td>
+      <td><button data-id="${u.id}" class="suspendBtn">${u.status === 'active' ? 'Suspend' : 'Activate'}</button></td>
+    </tr>`).join('');
+    document.getElementById('newUserRole').innerHTML = state.roles.map(r => `<option value="${r.name}">${r.name}</option>`).join('');
+    document.getElementById('assignUserId').innerHTML = state.users.map(u => `<option value="${u.id}">${u.username}</option>`).join('');
+    document.getElementById('assignRoleName').innerHTML = state.roles.map(r => `<option value="${r.name}">${r.name}</option>`).join('');
+    document.getElementById('historyList').innerHTML = (data.history || []).map(h => `<li>${h.created_at} &mdash; ${h.action} user <strong>${h.user_name}</strong>${h.new_role_name ? ` to role <em>${h.new_role_name}</em>` : ''} by ${h.performed_by_name}</li>`).join('') || '<li>No history.</li>';
+    document.querySelectorAll('.roleSelect').forEach(s => s.addEventListener('change', async () => {
+      await fetch('/api/cms/user_and_role_management', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'assign_role', userId: Number(s.dataset.id), roleName: s.value })
+      });
+      load();
+    }));
+    document.querySelectorAll('.suspendBtn').forEach(b => b.addEventListener('click', async () => {
+      const newStatus = b.textContent === 'Suspend' ? 'suspended' : 'active';
+      await fetch('/api/cms/user_and_role_management/' + b.dataset.id, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      load();
+    }));
+  }
+  document.getElementById('newUserForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData(e.target).entries());
+    body.action = 'create_user';
+    await fetch('/api/cms/user_and_role_management', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    });
+    e.target.reset();
+    load();
+  });
+  document.getElementById('assignRoleForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData(e.target).entries());
+    body.userId = Number(body.userId);
+    body.action = 'assign_role';
+    await fetch('/api/cms/user_and_role_management', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    });
+    load();
+  });
+  load();
+</script>

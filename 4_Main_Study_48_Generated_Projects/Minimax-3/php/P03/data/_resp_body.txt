@@ -1,0 +1,4 @@
+id,reference,status,total_cents,placed_at,customer_name
+3,ORD-1787560818-1519,paid,3420,"2026-08-24 08:40:18","Chris Customer"
+2,ORD-1787560812-f8cf,paid,19900,"2026-08-24 08:40:12","Sunny Shopper"
+1,ORD-1787560811-8e80,shipped,92300,"2026-08-24 08:40:11","Chris Customer"

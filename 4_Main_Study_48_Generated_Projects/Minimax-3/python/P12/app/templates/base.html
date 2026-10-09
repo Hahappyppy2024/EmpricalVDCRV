@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Data Analytics Dashboard{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="{% block body_class %}app{% endblock %}">
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">DA</span>
+    <span class="brand-text">Data Analytics Dashboard</span>
+  </div>
+  <nav class="primary-nav">
+    {% if current_user %}
+      <a href="{{ url_for('render_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('render_datasets') }}">Datasets</a>
+      <a href="{{ url_for('render_dashboards') }}">Dashboards</a>
+      <a href="{{ url_for('render_data_sources') }}">Data Sources</a>
+      {% if is_analyst_or_admin %}
+        <a href="{{ url_for('render_audit') }}">Audit</a>
+      {% endif %}
+      {% if is_admin %}
+        <a href="{{ url_for('render_admin') }}">Admin</a>
+      {% endif %}
+    {% endif %}
+  </nav>
+  <div class="user-area">
+    {% if current_user %}
+      <span class="user-chip">{{ current_user.display_name }} <span class="role-badge">{{ current_user.role }}</span></span>
+      <form method="post" action="{{ url_for('account_access.post_account_access') }}" data-action="signout" class="inline-form">
+        <input type="hidden" name="mode" value="signout">
+        <button type="submit" class="btn btn-secondary">Sign out</button>
+      </form>
+    {% else %}
+      <a class="btn btn-primary" href="{{ url_for('render_login') }}">Sign in</a>
+    {% endif %}
+  </div>
+</header>
+<main class="content">
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer">
+  <span>P12 — Data Analytics Dashboard (synthetic D-Tale alignment)</span>
+</footer>
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

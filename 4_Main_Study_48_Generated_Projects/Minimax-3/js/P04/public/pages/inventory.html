@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventory — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card">
+      <h2>Rooms</h2>
+      <div id="flash"></div>
+      <table id="rooms-table"><thead><tr><th>Code</th><th>Name</th><th>Capacity</th><th>Nightly</th><th>Status</th><th></th></tr></thead><tbody></tbody></table>
+      <h3 style="margin-top:18px">Add room</h3>
+      <form id="add-room">
+        <div class="toolbar">
+          <label><span>Code</span><input name="code" required></label>
+          <label><span>Name</span><input name="name" required></label>
+          <label><span>Capacity</span><input type="number" name="capacity" min="1" value="2" required></label>
+          <label><span>Nightly (cents)</span><input type="number" name="nightly_rate_cents" min="0" value="10000" required></label>
+          <label><span>Amenities</span><input name="amenities" placeholder="wifi,tv"></label>
+          <label><span>Status</span><select name="status"><option value="active">active</option><option value="maintenance">maintenance</option><option value="inactive">inactive</option></select></label>
+        </div>
+        <label><span>Description</span><textarea name="description"></textarea></label>
+        <button type="submit">Add room</button>
+      </form>
+    </section>
+    <section class="card">
+      <h2>Availability blocks</h2>
+      <form id="add-block">
+        <div class="toolbar">
+          <label><span>Room ID</span><input type="number" name="room_id" required></label>
+          <label><span>Start date</span><input type="date" name="start_date" required></label>
+          <label><span>End date</span><input type="date" name="end_date" required></label>
+          <label><span>Reason</span><input name="reason" required></label>
+          <button type="submit">Add block</button>
+        </div>
+      </form>
+      <table id="blocks-table"><thead><tr><th>ID</th><th>Room</th><th>Start</th><th>End</th><th>Reason</th></tr></thead><tbody></tbody></table>
+    </section>
+  </main>
+  <footer class="app-footer">HOTEL-07</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const user = await HBS.requireRole(['staff', 'admin']);
+      if (!user) return;
+      const flash = document.getElementById('flash');
+      async function load() {
+        const r = await HBS.api('/api/hotel/room_inventory');
+        if (!r.ok) { HBS.flash(flash, 'error', r.data?.message || 'Failed'); return; }
+        const tb = document.querySelector('#rooms-table tbody');
+        tb.innerHTML = r.data.rooms.map(rm => `
+          <tr>
+            <td>${escape(rm.code)}</td><td>${escape(rm.name)}</td><td>${rm.capacity}</td><td>${HBS.formatCents(rm.nightly_rate_cents)}</td>
+            <td><span class="status-badge status-${rm.status}">${rm.status}</span></td>
+            <td><button data-id="${rm.id}" class="secondary update-status">Cycle status</button></td>
+          </tr>`).join('');
+        tb.querySelectorAll('button.update-status').forEach(btn => btn.addEventListener('click', async () => {
+          const cur = r.data.rooms.find(x => x.id === Number(btn.dataset.id));
+          const next = cur.status === 'active' ? 'maintenance' : (cur.status === 'maintenance' ? 'inactive' : 'active');
+          const r2 = await HBS.api('/api/hotel/room_inventory/' + btn.dataset.id, { method: 'PATCH', body: { status: next } });
+          HBS.flash(flash, r2.ok ? 'success' : 'error', r2.ok ? 'Updated' : 'Failed'); load();
+        }));
+        const bb = document.querySelector('#blocks-table tbody');
+        bb.innerHTML = (r.data.blocks || []).map(b => `<tr><td>${b.id}</td><td>${escape(b.room_code)}</td><td>${b.start_date}</td><td>${b.end_date}</td><td>${escape(b.reason)}</td></tr>`).join('') || '<tr><td colspan="5" class="empty-state">No blocks</td></tr>';
+      }
+      load();
+      document.getElementById('add-room').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = Object.fromEntries(new FormData(e.target).entries());
+        const r = await HBS.api('/api/hotel/room_inventory', { method: 'POST', body: { ...body, action: 'create_room' } });
+        HBS.flash(flash, r.ok ? 'success' : 'error', r.ok ? 'Room added' : (r.data?.errors ? r.data.errors.map(x => x.message).join(', ') : r.data?.message));
+        if (r.ok) { e.target.reset(); load(); }
+      });
+      document.getElementById('add-block').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = Object.fromEntries(new FormData(e.target).entries());
+        const r = await HBS.api('/api/hotel/room_inventory', { method: 'POST', body: { ...body, action: 'add_block' } });
+        HBS.flash(flash, r.ok ? 'success' : 'error', r.ok ? 'Block added' : (r.data?.errors ? r.data.errors.map(x => x.message).join(', ') : r.data?.message));
+        if (r.ok) { e.target.reset(); load(); }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<section class="cms-auth">
+  <h1>Sign in</h1>
+  <form id="loginForm" class="cms-form">
+    <label>Username or email
+      <input type="text" name="username" required autocomplete="username">
+    </label>
+    <label>Password
+      <input type="password" name="password" required autocomplete="current-password">
+    </label>
+    <button class="btn primary" type="submit">Sign in</button>
+    <p class="cms-error" id="loginError"></p>
+    <p><small>Demo accounts: admin/admin123, editor1/editor123, author1/author123, mod1/moderator123, visitor1/visitor123</small></p>
+  </form>
+  <p>No account? <a href="/register">Register here</a>.</p>
+</section>
+<script>
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = { username: fd.get('username'), password: fd.get('password') };
+    try {
+      const r = await fetch('/api/cms/account_access?action=login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await r.json();
+      if (!r.ok) { document.getElementById('loginError').textContent = data.message || 'Login failed'; return; }
+      window.location.href = '/dashboard';
+    } catch (err) {
+      document.getElementById('loginError').textContent = 'Login failed';
+    }
+  });
+</script>

@@ -1,0 +1,9 @@
+node_modules/
+data/
+*.log
+.env
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+coverage/

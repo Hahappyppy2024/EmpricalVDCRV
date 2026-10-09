@@ -1,0 +1,20 @@
+<section class="cms-list-page">
+  <h1>All articles</h1>
+  <input type="search" id="search" placeholder="Search...">
+  <ul id="articleList" class="cms-public-list">Loading...</ul>
+</section>
+<script>
+  async function load() {
+    const r = await fetch('/api/cms/public_site');
+    const data = await r.json();
+    window._articles = data.articles || [];
+    render();
+  }
+  function render() {
+    const q = document.getElementById('search').value.toLowerCase();
+    const filtered = window._articles.filter(a => !q || a.title.toLowerCase().includes(q) || (a.summary || '').toLowerCase().includes(q));
+    document.getElementById('articleList').innerHTML = filtered.map(a => `<li><a href="/public/${a.slug}"><strong>${a.title}</strong></a><br><small>${a.summary || ''}</small></li>`).join('') || '<li>No articles.</li>';
+  }
+  document.getElementById('search').addEventListener('input', render);
+  load();
+</script>

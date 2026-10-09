@@ -1,0 +1,139 @@
+:root {
+  --bg: #0e1726;
+  --panel: #16203a;
+  --panel-2: #1f2c4d;
+  --accent: #4d8bff;
+  --accent-2: #7c3aed;
+  --text: #e6ecff;
+  --muted: #8aa0c6;
+  --danger: #ff5d6c;
+  --border: rgba(255,255,255,0.08);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a { color: var(--accent); }
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--panel);
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.topbar .brand a { color: var(--text); font-weight: 600; text-decoration: none; }
+.topbar .topnav a, .topbar .topnav button {
+  color: var(--text);
+  text-decoration: none;
+  margin-left: 14px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+.topbar .topnav .who { margin-left: 14px; color: var(--muted); }
+
+.container { padding: 24px; max-width: 1200px; margin: 0 auto; }
+
+.card {
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 24px;
+  border: 1px solid var(--border);
+}
+.card.narrow { max-width: 420px; margin: 24px auto; }
+
+h1, h2, h3, h4 { margin-top: 0; }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+
+label { display: block; margin-bottom: 12px; color: var(--muted); font-size: 14px; }
+input, select, textarea, button {
+  font: inherit;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--text);
+  width: 100%;
+}
+button { background: var(--accent); border: 0; cursor: pointer; max-width: 200px; }
+button.secondary { background: var(--panel-2); }
+button.danger { background: var(--danger); }
+button.link { background: none; color: var(--accent); padding: 0; }
+
+textarea { min-height: 64px; resize: vertical; }
+
+.layout { display: grid; grid-template-columns: 280px 1fr; gap: 16px; }
+.dm-layout { grid-template-columns: 260px 1fr; }
+.sidebar, .main { background: var(--panel); border-radius: 10px; padding: 16px; border: 1px solid var(--border); }
+
+.list { list-style: none; padding: 0; margin: 0 0 12px; max-height: 240px; overflow-y: auto; }
+.list li {
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+.list li.active { background: var(--panel-2); }
+.list li .meta { color: var(--muted); font-size: 12px; }
+
+.messages {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  max-height: 360px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-2);
+}
+.messages li { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.messages li:last-child { border-bottom: 0; }
+.messages .meta { color: var(--muted); font-size: 12px; }
+.messages .actions button { font-size: 12px; padding: 2px 6px; margin-right: 4px; background: var(--panel-2); }
+
+.composer { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.composer-actions { display: flex; gap: 8px; align-items: center; }
+.composer-actions input { width: auto; }
+.composer-actions .inline-checkbox { display: flex; align-items: center; gap: 4px; color: var(--muted); }
+.inline { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+.inline input, .inline select { width: auto; }
+.inline-checkbox { color: var(--muted); display: flex; align-items: center; gap: 4px; }
+
+.panel { background: var(--panel-2); border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 16px; }
+.panel h3, .panel h4 { margin-top: 0; }
+
+pre { white-space: pre-wrap; word-wrap: break-word; }
+
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th, .data-table td { padding: 8px; text-align: left; border-bottom: 1px solid var(--border); }
+
+.toast {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  max-width: 280px;
+}
+.toast.error { border-color: var(--danger); }
+.toast.success { border-color: var(--accent); }
+
+.typing { color: var(--muted); font-style: italic; }
+.empty { color: var(--muted); padding: 12px; text-align: center; }

@@ -1,0 +1,22 @@
+{
+  "name": "hotel-booking-system",
+  "version": "1.0.0",
+  "description": "P04 Hotel Booking System - synthetic benchmark project",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "seed": "node src/db/seed.js",
+    "reset": "node src/db/reset.js",
+    "init": "node src/db/init.js",
+    "smoke": "node scripts/smoke.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "11.3.0",
+    "express": "5.0.1",
+    "ws": "8.18.0"
+  }
+}

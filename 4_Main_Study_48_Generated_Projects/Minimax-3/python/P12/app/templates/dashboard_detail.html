@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Dashboard {{ dataset_id }}{% endblock %}
+{% block content %}
+<section class="page-header">
+  <h1 id="dash-title">Dashboard…</h1>
+  <p class="muted" id="dash-meta"></p>
+</section>
+<section class="card">
+  <header><h2>Charts</h2></header>
+  <div id="dash-charts" class="grid cards"></div>
+</section>
+<section class="card">
+  <header><h2>Shares</h2></header>
+  <ul id="dash-shares" class="data-list"></ul>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  window.DASHBOARD_ID = {{ dataset_id }};
+</script>
+<script src="{{ url_for('static', filename='js/dashboard_detail.js') }}" defer></script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{{ define "title" }}New issue{{ end }}
+{{ define "body" }}
+<nav class="breadcrumb"><a href="/projects/{{ .Project.Slug }}">{{ .Project.Slug }}</a> / new issue</nav>
+<h1>New issue</h1>
+{{ template "partials/errors.html" . }}
+<form method="POST" action="/api/issue/issue_creation/{{ .Project.ID }}" class="card">
+  {{ csrf .CSRFToken }}
+  <label>Title<input type="text" name="title" required maxlength="200"></label>
+  <label>Body<textarea name="body" rows="6"></textarea></label>
+  <div class="grid three">
+    <label>Priority
+      <select name="priority">
+        <option value="low">low</option>
+        <option value="normal" selected>normal</option>
+        <option value="high">high</option>
+        <option value="urgent">urgent</option>
+      </select>
+    </label>
+    <label>Assignee
+      <select name="assignee_id">
+        <option value="">unassigned</option>
+        {{ range .Assignees }}<option value="{{ .ID }}">{{ .Username }}</option>{{ end }}
+      </select>
+    </label>
+    <label>Milestone
+      <select name="milestone_id">
+        <option value="">none</option>
+        {{ range .Milestones }}<option value="{{ .ID }}">{{ .Title }}</option>{{ end }}
+      </select>
+    </label>
+  </div>
+  <fieldset>
+    <legend>Labels</legend>
+    {{ range .Labels }}
+    <label class="checkbox"><input type="checkbox" name="labels" value="{{ .ID }}"><span class="tag" style="background:{{ .Color }}">{{ .Name }}</span></label>
+    {{ else }}<p class="muted">No labels configured yet.</p>{{ end }}
+  </fieldset>
+  <button class="btn btn-primary" type="submit">Create issue</button>
+</form>
+{{ end }}
+{{ template "layout.html" . }}

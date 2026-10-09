@@ -1,0 +1,9 @@
+vendor/
+storage/database.sqlite
+storage/uploads/*
+!storage/uploads/.gitkeep
+storage/exports/*
+!storage/exports/.gitkeep
+.env
+*.log
+.phpunit.result.cache

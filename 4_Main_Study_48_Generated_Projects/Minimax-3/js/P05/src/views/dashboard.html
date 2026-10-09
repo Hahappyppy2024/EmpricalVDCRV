@@ -1,0 +1,11 @@
+<section class="cms-dashboard">
+  <h1>Dashboard</h1>
+  <p>Signed in as <strong>{{user.displayName}}</strong> (role: {{user.role}}).</p>
+  <div class="cms-grid">
+    {{#if dashboardCards}}
+      {{#each dashboardCards as card}}
+        <a class="cms-tile" href="{{card.href}}"><h3>{{card.title}}</h3><p>{{card.description}}</p></a>
+      {{/each}}
+    {{/if}}
+  </div>
+</section>

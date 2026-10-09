@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Dataset catalog{% endblock %}
+{% block content %}
+<section class="page-header">
+  <h1>Datasets</h1>
+  <p class="muted">Browse, search, and tag the datasets visible to your account.</p>
+</section>
+<section class="toolbar">
+  <input id="search-input" type="search" placeholder="Search datasets..." aria-label="Search datasets">
+  <input id="tag-input" type="search" placeholder="Filter by tag" aria-label="Filter by tag">
+  {% if is_analyst_or_admin %}
+    <a class="btn btn-primary" href="{{ url_for('render_dataset_upload') }}">Upload dataset</a>
+  {% endif %}
+</section>
+<section id="catalog-results" class="grid cards"></section>
+
+<section class="card" id="catalog-edit">
+  <header><h2>Edit metadata</h2><span class="muted">Choose a dataset to update its tags or description.</span></header>
+  <form id="catalog-edit-form" class="form-stack">
+    <label>Dataset
+      <select name="dataset_id" id="catalog-edit-select"></select>
+    </label>
+    <label>Tags (comma separated)
+      <input name="tags" placeholder="sales,regional">
+    </label>
+    <label>Description
+      <textarea name="description" rows="3"></textarea>
+    </label>
+    <button type="submit" class="btn btn-primary">Save metadata</button>
+    <p class="form-status" data-role="status"></p>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dataset_catalog.js') }}" defer></script>
+{% endblock %}

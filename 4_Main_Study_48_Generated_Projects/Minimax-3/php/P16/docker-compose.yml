@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  p16:
+    build: .
+    container_name: p16_server_monitoring
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/var/www/html/data
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "1"
+      APP_NAME: P16-Server-Monitoring-Job-Control-Panel
+      DB_PATH: data/app.sqlite
+      STORAGE_PATH: data/storage
+      SEED_ADMIN_USERNAME: admin
+      SEED_ADMIN_PASSWORD: Admin#12345
+      SEED_OPERATOR_USERNAME: operator
+      SEED_OPERATOR_PASSWORD: Operator#12345
+    restart: unless-stopped

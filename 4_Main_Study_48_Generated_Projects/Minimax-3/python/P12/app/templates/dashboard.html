@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Dashboard overview{% endblock %}
+{% block content %}
+<section class="page-header">
+  <h1>Welcome, {{ user.display_name }}</h1>
+  <p class="muted">Signed in as <strong>{{ user.username }}</strong> ({{ user.role }}).</p>
+</section>
+<section class="grid two-col">
+  <article class="card" id="quick-datasets">
+    <header><h2>Recent datasets</h2><a class="card-action" href="{{ url_for('render_datasets') }}">View all</a></header>
+    <ul class="data-list" data-source="/api/data/dataset_catalog" data-template="recent-datasets"></ul>
+  </article>
+  <article class="card" id="quick-shares">
+    <header><h2>Active dashboard shares</h2><a class="card-action" href="{{ url_for('render_dashboards') }}">Manage</a></header>
+    <ul class="data-list" data-source="/api/data/dashboard_sharing" data-template="recent-shares"></ul>
+  </article>
+</section>
+<section class="grid two-col">
+  <article class="card">
+    <header><h2>What you can do</h2></header>
+    <ul class="action-list">
+      {% if is_analyst_or_admin %}
+        <li><a href="{{ url_for('render_dataset_upload') }}">Upload a new dataset (CSV / JSON)</a></li>
+        <li><a href="{{ url_for('render_datasets') }}">Browse and tag datasets</a></li>
+        <li><a href="{{ url_for('render_dashboards') }}">Build and share dashboards</a></li>
+        <li><a href="{{ url_for('render_data_sources') }}">Configure data source connections</a></li>
+      {% else %}
+        <li><a href="{{ url_for('render_datasets') }}">Browse datasets</a></li>
+        <li><a href="{{ url_for('render_dashboards') }}">View shared dashboards</a></li>
+      {% endif %}
+    </ul>
+  </article>
+  <article class="card">
+    <header><h2>Account</h2></header>
+    <form id="profile-form" class="form-stack" action="/api/data/account_access/{{ user.id }}" method="post">
+      <label>Display name<input name="display_name" value="{{ user.display_name }}"></label>
+      <label>Email<input name="email" type="email" value="{{ user.email }}"></label>
+      <button class="btn btn-primary" type="submit">Update profile</button>
+      <p class="form-status" data-role="status"></p>
+    </form>
+  </article>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
+{% endblock %}

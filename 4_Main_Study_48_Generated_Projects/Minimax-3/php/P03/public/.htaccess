@@ -1,0 +1,5 @@
+# Slim router URL rewrite (used by built-in PHP server fallback)
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]

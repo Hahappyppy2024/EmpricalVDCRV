@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Account access — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card" id="signed-out">
+      <h2>Sign in / Register</h2>
+      <div id="auth-flash"></div>
+      <div class="grid">
+        <form id="login-form">
+          <h3>Sign in</h3>
+          <label><span>Email</span><input name="email" type="email" required></label>
+          <label><span>Password</span><input name="password" type="password" required></label>
+          <button type="submit">Sign in</button>
+        </form>
+        <form id="register-form">
+          <h3>Register</h3>
+          <label><span>Display name</span><input name="display_name" required></label>
+          <label><span>Email</span><input name="email" type="email" required></label>
+          <label><span>Password (min 6)</span><input name="password" type="password" minlength="6" required></label>
+          <button type="submit">Create account</button>
+        </form>
+        <form id="recovery-form">
+          <h3>Recover</h3>
+          <label><span>Email</span><input name="email" type="email" required></label>
+          <button type="submit" class="secondary">Send recovery link</button>
+        </form>
+      </div>
+    </section>
+    <section class="card" id="signed-in" style="display:none">
+      <h2>Account</h2>
+      <div id="account-flash"></div>
+      <div id="account-info"></div>
+      <h3 style="margin-top:24px">Update profile</h3>
+      <form id="update-form">
+        <label><span>Display name</span><input name="display_name"></label>
+        <label><span>New password</span><input name="password" type="password" minlength="6"></label>
+        <button type="submit">Save changes</button>
+      </form>
+      <div class="flex" style="margin-top:16px">
+        <button class="danger" id="signout-btn">Sign out</button>
+      </div>
+    </section>
+  </main>
+  <footer class="app-footer">Account access</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const user = await HBS.currentUser();
+      const signedIn = document.getElementById('signed-in');
+      const signedOut = document.getElementById('signed-out');
+      if (user) {
+        signedIn.style.display = 'block';
+        signedOut.style.display = 'none';
+        document.getElementById('account-info').innerHTML = `
+          <div class="dl-inline">
+            <div><strong>Email:</strong> ${escape(user.email)}</div>
+            <div><strong>Role:</strong> ${user.role}</div>
+            <div><strong>Name:</strong> ${escape(user.display_name)}</div>
+          </div>`;
+        document.getElementById('update-form').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const body = Object.fromEntries(fd.entries());
+          if (!body.display_name) delete body.display_name;
+          if (!body.password) delete body.password;
+          const r = await HBS.api('/api/hotel/account_access/' + user.id, { method: 'PATCH', body });
+          HBS.flash(document.getElementById('account-flash'), r.ok ? 'success' : 'error', r.data?.message || (r.ok ? 'Updated' : 'Failed'));
+          if (r.ok) setTimeout(() => location.reload(), 800);
+        });
+        document.getElementById('signout-btn').addEventListener('click', async () => {
+          await HBS.api('/api/hotel/account_access', { method: 'POST', body: { mode: 'logout' } });
+          location.href = '/pages/index.html';
+        });
+      }
+
+      const showError = (msg) => HBS.flash(document.getElementById('auth-flash'), 'error', msg);
+      const showSuccess = (msg) => HBS.flash(document.getElementById('auth-flash'), 'success', msg);
+
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = Object.fromEntries(new FormData(e.target).entries());
+        const r = await HBS.api('/api/hotel/account_access', { method: 'POST', body: { ...body, mode: 'login' } });
+        if (r.ok) { showSuccess('Signed in. Redirecting...'); setTimeout(() => location.href = '/pages/index.html', 600); }
+        else showError(r.data?.message || 'Sign in failed');
+      });
+
+      document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = Object.fromEntries(new FormData(e.target).entries());
+        const r = await HBS.api('/api/hotel/account_access', { method: 'POST', body: { ...body, mode: 'register' } });
+        if (r.ok) { showSuccess('Account created. Redirecting...'); setTimeout(() => location.href = '/pages/index.html', 600); }
+        else showError((r.data?.errors ? r.data.errors.map(x => x.message).join(', ') : null) || r.data?.message || 'Registration failed');
+      });
+
+      document.getElementById('recovery-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = Object.fromEntries(new FormData(e.target).entries());
+        const r = await HBS.api('/api/hotel/account_access', { method: 'POST', body: { ...body, mode: 'recovery' } });
+        HBS.flash(document.getElementById('auth-flash'), r.ok ? 'info' : 'error', r.ok ? r.data.message : (r.data?.message || 'Failed'));
+      });
+    })();
+  </script>
+</body>
+</html>

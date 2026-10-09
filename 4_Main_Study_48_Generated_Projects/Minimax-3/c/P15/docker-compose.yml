@@ -1,0 +1,38 @@
+# docker-compose.yml — reproducible local execution for the netd daemon.
+# Bind mounts deliver persistent SQLite database, structured log, audit log,
+# and PID file. The published port follows the .env substitution variables.
+
+services:
+  netd:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: netd:1.0.0
+    container_name: netd
+    restart: unless-stopped
+    env_file:
+      - .env.example
+    environment:
+      - TZ=UTC
+    ports:
+      - "${NETD_BIND_ADDRESS:-127.0.0.1}:${NETD_PORT:-9090}:${NETD_PORT:-9090}"
+    volumes:
+      - netd-data:/var/lib/netd
+      - netd-log:/var/log/netd
+      - netd-run:/var/run/netd
+    command:
+      - "--config"
+      - "/etc/netd/netd.conf"
+      - "--foreground"
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/netctl",
+             "--host", "127.0.0.1", "--port", "9090",
+             "ping"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  netd-data:
+  netd-log:
+  netd-run:

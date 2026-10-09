@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Reset password{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Set a new password</h1>
+  <form id="reset-perform-form">
+    <input type="hidden" name="token" value="{{ token }}">
+    <label>New password
+      <input name="new_password" type="password" minlength="8" required>
+    </label>
+    <button type="submit">Reset password</button>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/reset_perform.js') }}"></script>
+{% endblock %}

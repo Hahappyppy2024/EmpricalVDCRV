@@ -1,0 +1,48 @@
+{{ define "title" }}Frontend API errors{{ end }}
+{{ define "body" }}
+<h1>Frontend API errors</h1>
+<p class="muted">The browser console posts validation, permission, webhook, and upload errors here so you can audit them.</p>
+{{ template "partials/errors.html" . }}
+<section class="card">
+  <h3>Recent reported errors</h3>
+  {{ if .Errors }}
+  <table class="table">
+    <thead><tr><th>When</th><th>User</th><th>Kind</th><th>Message</th><th>Context</th></tr></thead>
+    <tbody>
+      {{ range .Errors }}
+      <tr>
+        <td>{{ .CreatedAt }}</td>
+        <td>{{ .UserID }}</td>
+        <td><span class="tag tag-warn">{{ .Kind }}</span></td>
+        <td>{{ .Message }}</td>
+        <td><code>{{ .Context }}</code></td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+  {{ else }}
+  <p class="muted">No errors have been reported.</p>
+  {{ end }}
+</section>
+
+<section class="card">
+  <h3>Trigger an error report</h3>
+  <p class="muted">Use this form to simulate a frontend report so you can verify the round trip.</p>
+  <form method="POST" action="/api/issue/frontend_api_integration_and_errors">
+    {{ csrf .CSRFToken }}
+    <label>Kind
+      <select name="kind">
+        <option value="validation">validation</option>
+        <option value="permission">permission</option>
+        <option value="webhook">webhook</option>
+        <option value="upload">upload</option>
+        <option value="network">network</option>
+      </select>
+    </label>
+    <label>Message<input type="text" name="message" required placeholder="e.g. required field missing"></label>
+    <label>Context<input type="text" name="context" placeholder="optional context"></label>
+    <button class="btn btn-primary" type="submit">Submit error report</button>
+  </form>
+</section>
+{{ end }}
+{{ template "layout.html" . }}

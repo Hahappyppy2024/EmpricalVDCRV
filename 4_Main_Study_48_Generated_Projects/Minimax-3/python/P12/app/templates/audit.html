@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Audit and lineage{% endblock %}
+{% block content %}
+<section class="page-header">
+  <h1>Audit and lineage</h1>
+  <p class="muted">Track dataset transformations, exports, and admin actions.</p>
+</section>
+<section class="toolbar">
+  <label>Entity type
+    <select id="audit-entity-type">
+      <option value="">All</option>
+      <option value="dataset">dataset</option>
+      <option value="filter">filter</option>
+      <option value="chart">chart</option>
+      <option value="calculated_column">calculated_column</option>
+      <option value="share">share</option>
+      <option value="export">export</option>
+      <option value="user">user</option>
+      <option value="session">session</option>
+    </select>
+  </label>
+  <label>Entity ID<input id="audit-entity-id" type="text"></label>
+  <button id="audit-refresh" class="btn">Refresh</button>
+</section>
+<section class="grid two-col">
+  <article class="card">
+    <header><h2>Recent events</h2></header>
+    <ul id="audit-list" class="data-list"></ul>
+  </article>
+  <article class="card">
+    <header><h2>Lineage graph</h2></header>
+    <ul id="lineage-list" class="data-list"></ul>
+  </article>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/audit.js') }}" defer></script>
+{% endblock %}

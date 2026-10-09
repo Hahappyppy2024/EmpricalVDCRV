@@ -1,0 +1,47 @@
+{{define "content"}}
+<section class="card">
+  <h1>Scheduled runs</h1>
+  {{if .error}}<div class="alert error">{{.error}}</div>{{end}}
+  {{if .notice}}<div class="alert ok">{{.notice}}</div>{{end}}
+  <details {{if .create_open}}open{{end}}>
+    <summary>Create schedule</summary>
+    <form method="post" action="/scheduled_runs" class="form">
+      <label>Workflow
+        <select name="workflow_id">
+          {{range .workflows}}
+            <option value="{{.ID}}">{{.Name}} ({{.TriggerKind}})</option>
+          {{else}}<option value="">(no workflows)</option>{{end}}
+        </select>
+      </label>
+      <label>Cron expression (5 fields) <input name="cron_expr" required value="{{.form.cron}}" placeholder="0 9 * * *"></label>
+      <label>Next run at <input name="next_run_at" type="datetime-local" required value="{{.form.next_run_at}}"></label>
+      <button class="btn primary" type="submit">Create schedule</button>
+    </form>
+  </details>
+</section>
+
+<section class="card">
+  <h2>Schedules</h2>
+  <table class="table">
+    <thead><tr><th>Workflow</th><th>Cron</th><th>Next run</th><th>Enabled</th><th></th></tr></thead>
+    <tbody>
+    {{range .schedules}}
+      <tr>
+        <td><code>{{.WorkflowID}}</code></td>
+        <td><code>{{.CronExpr}}</code></td>
+        <td>{{.NextRunAt.Format "2006-01-02 15:04"}}</td>
+        <td>{{if .Enabled}}yes{{else}}no{{end}}</td>
+        <td>
+          <form method="post" action="/scheduled_runs/{{.ID}}/toggle" style="display:inline">
+            <button class="btn small" type="submit">Toggle</button>
+          </form>
+          <form method="post" action="/scheduled_runs/{{.ID}}/delete" style="display:inline">
+            <button class="btn small" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{else}}<tr><td colspan="5">No schedules.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}

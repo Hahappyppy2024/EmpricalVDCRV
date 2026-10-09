@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prompt Templates — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h2>Prompt templates</h2>
+      <form id="new-tpl">
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+          <label>Name<input type="text" name="name" required minlength="1" maxlength="120" /></label>
+          <label>Scope
+            <select name="scope">
+              <option value="user">User</option>
+              <option value="shared">Shared (admin)</option>
+            </select>
+          </label>
+        </div>
+        <label>Description<input type="text" name="description" maxlength="500" /></label>
+        <label>Body<textarea name="body" required minlength="1" maxlength="20000"></textarea></label>
+        <button type="submit">Save template</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Available templates</h3>
+      <table id="tpl-table">
+        <thead><tr><th>Name</th><th>Scope</th><th>Owner</th><th>Updated</th><th>Body</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import { mountNav } from '/js/nav.js';
+    const user = await mountNav();
+    const { api, el, flash } = AI;
+
+    async function refresh() {
+      const { items } = await api('GET', '/api/ai/prompt_templates');
+      const tbody = document.querySelector('#tpl-table tbody');
+      tbody.innerHTML = '';
+      items.forEach(t => {
+        const canEdit = t.scope === 'shared' ? user.role === 'admin' : t.owner_id === user.id;
+        const tr = el('tr', {},
+          el('td', { className: 'mono' }, t.name),
+          el('td', {}, el('span', { className: 'badge ' + (t.scope === 'shared' ? 'accent' : '') }, t.scope)),
+          el('td', { className: 'muted' }, t.owner_id || 'system'),
+          el('td', { className: 'mono' }, new Date(t.updated_at).toLocaleString()),
+          el('td', { className: 'mono muted' }, t.body.slice(0, 80) + (t.body.length > 80 ? '…' : '')),
+          el('td', {},
+            el('button', { className: 'secondary', disabled: !canEdit, onClick: () => edit(t) }, 'Edit'),
+            el('button', { className: 'danger', disabled: !canEdit, onClick: () => remove(t) }, 'Delete')
+          )
+        );
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function edit(t) {
+      const name = prompt('Name', t.name);
+      if (!name) return;
+      const body = prompt('Body', t.body);
+      if (body == null) return;
+      try {
+        await api('PATCH', `/api/ai/prompt_templates/${t.id}`, { name, body });
+        await refresh();
+      } catch (err) { flash(err.message, 'error'); }
+    }
+    async function remove(t) {
+      if (!confirm(`Delete template "${t.name}"?`)) return;
+      try {
+        await api('DELETE', `/api/ai/prompt_templates/${t.id}`);
+        await refresh();
+      } catch (err) { flash(err.message, 'error'); }
+    }
+
+    document.getElementById('new-tpl').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      try {
+        await api('POST', '/api/ai/prompt_templates', data);
+        e.currentTarget.reset();
+        await refresh();
+      } catch (err) { flash(err.message, 'error'); }
+    });
+
+    await refresh();
+  </script>
+</body>
+</html>

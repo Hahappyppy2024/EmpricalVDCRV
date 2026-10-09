@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rooms — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card">
+      <h2>Search rooms</h2>
+      <div id="search-flash"></div>
+      <form id="search-form">
+        <div class="toolbar">
+          <label><span>Check-in</span><input type="date" name="check_in" required></label>
+          <label><span>Check-out</span><input type="date" name="check_out" required></label>
+          <label><span>Guests</span><input type="number" name="guests" min="1" value="1" required></label>
+          <label><span>Max nightly price (USD)</span><input type="number" name="max_price" min="0" placeholder="(optional)"></label>
+          <label><span>Amenities (comma)</span><input type="text" name="amenities" placeholder="wifi, breakfast"></label>
+          <button type="submit">Search</button>
+        </div>
+      </form>
+      <div id="results" class="grid"></div>
+    </section>
+    <section class="card">
+      <h2>Room details</h2>
+      <div id="detail-flash"></div>
+      <form id="detail-form">
+        <div class="toolbar">
+          <label><span>Room ID</span><input type="number" name="id" min="1" required></label>
+          <button type="submit">View details</button>
+        </div>
+      </form>
+      <div id="detail"></div>
+    </section>
+  </main>
+  <footer class="app-footer">Room search · HOTEL-02 · HOTEL-03</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    function today(offset) {
+      const d = new Date(); d.setUTCHours(0, 0, 0, 0); d.setUTCDate(d.getUTCDate() + offset);
+      return d.toISOString().slice(0, 10);
+    }
+    const form = document.getElementById('search-form');
+    form.elements.check_in.value = today(7);
+    form.elements.check_out.value = today(10);
+
+    function renderResults(results) {
+      const target = document.getElementById('results');
+      if (!results.length) {
+        target.innerHTML = '<div class="empty-state">No rooms match your filters.</div>';
+        return;
+      }
+      target.innerHTML = results.map(r => `
+        <div class="room-card">
+          <div class="img">Room ${escape(r.code)}</div>
+          <div class="body">
+            <h3>${escape(r.name)}</h3>
+            <p>${escape(r.description.slice(0, 110))}…</p>
+            <div class="amenities">Amenities: ${escape(r.amenities || '—')}</div>
+            <div>Sleeps up to ${r.capacity}</div>
+            <div class="price">${HBS.formatCents(r.nightly_rate_cents)} / night</div>
+          </div>
+          <div class="actions">
+            <a class="btn secondary" href="/pages/room_detail.html?id=${r.id}">Details</a>
+            <a class="btn" href="/pages/booking_new.html?room_id=${r.id}&check_in=${encodeURIComponent(form.elements.check_in.value)}&check_out=${encodeURIComponent(form.elements.check_out.value)}&guests=${form.elements.guests.value}">Book</a>
+          </div>
+        </div>`).join('');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const body = Object.fromEntries(new FormData(form).entries());
+      const r = await HBS.api('/api/hotel/room_search', { method: 'POST', body });
+      if (r.ok) renderResults(r.data.results || []);
+      else HBS.flash(document.getElementById('search-flash'), 'error', (r.data?.errors ? r.data.errors.map(x => x.message).join(', ') : null) || r.data?.message || 'Search failed');
+    });
+    form.dispatchEvent(new Event('submit'));
+
+    document.getElementById('detail-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = e.target.id.value;
+      const r = await HBS.api('/api/hotel/room_details?id=' + encodeURIComponent(id));
+      const out = document.getElementById('detail');
+      if (!r.ok) { HBS.flash(document.getElementById('detail-flash'), 'error', r.data?.message || 'Failed'); out.innerHTML = ''; return; }
+      const room = r.data.room;
+      out.innerHTML = `
+        <div class="room-card" style="max-width:420px">
+          <div class="img">${escape(room.code)}</div>
+          <div class="body">
+            <h3>${escape(room.name)}</h3>
+            <p>${escape(room.description)}</p>
+            <div class="amenities">Amenities: ${escape(room.amenities)}</div>
+            <div class="price">${HBS.formatCents(room.nightly_rate_cents)} / night · sleeps ${room.capacity}</div>
+            <div>Status: <span class="status-badge status-${room.status}">${room.status}</span></div>
+          </div>
+          <div class="actions">
+            <a class="btn" href="/pages/booking_new.html?room_id=${room.id}&check_in=${encodeURIComponent(form.elements.check_in.value)}&check_out=${encodeURIComponent(form.elements.check_out.value)}&guests=${form.elements.guests.value}">Book now</a>
+          </div>
+        </div>
+        <h4 style="margin-top:16px">Future occupancy</h4>
+        <table><thead><tr><th>Code</th><th>Check-in</th><th>Check-out</th><th>Status</th></tr></thead>
+        <tbody>${(r.data.future_bookings || []).map(b => `<tr><td>${escape(b.code)}</td><td>${escape(b.check_in)}</td><td>${escape(b.check_out)}</td><td><span class="status-badge status-${b.status}">${b.status}</span></td></tr>`).join('') || '<tr><td colspan="4" class="empty-state">No upcoming bookings</td></tr>'}</tbody>
+        </table>`;
+    });
+  </script>
+</body>
+</html>

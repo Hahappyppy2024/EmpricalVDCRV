@@ -1,0 +1,69 @@
+{{define "content"}}
+<section class="card">
+  <h1>Workspace files</h1>
+  {{if .error}}<div class="alert error">{{.error}}</div>{{end}}
+  {{if .notice}}<div class="alert ok">{{.notice}}</div>{{end}}
+  <p>Text-style workspace files. Files live under <code>data/workspaces/&lt;you&gt;</code>.</p>
+  <details {{if .create_open}}open{{end}}>
+    <summary>Create / update a workspace file</summary>
+    <form method="post" action="/workspace_files" class="form">
+      <label>Path <input name="path" type="text" required value="{{.form.path}}" placeholder="notes/example.txt"></label>
+      <label>Content <textarea name="content" rows="6" required>{{.form.content}}</textarea></label>
+      <button class="btn primary" type="submit">Save</button>
+    </form>
+  </details>
+  <details>
+    <summary>Upload a binary/text file</summary>
+    <form method="post" action="/workspace_files/upload" enctype="multipart/form-data" class="form">
+      <label>File <input name="file" type="file" required></label>
+      <button class="btn" type="submit">Upload</button>
+    </form>
+  </details>
+</section>
+
+<section class="card">
+  <h2>Your files</h2>
+  <table class="table">
+    <thead><tr><th>Path</th><th>Size</th><th>Updated</th><th></th></tr></thead>
+    <tbody>
+    {{range .files}}
+      <tr>
+        <td><code>{{.Path}}</code></td>
+        <td>{{.Size}}</td>
+        <td>{{.UpdatedAt.Format "2006-01-02 15:04"}}</td>
+        <td>
+          <form method="get" action="/workspace_files/view" style="display:inline">
+            <input type="hidden" name="id" value="{{.ID}}">
+            <button class="btn small" type="submit">View</button>
+          </form>
+          <form method="post" action="/workspace_files/{{.ID}}/delete" style="display:inline">
+            <button class="btn small" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {{else}}<tr><td colspan="4">No files yet.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+
+{{if .view}}
+<section class="card">
+  <h2>{{.view.Path}}</h2>
+  <pre>{{.view.Content}}</pre>
+</section>
+{{end}}
+
+{{if .stored}}
+<section class="card">
+  <h2>Stored uploads</h2>
+  <table class="table">
+    <thead><tr><th>Filename</th><th>Size</th><th>MIME</th><th>Stored path</th></tr></thead>
+    <tbody>
+    {{range .stored}}
+      <tr><td>{{.Filename}}</td><td>{{.Size}}</td><td><code>{{.MimeType}}</code></td><td><code>{{.StoredPath}}</code></td></tr>
+    {{else}}<tr><td colspan="4">No uploads.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}
+{{end}}

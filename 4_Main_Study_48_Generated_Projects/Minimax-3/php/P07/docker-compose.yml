@@ -1,0 +1,19 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./var:/app/var
+    environment:
+      APP_ENV: development
+      DB_PATH: var/db/cloud.sqlite
+      STORAGE_PATH: var/storage
+      MAIL_PATH: var/mail
+      COOKIE_SECURE: "false"
+      APP_KEY: ZGVtby1rZXktcGxlYXNlLXJlcGxhY2UtMzItYnl0ZXM=
+      APP_SALT: deterministic-salt
+    command:
+      - sh
+      - -c
+      - "php bin/reset-db.php && php -S 0.0.0.0:8080 -t public public/router.php"

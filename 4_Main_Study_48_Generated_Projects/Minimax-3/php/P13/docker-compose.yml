@@ -1,0 +1,21 @@
+services:
+  app:
+    build: .
+    image: mail-server-admin-console:latest
+    container_name: mail-server-admin-console
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_DB_PATH: /app/storage/app.db
+      APP_UPLOAD_DIR: /app/storage/uploads
+      APP_EXPORT_DIR: /app/storage/exports
+    volumes:
+      - ./storage:/app/storage
+    healthcheck:
+      test: ["CMD", "php", "-r", "file_exists('/app/storage/app.db') ? exit(0) : exit(1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5

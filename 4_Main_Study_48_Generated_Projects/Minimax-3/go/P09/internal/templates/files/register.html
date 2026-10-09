@@ -1,0 +1,25 @@
+{{ define "title" }}Register{{ end }}
+{{ define "body" }}
+<h1>Register</h1>
+<p class="muted">Create a developer, reporter, or maintainer account.</p>
+{{ template "partials/errors.html" . }}
+<form method="POST" action="/api/issue/account_access/register" class="card">
+  {{ csrf .CSRFToken }}
+  <div class="grid two">
+    <label>Username<input type="text" name="username" required minlength="3"></label>
+    <label>Full name<input type="text" name="full_name" required></label>
+  </div>
+  <label>Email<input type="email" name="email" required></label>
+  <label>Password<input type="password" name="password" required minlength="8"></label>
+  <label>Role
+    <select name="role">
+      <option value="developer">Developer</option>
+      <option value="reporter">Reporter</option>
+      <option value="maintainer">Maintainer</option>
+    </select>
+  </label>
+  <button type="submit" class="btn btn-primary">Create account</button>
+  <p class="muted">Already have an account? <a href="/login">Sign in</a>.</p>
+</form>
+{{ end }}
+{{ template "layout.html" . }}

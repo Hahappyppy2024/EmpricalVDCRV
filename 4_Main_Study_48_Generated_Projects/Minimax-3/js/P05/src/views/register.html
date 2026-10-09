@@ -1,0 +1,38 @@
+<section class="cms-auth">
+  <h1>Create account</h1>
+  <form id="registerForm" class="cms-form">
+    <label>Username
+      <input type="text" name="username" required minlength="3">
+    </label>
+    <label>Display name
+      <input type="text" name="displayName" required>
+    </label>
+    <label>Email
+      <input type="email" name="email" required>
+    </label>
+    <label>Password
+      <input type="password" name="password" required minlength="6" autocomplete="new-password">
+    </label>
+    <button class="btn primary" type="submit">Register</button>
+    <p class="cms-error" id="registerError"></p>
+  </form>
+  <p>Already registered? <a href="/login">Sign in</a>.</p>
+</section>
+<script>
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = Object.fromEntries(fd.entries());
+    try {
+      const r = await fetch('/api/cms/account_access?action=register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await r.json();
+      if (!r.ok) { document.getElementById('registerError').textContent = data.message || 'Registration failed'; return; }
+      window.location.href = '/dashboard';
+    } catch (err) {
+      document.getElementById('registerError').textContent = 'Registration failed';
+    }
+  });
+</script>

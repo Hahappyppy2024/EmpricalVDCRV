@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in · P03 E-commerce</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">P03 E-commerce</a>
+    <nav class="main-nav">
+      <a href="/catalog">Catalog</a>
+      <a href="/orders">Orders</a>
+                                    <a href="/frontend/api">Frontend API</a>
+    </nav>
+    <div class="session">
+              <a class="btn btn-ghost" href="/login">Sign in</a>
+        <a class="btn btn-primary" href="/register">Register</a>
+          </div>
+  </div>
+</header>
+<main class="wrap">
+    <section>
+  <h1>Sign in</h1>
+  <form method="post" action="/login" class="form">
+    <input type="hidden" name="_csrf" value="88af3823d9d1beffe18f40ca606cf334">
+    <label>Email <input type="email" name="email" required></label>
+    <label>Password <input type="password" name="password" required></label>
+    <button class="btn btn-primary" type="submit">Sign in</button>
+  </form>
+  <p><a href="/register">Create an account</a> · <a href="/password/forgot">Forgot password</a></p>
+  <div class="hint">
+    <strong>Seeded accounts:</strong>
+    <ul>
+      <li>admin@example.com / Admin#12345</li>
+      <li>seller@example.com / Seller#12345</li>
+      <li>moderator@example.com / Moderator#12345</li>
+      <li>customer@example.com / Customer#12345</li>
+    </ul>
+  </div>
+</section></main>
+<footer class="footer">
+  <div class="wrap">P03 E-commerce System · synthetic benchmark aligned with PrestaShop 8.1.0</div>
+</footer>
+<script src="/js/app.js"></script>
+</body>
+</html>

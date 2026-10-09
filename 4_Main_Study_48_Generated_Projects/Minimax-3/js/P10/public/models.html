@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Models — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h2>Model configuration</h2>
+      <form id="new-model">
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+          <label>Model id<input type="text" name="model_id" required /></label>
+          <label>Temperature<input type="number" name="temperature" min="0" max="2" step="0.05" value="0.2" /></label>
+          <label>Context length<input type="number" name="context_length" min="64" max="32768" step="64" value="2048" /></label>
+          <label>Safety mode
+            <select name="safety_mode">
+              <option value="standard">standard</option>
+              <option value="strict">strict</option>
+              <option value="off">off</option>
+            </select>
+          </label>
+        </div>
+        <label>System prompt<textarea name="system_prompt" maxlength="4000"></textarea></label>
+        <label class="flex gap-sm">
+          <input type="checkbox" name="is_default" /> Mark as default configuration
+        </label>
+        <button type="submit">Save configuration</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Existing configurations</h3>
+      <table id="model-table">
+        <thead><tr>
+          <th>Model</th><th>Temperature</th><th>Context</th><th>Safety</th><th>Default</th><th>Actions</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import { mountNav } from '/js/nav.js';
+    await mountNav();
+    const { api, el, flash } = AI;
+
+    async function refresh() {
+      const { items } = await api('GET', '/api/ai/model_configuration');
+      const tbody = document.querySelector('#model-table tbody');
+      tbody.innerHTML = '';
+      items.forEach(m => {
+        const tr = el('tr', {},
+          el('td', { className: 'mono' }, m.model_id),
+          el('td', { className: 'mono' }, m.temperature),
+          el('td', { className: 'mono' }, m.context_length),
+          el('td', {}, el('span', { className: 'badge accent' }, m.safety_mode)),
+          el('td', {}, m.is_default ? '★' : ''),
+          el('td', {},
+            el('button', { className: 'secondary', onClick: () => makeDefault(m) }, 'Set default'),
+            el('button', { className: 'danger', disabled: m.is_default === 1, onClick: () => remove(m) }, 'Delete')
+          )
+        );
+        tbody.appendChild(tr);
+      });
+    }
+    async function makeDefault(m) {
+      try {
+        await api('PATCH', `/api/ai/model_configuration/${m.id}`, { is_default: true });
+        await refresh();
+      } catch (err) { flash(err.message, 'error'); }
+    }
+    async function remove(m) {
+      if (!confirm(`Delete configuration ${m.model_id}?`)) return;
+      try { await api('DELETE', `/api/ai/model_configuration/${m.id}`); await refresh(); }
+      catch (err) { flash(err.message, 'error'); }
+    }
+    document.getElementById('new-model').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      data.temperature = Number(data.temperature);
+      data.context_length = Number(data.context_length);
+      data.is_default = e.currentTarget.is_default.checked;
+      try { await api('POST', '/api/ai/model_configuration', data); e.currentTarget.reset(); await refresh(); }
+      catch (err) { flash(err.message, 'error'); }
+    });
+    await refresh();
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{{define "content"}}
+<section class="card">
+  <h1>Admin governance</h1>
+  {{if .error}}<div class="alert error">{{.error}}</div>{{end}}
+  {{if .notice}}<div class="alert ok">{{.notice}}</div>{{end}}
+  <p>Quotas, feature flags, and the audit log.</p>
+</section>
+
+<section class="card">
+  <h2>Settings</h2>
+  <table class="table">
+    <thead><tr><th>Key</th><th>Value</th><th>Updated by</th><th>Updated</th><th></th></tr></thead>
+    <tbody>
+    {{range .settings}}
+      <tr>
+        <td><code>{{.Key}}</code></td>
+        <td><code>{{.Value}}</code></td>
+        <td><code>{{.UpdatedBy}}</code></td>
+        <td>{{.UpdatedAt.Format "2006-01-02 15:04"}}</td>
+        <td>
+          <form method="post" action="/admin_governance/{{.Key}}/update" class="row inline-form">
+            <input name="value" type="text" value="{{.Value}}">
+            <button class="btn small" type="submit">Save</button>
+          </form>
+        </td>
+      </tr>
+    {{end}}
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>Users</h2>
+  <table class="table">
+    <thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    {{range .users}}
+      <tr>
+        <td><code>{{.Email}}</code></td>
+        <td>{{.DisplayName}}</td>
+        <td>{{.Role}}</td>
+        <td>{{.Status}}</td>
+        <td>
+          <form method="post" action="/admin_governance/users/{{.ID}}/toggle_status" style="display:inline">
+            <button class="btn small" type="submit">Toggle status</button>
+          </form>
+          <form method="post" action="/admin_governance/users/{{.ID}}/toggle_role" style="display:inline">
+            <button class="btn small" type="submit">Toggle role</button>
+          </form>
+        </td>
+      </tr>
+    {{end}}
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>Recent audit events</h2>
+  <table class="table">
+    <thead><tr><th>When</th><th>Actor</th><th>Action</th><th>Target</th><th>Detail</th></tr></thead>
+    <tbody>
+    {{range .audit}}
+      <tr>
+        <td>{{.CreatedAt.Format "2006-01-02 15:04:05"}}</td>
+        <td><code>{{.ActorID}}</code></td>
+        <td><code>{{.Action}}</code></td>
+        <td>{{.Target}}</td>
+        <td>{{.Detail}}</td>
+      </tr>
+    {{else}}<tr><td colspan="5">No audit events.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}

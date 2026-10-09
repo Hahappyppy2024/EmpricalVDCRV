@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Catalog · P03 E-commerce</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">P03 E-commerce</a>
+    <nav class="main-nav">
+      <a href="/catalog">Catalog</a>
+      <a href="/orders">Orders</a>
+                                    <a href="/frontend/api">Frontend API</a>
+    </nav>
+    <div class="session">
+              <a class="btn btn-ghost" href="/login">Sign in</a>
+        <a class="btn btn-primary" href="/register">Register</a>
+          </div>
+  </div>
+</header>
+<main class="wrap">
+    <section>
+  <h1>Catalog search</h1>
+  <form method="get" action="/catalog" class="form inline-form">
+    <label>Search <input type="text" name="q" value=""></label>
+    <label>Category
+      <select name="category">
+        <option value="">All</option>
+                  <option value="apparel" >Apparel</option>
+                  <option value="books" >Books</option>
+                  <option value="electronics" >Electronics</option>
+                  <option value="home" >Home</option>
+              </select>
+    </label>
+    <label>Min price ($) <input type="number" min="0" step="0.01" name="min_price_cents" value=""></label>
+    <label>Max price ($) <input type="number" min="0" step="0.01" name="max_price_cents" value=""></label>
+    <label class="checkbox"><input type="checkbox" name="in_stock" value="1" > In stock only</label>
+    <button class="btn btn-primary" type="submit">Filter</button>
+  </form>
+
+  <p class="muted">10 result(s).</p>
+  <div class="grid">
+          <a class="card" href="/products/11">
+        <img class="thumb" src="data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%20viewBox%3D%220%200%20320%20240%22%3E%3Crect%20width%3D%22320%22%20height%3D%22240%22%20fill%3D%22%23a855f7%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Verdana%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ECHAIR-001%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">
+        <div class="card-body">
+          <h3>Benchmark Office Chair</h3>
+          <p class="muted">Home · 3 in stock</p>
+          <p class="price">$199.00</p>
+        </div>
+      </a>
+          <a class="card" href="/products/10">
+        <img class="thumb" src="data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%20viewBox%3D%220%200%20320%20240%22%3E%3Crect%20width%3D%22320%22%20height%3D%22240%22%20fill%3D%22%23f97316%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Verdana%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ELAMP-001%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">
+        <div class="card-body">
+          <h3>Benchmark Desk Lamp</h3>
+          <p class="muted">Home · 14 in stock</p>
+          <p class="price">$49.00</p>
+        </div>
+      </a>
+          <a class="card" href="/products/9">
+        <img class="thumb" src="data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%20viewBox%3D%220%200%20320%20240%22%3E%3Crect%20width%3D%22320%22%20height%3D%22240%22%20fill%3D%22%2322c55e%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Verdana%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EMUG-001%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">
+        <div class="card-body">
+          <h3>Benchmark Mug</h3>
+          <p class="muted">Home · 28 in stock</p>
+          <p class="price">$12.00</p>
+        </div>
+      </a>
+          <a class="card" href="/products/8">
+        <img class="thumb" src="data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%20viewBox%3D%220%200%20320%20240%22%3E%3Crect%20width%3D%22320%22%20height%3D%22240%22%20fill%3D%22%2322c55e%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Verdana%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ESHIRT-BLUE%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">
+        <div class="card-body">
+          <h3>Benchmark Tee (Blue)</h3>
+          <p class="muted">Apparel · 0 in stock</p>
+          <p class="price">$19.00</p>
+        </div>
+      </a>
+          <a class="card" href="/products/7">
+        <img class="thumb" src="data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%20viewBox%3D%220%200%20320%20240%22%3E%3Crect%20width%3D%22320%22%20height%3D%22240%22%20fill%3D%22%23ef4444%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Verdana%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ESHIRT-RED%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">
+        <div class="card-body">
+          <h3>Benchmark Tee (Red)</h3>
+          <p class="muted">Apparel · 50 in stock</p>
+          <p class="price">$19.00</p>
+        </div>
+      </a>
+          <a class="card" href="/products/6">
+        <img class="thumb" src="data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%20viewBox%3D%220%200%20320%20240%22%3E%3Crect%20width%3D%22320%22%20height%3D%22240%22%20fill%3D%22%23f97316%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Verdana%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EBOOK-002%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">
+        <div class="card-body">
+          <h3>Benchmark PHP Cookbook</h3>
+          <p class="muted">Books · 80 in stock</p>
+          <p class="price">$39.00</p>
+        </div>
+      </a>
+          <a class="card" href="/products/5">
+        <img class="thumb" src="data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%20viewBox%3D%220%200%20320%20240%22%3E%3Crect%20width%3D%22320%22%20height%3D%22240%22%20fill%3D%22%2322c55e%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Verdana%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EBOOK-001%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">
+        <div class="card-body">
+          <h3>Benchmark Web Engineering</h3>
+          <p class="muted">Books · 100 in stock</p>
+          <p class="price">$49.00</p>
+        </div>
+      </a>
+          <a class="card" href="/products/4">
+        <img class="thumb" src="data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%20viewBox%3D%220%200%20320%20240%22%3E%3Crect%20width%3D%22320%22%20height%3D%22240%22%20fill%3D%22%23ef4444%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Verdana%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EPHONE-100%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">
+        <div class="card-body">
+          <h3>Benchmark Smartphone</h3>
+          <p class="muted">Electronics · 25 in stock</p>
+          <p class="price">$699.00</p>
+        </div>
+      </a>
+          <a class="card" href="/products/3">
+        <img class="thumb" src="data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%20viewBox%3D%220%200%20320%20240%22%3E%3Crect%20width%3D%22320%22%20height%3D%22240%22%20fill%3D%22%2322c55e%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Verdana%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ELAPTOP-002%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">
+        <div class="card-body">
+          <h3>Benchmark Workstation</h3>
+          <p class="muted">Electronics · 6 in stock</p>
+          <p class="price">$1,599.00</p>
+        </div>
+      </a>
+          <a class="card" href="/products/2">
+        <img class="thumb" src="data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22320%22%20height%3D%22240%22%20viewBox%3D%220%200%20320%20240%22%3E%3Crect%20width%3D%22320%22%20height%3D%22240%22%20fill%3D%22%230ea5e9%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Verdana%2CArial%2Csans-serif%22%20font-size%3D%2228%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3ELAPTOP-001%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">
+        <div class="card-body">
+          <h3>Benchmark Ultrabook</h3>
+          <p class="muted">Electronics · 11 in stock</p>
+          <p class="price">$899.00</p>
+        </div>
+      </a>
+      </div>
+</section></main>
+<footer class="footer">
+  <div class="wrap">P03 E-commerce System · synthetic benchmark aligned with PrestaShop 8.1.0</div>
+</footer>
+<script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{title}} - Synthetic CMS</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="{{pageId}}">
+  <header class="cms-header">
+    <a class="cms-brand" href="/">Synthetic CMS</a>
+    <nav class="cms-nav">
+      <a href="/">Home</a>
+      <a href="/articles">Articles</a>
+      {{#if user}}
+        <a href="/dashboard">Dashboard</a>
+        <span class="cms-user">{{user.displayName}} ({{user.role}})</span>
+        <button class="cms-link" id="logoutBtn">Logout</button>
+      {{else}}
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      {{/if}}
+    </nav>
+  </header>
+  <main class="cms-main">{{{content}}}</main>
+  <footer class="cms-footer"><small>Synthetic CMS - benchmark content management system</small></footer>
+  <script src="/js/common.js"></script>
+  <script src="/js/{{pageJs}}"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Benchmark Hotel — Home</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Benchmark Hotel</h1>
+    <nav class="main-nav"></nav>
+  </header>
+  <main>
+    <section class="card">
+      <h2>Welcome to Benchmark Hotel</h2>
+      <p>This is a synthetic benchmark reservation system. Use the navigation above to explore all guest, staff, admin, and moderator workflows.</p>
+      <div id="flash"></div>
+      <div class="grid" style="margin-top:16px">
+        <div class="room-card"><div class="body">
+          <h3>Find a room</h3>
+          <p>Search by date range, capacity, and amenities.</p>
+          <div class="actions"><a class="btn" href="/pages/rooms.html">Search rooms</a></div>
+        </div></div>
+        <div class="room-card"><div class="body">
+          <h3>Manage bookings</h3>
+          <p>View, modify, or cancel your existing reservations.</p>
+          <div class="actions"><a class="btn" href="/pages/bookings.html">My bookings</a></div>
+        </div></div>
+        <div class="room-card"><div class="body">
+          <h3>Concierge messages</h3>
+          <p>Send special requests and chat with hotel staff.</p>
+          <div class="actions"><a class="btn" href="/pages/messages.html">Messages</a></div>
+        </div></div>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Seed accounts</h2>
+      <p>The following accounts are preloaded for the benchmark:</p>
+      <table>
+        <thead><tr><th>Role</th><th>Email</th><th>Password</th></tr></thead>
+        <tbody>
+          <tr><td>Guest (Alice)</td><td>alice@example.com</td><td>guest123</td></tr>
+          <tr><td>Guest (Bob)</td><td>bob@example.com</td><td>guest123</td></tr>
+          <tr><td>Guest (Charlie)</td><td>charlie@example.com</td><td>guest123</td></tr>
+          <tr><td>Staff</td><td>staff@example.com</td><td>staff123</td></tr>
+          <tr><td>Admin</td><td>admin@example.com</td><td>admin123</td></tr>
+          <tr><td>Moderator</td><td>mod@example.com</td><td>mod123</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <footer class="app-footer">Benchmark Hotel · Synthetic reservation system</footer>
+  <script src="/js/app.js"></script>
+</body>
+</html>

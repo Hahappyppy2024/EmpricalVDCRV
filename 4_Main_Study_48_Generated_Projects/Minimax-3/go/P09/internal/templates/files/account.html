@@ -1,0 +1,69 @@
+{{ define "title" }}Account access{{ end }}
+{{ define "body" }}
+<h1>Account access</h1>
+<p class="muted">Manage your profile, sessions, and password.</p>
+
+{{ template "partials/errors.html" . }}
+
+<div class="grid two">
+  <div class="card">
+    <h3>Profile</h3>
+    <form method="POST" action="/api/issue/account_access/profile">
+      {{ csrf .CSRFToken }}
+      <label>Username<input type="text" value="{{ .User.Username }}" disabled></label>
+      <label>Email<input type="email" value="{{ .User.Email }}" disabled></label>
+      <label>Full name<input type="text" name="full_name" value="{{ .User.FullName }}" required></label>
+      <label>Bio<textarea name="bio" rows="4">{{ .User.Bio }}</textarea></label>
+      <button type="submit" class="btn btn-primary">Update profile</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Sign in</h3>
+    <form method="POST" action="/api/issue/account_access/login">
+      {{ csrf .CSRFToken }}
+      <label>Username or email<input type="text" name="username" required></label>
+      <label>Password<input type="password" name="password" required></label>
+      <button type="submit" class="btn">Sign in (existing account)</button>
+    </form>
+    <p class="muted">Already have a session? <a href="/account/access">View active sessions</a>.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Register</h3>
+  <form method="POST" action="/api/issue/account_access/register">
+    {{ csrf .CSRFToken }}
+    <div class="grid two">
+      <label>Username<input type="text" name="username" required minlength="3"></label>
+      <label>Full name<input type="text" name="full_name" required></label>
+    </div>
+    <label>Email<input type="email" name="email" required></label>
+    <label>Password<input type="password" name="password" required minlength="8"></label>
+    <label>Role
+      <select name="role">
+        <option value="developer">Developer</option>
+        <option value="reporter">Reporter</option>
+        <option value="maintainer">Maintainer</option>
+      </select>
+    </label>
+    <button type="submit" class="btn btn-primary">Create account</button>
+  </form>
+</div>
+
+<div class="card">
+  <h3>Recent access events</h3>
+  {{ if .AccessEvents }}
+  <table class="table">
+    <thead><tr><th>When</th><th>Action</th><th>Detail</th></tr></thead>
+    <tbody>
+      {{ range .AccessEvents }}
+      <tr><td>{{ .CreatedAt }}</td><td>{{ .Action }}</td><td>{{ .Detail }}</td></tr>
+      {{ end }}
+    </tbody>
+  </table>
+  {{ else }}
+  <p class="muted">No account access events recorded yet.</p>
+  {{ end }}
+</div>
+{{ end }}
+{{ template "layout.html" . }}

@@ -1,0 +1,42 @@
+{
+    "name": "emse/p01-learning-management-system",
+    "description": "P01 Learning Management System (PHP 8.3 / Slim 4) synthetic benchmark",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "ext-pdo": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-sqlite3": "*",
+        "ext-mbstring": "*",
+        "ext-json": "*",
+        "slim/slim": "4.14.0",
+        "slim/psr7": "1.6.1",
+        "php-di/php-di": "7.0.5",
+        "vlucas/phpdotenv": "5.6.1",
+        "nyholm/psr7": "1.8.1",
+        "nyholm/psr7-server": "1.1.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.3"
+        },
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "LMS\\": "src/"
+        }
+    },
+    "scripts": {
+        "init-db": "php bin/init-db.php",
+        "serve": "php -S 0.0.0.0:8080 -t public public/index.php",
+        "smoke": "php bin/smoke.php",
+        "ws": "php bin/workerman_ws.php"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

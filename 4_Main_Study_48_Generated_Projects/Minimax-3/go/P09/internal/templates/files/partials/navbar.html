@@ -1,0 +1,31 @@
+{{ define "partials/navbar.html" }}
+<header class="topbar">
+  <div class="container nav-inner">
+    <a class="brand" href="/">Issue Tracker</a>
+    <nav class="primary">
+      <a href="/projects">Projects</a>
+      <a href="/search">Search</a>
+      <a href="/import-export">Import/Export</a>
+      {{ if .User }}
+        {{ if or (eq .User.Role "admin") (eq .User.Role "maintainer") }}
+          <a href="/admin">Admin</a>
+        {{ end }}
+      {{ end }}
+    </nav>
+    <div class="account">
+      {{ if .User }}
+        <span class="muted">{{ .User.Username }} <span class="role tag tag-{{ .User.Role }}">{{ .User.Role }}</span></span>
+        <a href="/account">Profile</a>
+        <form method="POST" action="/api/issue/account_access/logout" class="inline">
+          {{ csrf .CSRFToken }}
+          <button class="btn btn-link" type="submit">Sign out</button>
+        </form>
+      {{ else }}
+        <a href="/login">Sign in</a>
+        <a href="/register" class="btn btn-primary btn-sm">Register</a>
+      {{ end }}
+    </div>
+  </div>
+  {{ template "partials/flash.html" . }}
+</header>
+{{ end }}

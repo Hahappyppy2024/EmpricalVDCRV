@@ -1,0 +1,46 @@
+<section class="cms-list-page">
+  <h1>Publishing workflow</h1>
+  <p>Move articles through draft, review, scheduled, published, archived.</p>
+  <table class="cms-table">
+    <thead><tr><th>Article</th><th>State</th><th>Reviewer</th><th>Scheduled</th><th>Published</th><th>Actions</th></tr></thead>
+    <tbody id="wfRows"><tr><td colspan="6">Loading...</td></tr></tbody>
+  </table>
+</section>
+<script>
+  async function load() {
+    const r = await fetch('/api/cms/publishing_workflow');
+    const data = await r.json();
+    const tbody = document.getElementById('wfRows');
+    if (!data.items || !data.items.length) { tbody.innerHTML = '<tr><td colspan="6">No items.</td></tr>'; return; }
+    tbody.innerHTML = data.items.map(w => `<tr>
+      <td><a href="/articles/edit/${w.article_id}">${w.article_title}</a></td>
+      <td><span class="badge state-${w.state}">${w.state}</span></td>
+      <td>${w.reviewer_name || ''}</td>
+      <td>${w.scheduled_at || ''}</td>
+      <td>${w.published_at || ''}</td>
+      <td>${actionsFor(w)}</td>
+    </tr>`).join('');
+    document.querySelectorAll('.wf-btn').forEach(b => b.addEventListener('click', async () => {
+      const articleId = b.dataset.article;
+      const action = b.dataset.action;
+      await fetch('/api/cms/publishing_workflow', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articleId: Number(articleId), action })
+      });
+      load();
+    }));
+  }
+  function actionsFor(w) {
+    const options = [];
+    if (w.state === 'draft') options.push(`<button class="wf-btn" data-article="${w.article_id}" data-action="review">Send to review</button>`);
+    if (w.state === 'review') {
+      options.push(`<button class="wf-btn" data-article="${w.article_id}" data-action="published">Publish</button>`);
+      options.push(`<button class="wf-btn" data-article="${w.article_id}" data-action="scheduled">Schedule</button>`);
+    }
+    if (w.state === 'scheduled') options.push(`<button class="wf-btn" data-article="${w.article_id}" data-action="published">Publish now</button>`);
+    if (w.state === 'published') options.push(`<button class="wf-btn" data-article="${w.article_id}" data-action="archived">Archive</button>`);
+    if (w.state === 'archived') options.push(`<button class="wf-btn" data-article="${w.article_id}" data-action="draft">Restore as draft</button>`);
+    return options.join(' ');
+  }
+  load();
+</script>

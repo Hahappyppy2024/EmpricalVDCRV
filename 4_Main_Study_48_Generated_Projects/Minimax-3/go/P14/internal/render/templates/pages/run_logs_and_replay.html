@@ -1,0 +1,39 @@
+{{define "content"}}
+<section class="card">
+  <h1>Run logs and replay</h1>
+  {{if .error}}<div class="alert error">{{.error}}</div>{{end}}
+  {{if .notice}}<div class="alert ok">{{.notice}}</div>{{end}}
+  <form method="get" action="/run_logs_and_replay" class="row inline-form">
+    <input name="run_id" type="text" placeholder="run id" value="{{.q.run_id}}">
+    <select name="level">
+      <option value="">any level</option>
+      <option value="info" {{if eq .q.level "info"}}selected{{end}}>info</option>
+      <option value="warn" {{if eq .q.level "warn"}}selected{{end}}>warn</option>
+      <option value="error" {{if eq .q.level "error"}}selected{{end}}>error</option>
+    </select>
+    <input name="q" type="search" placeholder="message contains" value="{{.q.text}}">
+    <button class="btn" type="submit">Filter</button>
+  </form>
+  <form method="post" action="/run_logs_and_replay/replay" class="row inline-form">
+    <input name="run_id" type="text" placeholder="run id to replay" value="{{.q.run_id}}">
+    <button class="btn primary" type="submit">Replay</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Matching logs</h2>
+  <table class="table">
+    <thead><tr><th>When</th><th>Run</th><th>Level</th><th>Message</th></tr></thead>
+    <tbody>
+    {{range .logs}}
+      <tr>
+        <td>{{.CreatedAt.Format "2006-01-02 15:04:05"}}</td>
+        <td><code>{{.RunID}}</code></td>
+        <td><code>{{.Level}}</code></td>
+        <td>{{.Message}}</td>
+      </tr>
+    {{else}}<tr><td colspan="4">No log entries.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}

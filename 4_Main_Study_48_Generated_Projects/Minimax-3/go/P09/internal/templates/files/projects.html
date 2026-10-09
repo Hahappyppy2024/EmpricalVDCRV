@@ -1,0 +1,35 @@
+{{ define "title" }}Projects{{ end }}
+{{ define "body" }}
+<h1>Projects</h1>
+<p class="muted">{{ if .User }}Browse public and private projects you have access to.{{ else }}Public projects shown below. Sign in to see private projects.{{ end }}</p>
+
+<div class="card">
+  <form method="GET" action="/projects" class="inline-form">
+    <input type="search" name="q" value="{{ .Query }}" placeholder="Search by name or slug">
+    <button class="btn" type="submit">Filter</button>
+    {{ if .User }}<a class="btn btn-primary" href="/projects/new">New project</a>{{ end }}
+  </form>
+</div>
+
+{{ if .Projects }}
+<table class="table">
+  <thead><tr><th>Slug</th><th>Name</th><th>Visibility</th><th>Owner</th><th>Issues</th><th></th></tr></thead>
+  <tbody>
+    {{ range .Projects }}
+    <tr>
+      <td><code>{{ .Slug }}</code></td>
+      <td>{{ .Name }}</td>
+      <td>{{ if eq .Visibility "private" }}<span class="tag tag-warn">private</span>{{ else }}<span class="tag">public</span>{{ end }}</td>
+      <td>{{ .OwnerUsername }}</td>
+      <td>{{ .IssueCount }}</td>
+      <td><a class="btn btn-sm" href="/projects/{{ .Slug }}">Open</a></td>
+    </tr>
+    {{ end }}
+  </tbody>
+</table>
+{{ template "partials/pagination.html" . }}
+{{ else }}
+<p class="muted">No projects available.</p>
+{{ end }}
+{{ end }}
+{{ template "layout.html" . }}

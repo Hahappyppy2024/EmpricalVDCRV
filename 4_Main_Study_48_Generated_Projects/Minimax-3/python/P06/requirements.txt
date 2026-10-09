@@ -1,0 +1,7 @@
+Flask==3.0.3
+Flask-Sock==0.7.0
+SQLAlchemy==2.0.30
+Werkzeug==3.0.3
+python-dotenv==1.0.1
+gunicorn==22.0.0
+simple-websocket==1.0.0

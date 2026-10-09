@@ -1,0 +1,41 @@
+{{define "content"}}
+<section class="card">
+  <h1>External HTTP action</h1>
+  {{if .error}}<div class="alert error">{{.error}}</div>{{end}}
+  {{if .notice}}<div class="alert ok">{{.notice}}</div>{{end}}
+  <p>Issue a configured HTTP call. URL is restricted to the loopback range for safety.</p>
+  <form method="post" action="/external_http_action" class="form">
+    <label>URL <input name="url" type="url" required value="{{.form.url}}" placeholder="http://localhost:8080/api/health"></label>
+    <label>Method
+      <select name="method">
+        {{$m := .form.method}}
+        <option value="GET" {{if eq $m "GET"}}selected{{end}}>GET</option>
+        <option value="POST" {{if eq $m "POST"}}selected{{end}}>POST</option>
+        <option value="PUT" {{if eq $m "PUT"}}selected{{end}}>PUT</option>
+        <option value="PATCH" {{if eq $m "PATCH"}}selected{{end}}>PATCH</option>
+        <option value="DELETE" {{if eq $m "DELETE"}}selected{{end}}>DELETE</option>
+      </select>
+    </label>
+    <label>Payload (JSON or text) <textarea name="payload" rows="4">{{.form.payload}}</textarea></label>
+    <button class="btn primary" type="submit">Send</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Recent calls</h2>
+  <table class="table">
+    <thead><tr><th>When</th><th>Method</th><th>URL</th><th>Status</th><th>Response</th></tr></thead>
+    <tbody>
+    {{range .calls}}
+      <tr>
+        <td>{{.CreatedAt.Format "2006-01-02 15:04:05"}}</td>
+        <td><code>{{.Method}}</code></td>
+        <td><code>{{.URL}}</code></td>
+        <td>{{.StatusCode}}</td>
+        <td><pre class="snippet">{{.Response | short 200}}</pre></td>
+      </tr>
+    {{else}}<tr><td colspan="5">No calls yet.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}

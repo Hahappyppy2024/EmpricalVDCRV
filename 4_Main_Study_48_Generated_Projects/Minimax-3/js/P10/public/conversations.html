@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Conversations — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h2>Conversations</h2>
+      <form id="new-conv" class="flex" style="gap: 8px;">
+        <input type="text" name="title" required placeholder="Conversation title" />
+        <input type="text" name="model_id" placeholder="Model id (optional)" />
+        <button type="submit">Create</button>
+      </form>
+      <table id="conv-table">
+        <thead><tr>
+          <th>Title</th><th>Model</th><th>Status</th><th>Updated</th><th>Actions</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import { mountNav } from '/js/nav.js';
+    await mountNav();
+    const { api, el, flash } = AI;
+
+    async function refresh() {
+      const { items } = await api('GET', '/api/ai/conversation_management');
+      const tbody = document.querySelector('#conv-table tbody');
+      tbody.innerHTML = '';
+      items.forEach(conv => {
+        const tr = el('tr', {},
+          el('td', {}, conv.title),
+          el('td', { className: 'mono' }, conv.model_id),
+          el('td', {}, el('span', { className: 'badge ' + (conv.status === 'archived' ? 'warn' : 'accent') }, conv.status)),
+          el('td', { className: 'mono' }, new Date(conv.updated_at).toLocaleString()),
+          el('td', {},
+            el('button', { className: 'secondary', onClick: () => rename(conv) }, 'Rename'),
+            el('button', { className: 'secondary', onClick: () => archive(conv) }, conv.status === 'archived' ? 'Reactivate' : 'Archive'),
+            el('button', { className: 'danger', onClick: () => remove(conv) }, 'Delete')
+          )
+        );
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function rename(conv) {
+      const title = prompt('New title', conv.title);
+      if (!title) return;
+      try {
+        await api('PATCH', `/api/ai/conversation_management/${conv.id}`, { title });
+        await refresh();
+      } catch (err) { flash(err.message, 'error'); }
+    }
+    async function archive(conv) {
+      const next = conv.status === 'archived' ? 'active' : 'archived';
+      try {
+        await api('PATCH', `/api/ai/conversation_management/${conv.id}`, { status: next });
+        await refresh();
+      } catch (err) { flash(err.message, 'error'); }
+    }
+    async function remove(conv) {
+      if (!confirm(`Delete "${conv.title}"?`)) return;
+      try {
+        // Soft-delete by setting status; the seed conversation is preserved by id.
+        await api('PATCH', `/api/ai/conversation_management/${conv.id}`, { status: 'deleted' });
+        await refresh();
+      } catch (err) { flash(err.message, 'error'); }
+    }
+
+    document.getElementById('new-conv').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      try {
+        await api('POST', '/api/ai/conversation_management', data);
+        e.currentTarget.reset();
+        await refresh();
+      } catch (err) { flash(err.message, 'error'); }
+    });
+
+    await refresh();
+  </script>
+</body>
+</html>

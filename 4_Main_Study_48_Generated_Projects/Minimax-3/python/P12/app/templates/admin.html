@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Admin operations{% endblock %}
+{% block content %}
+<section class="page-header">
+  <h1>Admin operations</h1>
+  <p class="muted">Manage users, retention policies, dataset limits, and audit visibility.</p>
+</section>
+<section class="grid three-col">
+  <article class="card">
+    <header><h2>Overview</h2></header>
+    <dl id="admin-stats" class="stat-list"></dl>
+    <p class="muted">Current limits</p>
+    <ul id="admin-limits" class="data-list"></ul>
+  </article>
+  <article class="card">
+    <header><h2>User management</h2></header>
+    <ul id="admin-users" class="data-list"></ul>
+  </article>
+  <article class="card">
+    <header><h2>Settings</h2></header>
+    <form id="admin-settings-form" class="form-stack">
+      <label>Key<input name="key" required></label>
+      <label>Value<input name="value" required></label>
+      <button type="submit" class="btn btn-primary">Save setting</button>
+    </form>
+    <h3>Policies</h3>
+    <form id="admin-purge-form" class="form-stack">
+      <label>Purge datasets older than (days)<input name="older_than_days" type="number" min="1" value="90"></label>
+      <button class="btn btn-secondary" type="submit">Purge</button>
+      <p class="form-status" data-role="status"></p>
+    </form>
+  </article>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}" defer></script>
+{% endblock %}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Knowledge — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h2>Upload knowledge file</h2>
+      <form id="upload-form" enctype="multipart/form-data">
+        <label>File<input type="file" name="file" required
+          accept=".txt,.md,.markdown,.csv,.json,.log" /></label>
+        <label>Visibility
+          <select name="visibility">
+            <option value="private">private</option>
+            <option value="shared">shared (admin only)</option>
+          </select>
+        </label>
+        <button type="submit">Upload</button>
+        <div class="muted">Max size 5&nbsp;MiB. Allowed: txt, md, markdown, csv, json, log.</div>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Your files</h3>
+      <table id="file-table">
+        <thead><tr>
+          <th>Original name</th><th>Size</th><th>Extension</th><th>Visibility</th><th>Uploaded</th><th>Actions</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import { mountNav } from '/js/nav.js';
+    const user = await mountNav();
+    const { api, el, flash } = AI;
+
+    async function refresh() {
+      const { items } = await api('GET', '/api/ai/knowledge_file_upload');
+      const tbody = document.querySelector('#file-table tbody');
+      tbody.innerHTML = '';
+      items.forEach(f => {
+        const tr = el('tr', {},
+          el('td', { className: 'mono' }, f.original_name),
+          el('td', { className: 'mono' }, f.size_bytes + ' bytes'),
+          el('td', { className: 'mono' }, f.extension),
+          el('td', {}, el('span', { className: 'badge ' + (f.visibility === 'shared' ? 'accent' : '') }, f.visibility)),
+          el('td', { className: 'mono' }, new Date(f.created_at).toLocaleString()),
+          el('td', {},
+            el('a', { href: `/api/ai/knowledge_file_upload/${f.id}/content`, target: '_blank' }, 'View'),
+            el('button', { className: 'danger', onClick: () => remove(f) }, 'Delete')
+          )
+        );
+        tbody.appendChild(tr);
+      });
+    }
+    async function remove(f) {
+      if (!confirm(`Delete ${f.original_name}?`)) return;
+      try { await api('DELETE', `/api/ai/knowledge_file_upload/${f.id}`); await refresh(); }
+      catch (err) { flash(err.message, 'error'); }
+    }
+
+    document.getElementById('upload-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.currentTarget;
+      const body = new FormData(form);
+      try {
+        const res = await fetch('/api/ai/knowledge_file_upload', {
+          method: 'POST', body, credentials: 'same-origin'
+        });
+        const json = await res.json();
+        if (!res.ok || !json.ok) throw new Error(json?.error?.message || 'Upload failed');
+        flash('Uploaded ' + json.data.original_name, 'success');
+        form.reset();
+        await refresh();
+      } catch (err) { flash('Upload failed: ' + err.message, 'error'); }
+    });
+
+    await refresh();
+  </script>
+</body>
+</html>

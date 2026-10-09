@@ -1,0 +1,8 @@
+{{ define "partials/flash.html" }}
+{{ if .Flash }}
+<div class="flash flash-{{ .Flash.Kind }}">
+  <span>{{ .Flash.Message }}</span>
+  <button class="flash-close" type="button" data-dismiss-flash aria-label="Dismiss">&times;</button>
+</div>
+{{ end }}
+{{ end }}

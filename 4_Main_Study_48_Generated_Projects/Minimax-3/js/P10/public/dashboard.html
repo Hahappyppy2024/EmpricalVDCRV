@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main>
+    <div class="card" id="summary-card">
+      <h2>Workspace overview</h2>
+      <p class="muted" id="welcome-line">Loading…</p>
+      <div class="grid" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="card"><div class="muted">Conversations</div><div class="mono" id="metric-conversations">–</div></div>
+        <div class="card"><div class="muted">Templates</div><div class="mono" id="metric-templates">–</div></div>
+        <div class="card"><div class="muted">Knowledge files</div><div class="mono" id="metric-files">–</div></div>
+        <div class="card"><div class="muted">Plugins enabled</div><div class="mono" id="metric-plugins">–</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Quick links</h2>
+      <ul>
+        <li><a href="/chat.html">Open the chat playground</a></li>
+        <li><a href="/conversations.html">Manage conversations</a></li>
+        <li><a href="/knowledge.html">Upload knowledge files</a></li>
+        <li><a href="/collections.html">Build retrieval collections</a></li>
+        <li><a href="/templates.html">Create prompt templates</a></li>
+        <li><a href="/audit.html">Inspect usage &amp; audit</a></li>
+      </ul>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import { mountNav } from '/js/nav.js';
+    const user = await mountNav();
+    document.getElementById('welcome-line').textContent =
+      `Welcome back, ${user.display_name}.`;
+
+    const { api } = AI;
+    const [convs, tpls, files, plugins] = await Promise.all([
+      api('GET', '/api/ai/conversation_management'),
+      api('GET', '/api/ai/prompt_templates'),
+      api('GET', '/api/ai/knowledge_file_upload'),
+      api('GET', '/api/ai/tool_plugin_registry')
+    ]);
+    document.getElementById('metric-conversations').textContent = convs.total;
+    document.getElementById('metric-templates').textContent = tpls.total;
+    document.getElementById('metric-files').textContent = files.total;
+    document.getElementById('metric-plugins').textContent =
+      plugins.items.filter(p => p.user_enabled && p.global_enabled).length;
+  </script>
+</body>
+</html>

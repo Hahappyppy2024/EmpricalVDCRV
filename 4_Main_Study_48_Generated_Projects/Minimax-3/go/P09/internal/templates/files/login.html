@@ -1,0 +1,27 @@
+{{ define "title" }}Sign in{{ end }}
+{{ define "body" }}
+<h1>Sign in</h1>
+<p class="muted">Welcome back. Sign in to manage issues and projects.</p>
+{{ template "partials/errors.html" . }}
+<form method="POST" action="/api/issue/account_access/login" class="card">
+  {{ csrf .CSRFToken }}
+  <input type="hidden" name="next" value="{{ .Next }}">
+  <label>Username or email<input type="text" name="username" required></label>
+  <label>Password<input type="password" name="password" required></label>
+  <button type="submit" class="btn btn-primary">Sign in</button>
+  <p class="muted">No account? <a href="/register">Register here</a>.</p>
+</form>
+<div class="card">
+  <h3>Seed accounts</h3>
+  <p class="muted">Use one of the following for the deterministic seed data:</p>
+  <table class="table">
+    <thead><tr><th>Username</th><th>Password</th><th>Role</th></tr></thead>
+    <tbody>
+      {{ range .SeedAccounts }}
+      <tr><td>{{ .Username }}</td><td>{{ .Password }}</td><td>{{ .Role }}</td></tr>
+      {{ end }}
+    </tbody>
+  </table>
+</div>
+{{ end }}
+{{ template "layout.html" . }}

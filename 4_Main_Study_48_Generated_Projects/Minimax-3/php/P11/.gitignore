@@ -1,0 +1,22 @@
+# Composer
+/vendor/
+
+# Local SQLite database and uploaded files
+/storage/data/*.sqlite
+/storage/data/*.sqlite-journal
+/storage/uploads/*
+/storage/backups/*
+!/storage/uploads/.gitkeep
+!/storage/backups/.gitkeep
+
+# Environment overrides
+/.env
+
+# Smoke test logs
+/storage/smoke.log
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

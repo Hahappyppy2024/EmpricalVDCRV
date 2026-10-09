@@ -1,0 +1,16 @@
+services:
+  cms:
+    build: .
+    container_name: synthetic-cms
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_PATH: /app/data/cms.sqlite
+      UPLOAD_DIR: /app/uploads
+      SESSION_SECRET: change-me-in-production-1234567890
+    volumes:
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+    restart: unless-stopped

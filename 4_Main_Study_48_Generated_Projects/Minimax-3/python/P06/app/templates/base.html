@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Real-Time Team Chat{% endblock %}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <a href="{{ url_for('pages.home') }}">Real-Time Team Chat</a>
+    </div>
+    <nav class="topnav">
+      {% if current_user %}
+        <span class="who">{{ current_user.display_name }} ({{ current_user.username }}){% if current_user.is_admin %} [admin]{% endif %}</span>
+        <a href="{{ url_for('pages.dashboard_page') }}">Dashboard</a>
+        <a href="{{ url_for('pages.dm_page') }}">DMs</a>
+        {% if current_user.is_admin %}
+          <a href="{{ url_for('pages.admin_page') }}">Admin</a>
+        {% endif %}
+        <button id="signout-btn" class="link">Sign out</button>
+      {% else %}
+        <a href="{{ url_for('pages.signin_page') }}">Sign in</a>
+        <a href="{{ url_for('pages.register_page') }}">Register</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

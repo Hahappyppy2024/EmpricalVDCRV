@@ -1,0 +1,114 @@
+{{ define "title" }}{{ .Issue.Title }}{{ end }}
+{{ define "body" }}
+<nav class="breadcrumb"><a href="/projects/{{ .Issue.ProjectSlug }}">{{ .Issue.ProjectSlug }}</a> / #{{ .Issue.Number }}</nav>
+
+<header class="issue-header">
+  <h1>#{{ .Issue.Number }} {{ .Issue.Title }}</h1>
+  <p>
+    <span class="tag tag-{{ .Issue.State }}">{{ .Issue.State }}</span>
+    <span class="tag">priority: {{ .Issue.Priority }}</span>
+    {{ range .Issue.Labels }}<span class="tag" style="background:{{ .Color }}">{{ .Name }}</span>{{ end }}
+    {{ if .Issue.MilestoneTitle }}<span class="tag tag-info">milestone: {{ .Issue.MilestoneTitle }}</span>{{ end }}
+  </p>
+  <p class="muted">Opened by {{ .Issue.AuthorUsername }} on {{ .Issue.CreatedAt }}. {{ if .Issue.AssigneeUsername }}Assigned to {{ .Issue.AssigneeUsername }}.{{ end }}</p>
+</header>
+
+{{ template "partials/errors.html" . }}
+
+<section class="card">
+  <h3>Body</h3>
+  <pre class="markdown">{{ .Issue.Body }}</pre>
+</section>
+
+{{ if .CanManage }}
+<section class="card">
+  <h3>Workflow</h3>
+  <form method="POST" action="/api/issue/assignment_and_workflow/{{ .Issue.ID }}" class="grid three">
+    {{ csrf .CSRFToken }}
+    <label>State
+      <select name="state">
+        <option value="open" {{ if eq .Issue.State "open" }}selected{{ end }}>open</option>
+        <option value="closed" {{ if eq .Issue.State "closed" }}selected{{ end }}>closed</option>
+      </select>
+    </label>
+    <label>Assignee
+      <select name="assignee_id">
+        <option value="">unassigned</option>
+        {{ range .Assignees }}<option value="{{ .ID }}" {{ if eq (printf "%v" .ID) (printf "%v" $.Issue.AssigneeID) }}selected{{ end }}>{{ .Username }}</option>{{ end }}
+      </select>
+    </label>
+    <label>Milestone
+      <select name="milestone_id">
+        <option value="">none</option>
+        {{ range .Milestones }}<option value="{{ .ID }}" {{ if eq (printf "%v" .ID) (printf "%v" $.Issue.MilestoneID) }}selected{{ end }}>{{ .Title }}</option>{{ end }}
+      </select>
+    </label>
+    <div><button class="btn btn-primary" type="submit">Apply changes</button></div>
+  </form>
+</section>
+{{ end }}
+
+<section class="card">
+  <h3>Attachments</h3>
+  {{ if .Attachments }}
+  <ul>
+    {{ range .Attachments }}
+    <li><a href="/api/issue/attachments/{{ .ID }}/download">{{ .Filename }}</a> <span class="muted">{{ .Size }} bytes &middot; {{ .MimeType }}</span></li>
+    {{ end }}
+  </ul>
+  {{ else }}
+  <p class="muted">No attachments.</p>
+  {{ end }}
+  {{ if .User }}
+  <form method="POST" action="/api/issue/attachments/{{ .Issue.ID }}" enctype="multipart/form-data">
+    {{ csrf .CSRFToken }}
+    <input type="file" name="file" required>
+    <button class="btn" type="submit">Upload attachment</button>
+  </form>
+  {{ end }}
+</section>
+
+<section class="card">
+  <h3>Comments ({{ len .Comments }})</h3>
+  {{ if .Comments }}
+  <ul class="comments">
+    {{ range .Comments }}
+    <li class="comment">
+      <header><strong>{{ .AuthorUsername }}</strong> <span class="muted">{{ .CreatedAt }}</span></header>
+      <pre class="markdown">{{ .Body }}</pre>
+      {{ if $.User }}
+        {{ if or (eq .AuthorID $.User.ID) (eq $.User.Role "admin") (eq $.User.Role "maintainer") }}
+        <form method="POST" action="/api/issue/comments/{{ .ID }}/delete" class="inline">
+          {{ csrf $.CSRFToken }}
+          <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+        </form>
+        {{ end }}
+      {{ end }}
+    </li>
+    {{ end }}
+  </ul>
+  {{ else }}
+  <p class="muted">No comments yet.</p>
+  {{ end }}
+  {{ if .User }}
+  <form method="POST" action="/api/issue/comments/{{ .Issue.ID }}">
+    {{ csrf .CSRFToken }}
+    <textarea name="body" rows="4" required placeholder="Add a comment..."></textarea>
+    <button class="btn btn-primary" type="submit">Add comment</button>
+  </form>
+  {{ else }}
+  <p class="muted"><a href="/login">Sign in</a> to comment.</p>
+  {{ end }}
+</section>
+
+<section class="card" data-issue-id="{{ .Issue.ID }}">
+  <h3>Live activity</h3>
+  <ul id="ws-activity" class="activity">
+    <li class="muted">Connecting to live stream...</li>
+  </ul>
+</section>
+{{ end }}
+{{ define "scripts" }}
+<script src="/static/js/issue_ws.js"></script>
+{{ end }}
+{{ template "layout.html" . }}

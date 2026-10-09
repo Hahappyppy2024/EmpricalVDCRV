@@ -1,0 +1,20 @@
+services:
+  expense-app:
+    build: .
+    container_name: expense-approval-app
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - HOST=0.0.0.0
+      - DB_PATH=/app/data/app.sqlite
+      - SESSION_SECRET=local-development-secret
+    volumes:
+      - expense-data:/app/data
+      - expense-receipts:/app/storage/receipts
+      - expense-exports:/app/storage/exports
+
+volumes:
+  expense-data:
+  expense-receipts:
+  expense-exports:

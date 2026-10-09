@@ -1,0 +1,19 @@
+services:
+  app:
+    build: .
+    image: hotel-booking-system:latest
+    container_name: hbs-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATABASE_PATH: /app/data/hotel.db
+      HOTEL_NAME: "Benchmark Hotel"
+      HOTEL_TIMEZONE: "UTC"
+    volumes:
+      - hbs-data:/app/data
+
+volumes:
+  hbs-data:

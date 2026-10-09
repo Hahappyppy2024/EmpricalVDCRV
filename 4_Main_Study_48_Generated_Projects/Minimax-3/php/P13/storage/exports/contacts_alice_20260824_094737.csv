@@ -1,0 +1,6 @@
+name,email,organization,phone,notes
+"Bob Sender",bob@example.com,"Example Corp",+1-555-0001,"Frequent recipient"
+"Carol Tester",carol@acme.test,"Acme Inc",+1-555-0002,
+"Eve Updated",eve@example.com,Test,+1-555-1212,
+"Frank Imported",frank@example.com,Acme,,"Imported via CSV"
+Newsletter,newsletter@example.com,NoCorp,,

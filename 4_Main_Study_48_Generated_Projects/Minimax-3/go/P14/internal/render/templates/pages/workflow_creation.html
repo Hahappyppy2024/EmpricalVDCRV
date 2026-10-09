@@ -1,0 +1,56 @@
+{{define "content"}}
+<section class="card">
+  <h1>Workflows</h1>
+  {{if .error}}<div class="alert error">{{.error}}</div>{{end}}
+  {{if .notice}}<div class="alert ok">{{.notice}}</div>{{end}}
+  <p>Compose triggers, steps, and reusable configurations.</p>
+  <details {{if .create_open}}open{{end}}>
+    <summary>Create a new workflow</summary>
+    <form method="post" action="/workflow_creation" class="form">
+      <label>Name <input name="name" type="text" required value="{{.form.name}}"></label>
+      <label>Description <textarea name="description" rows="2">{{.form.description}}</textarea></label>
+      <label>Trigger
+        <select name="trigger_kind">
+          <option value="manual" {{if eq .form.trigger "manual"}}selected{{end}}>manual</option>
+          <option value="webhook" {{if eq .form.trigger "webhook"}}selected{{end}}>webhook</option>
+          <option value="schedule" {{if eq .form.trigger "schedule"}}selected{{end}}>schedule</option>
+        </select>
+      </label>
+      <label>Cron expression <input name="cron_expr" type="text" placeholder="0 9 * * *" value="{{.form.cron}}"></label>
+      <label>Steps JSON
+        <textarea name="steps_json" rows="6">[{"seq":1,"name":"log","tool":"log_message","config":{"message":"hi"}},{"seq":2,"name":"delay","tool":"delay","config":{"ms":"200"}}]</textarea>
+      </label>
+      <div class="row">
+        <button class="btn primary" type="submit">Create workflow</button>
+      </div>
+    </form>
+  </details>
+</section>
+
+<section class="card">
+  <h2>Your workflows</h2>
+  <table class="table">
+    <thead><tr><th>Name</th><th>Trigger</th><th>Cron</th><th>Steps</th><th>Status</th><th>Updated</th><th>Actions</th></tr></thead>
+    <tbody>
+    {{range .workflows}}
+      <tr>
+        <td><strong>{{.Name}}</strong><br><small>{{.Description}}</small></td>
+        <td><code>{{.TriggerKind}}</code></td>
+        <td><code>{{.CronExpr}}</code></td>
+        <td>{{len .Steps}}</td>
+        <td><code>{{.Status}}</code></td>
+        <td>{{.UpdatedAt.Format "2006-01-02 15:04"}}</td>
+        <td>
+          <form method="post" action="/workflow_creation/{{.ID}}/run" style="display:inline">
+            <button class="btn small" type="submit">Run</button>
+          </form>
+          <form method="post" action="/workflow_creation/{{.ID}}/archive" style="display:inline">
+            <button class="btn small" type="submit">Archive</button>
+          </form>
+        </td>
+      </tr>
+    {{else}}<tr><td colspan="7">No workflows yet.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}

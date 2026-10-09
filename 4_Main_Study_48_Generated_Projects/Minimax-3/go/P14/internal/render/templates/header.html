@@ -1,0 +1,29 @@
+{{define "header"}}<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">⚙︎</span>
+    <span class="brand-name">P14 · Workflow Automation</span>
+  </div>
+  <nav class="nav">
+    {{if .user}}
+      <a href="/dashboard">Dashboard</a>
+      <a href="/account_access">Account</a>
+      <a href="/workflow_creation">Workflows</a>
+      <a href="/tool_catalog">Tools</a>
+      <a href="/task_execution">Runs</a>
+      <a href="/scheduled_runs">Schedules</a>
+      <a href="/workspace_files">Workspace</a>
+      <a href="/webhook_triggers">Webhooks</a>
+      <a href="/external_http_action">HTTP</a>
+      <a href="/secrets_manager">Secrets</a>
+      <a href="/run_logs_and_replay">Logs</a>
+      <a href="/sharing_and_templates">Templates</a>
+      {{if eq .user.Role "admin"}}<a href="/admin_governance" class="admin-link">Admin</a>{{end}}
+      <form method="post" action="/account_access/sign_out" class="inline-form">
+        <button class="link-button" type="submit">Sign out ({{.user.DisplayName}})</button>
+      </form>
+    {{else}}
+      <a href="/account_access">Sign in</a>
+    {{end}}
+  </nav>
+</header>
+{{end}}

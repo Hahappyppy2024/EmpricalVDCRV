@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Shares — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h2>Share conversations</h2>
+      <form id="new-share" class="flex">
+        <select id="conv-select"></select>
+        <input type="number" id="ttl" min="60" max="2592000" value="604800" title="TTL seconds" />
+        <button type="submit">Create share link</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Active shares</h3>
+      <table id="share-table">
+        <thead><tr><th>Conversation</th><th>Token</th><th>Expires</th><th>Views</th><th>Revoked</th><th>Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import { mountNav } from '/js/nav.js';
+    await mountNav();
+    const { api, el, flash } = AI;
+
+    async function refresh() {
+      const [shares, convs] = await Promise.all([
+        api('GET', '/api/ai/share_conversation'),
+        api('GET', '/api/ai/conversation_management')
+      ]);
+      const sel = document.getElementById('conv-select');
+      sel.innerHTML = '';
+      convs.items.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id; opt.textContent = c.title;
+        sel.appendChild(opt);
+      });
+      const tbody = document.querySelector('#share-table tbody');
+      tbody.innerHTML = '';
+      shares.items.forEach(s => {
+        const tr = el('tr', {},
+          el('td', { className: 'mono' }, s.conversation_id),
+          el('td', { className: 'mono' }, s.token.slice(0, 14) + '…'),
+          el('td', { className: 'mono' }, s.expires_at ? new Date(s.expires_at).toLocaleString() : '—'),
+          el('td', { className: 'mono' }, s.view_count),
+          el('td', {}, s.revoked_at ? 'yes' : 'no'),
+          el('td', {},
+            el('a', { href: `/api/ai/public/share/${s.token}`, target: '_blank' }, 'View'),
+            el('button', { className: 'danger', disabled: !!s.revoked_at, onClick: () => revoke(s) }, 'Revoke')
+          )
+        );
+        tbody.appendChild(tr);
+      });
+    }
+    async function revoke(s) {
+      if (!confirm('Revoke this share link?')) return;
+      try { await api('PATCH', `/api/ai/share_conversation/${s.id}`); await refresh(); }
+      catch (err) { flash(err.message, 'error'); }
+    }
+    document.getElementById('new-share').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const conversation_id = document.getElementById('conv-select').value;
+        const ttl_seconds = Number(document.getElementById('ttl').value);
+        const share = await api('POST', '/api/ai/share_conversation',
+          { conversation_id, ttl_seconds });
+        const url = window.location.origin + share.data.public_path;
+        prompt('Share URL', url);
+        await refresh();
+      } catch (err) { flash(err.message, 'error'); }
+    });
+    await refresh();
+  </script>
+</body>
+</html>

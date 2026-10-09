@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Direct messages · Real-Time Team Chat{% endblock %}
+{% block content %}
+<section class="layout dm-layout">
+  <aside class="sidebar">
+    <h2>DM threads</h2>
+    <ul id="dm-threads" class="list"></ul>
+  </aside>
+  <section class="main">
+    <header class="panel-header">
+      <h2 id="dm-title">Select a conversation</h2>
+    </header>
+    <ul id="dm-messages" class="messages"></ul>
+    <form id="dm-compose" class="composer">
+      <textarea name="body" placeholder="Write a direct message" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+  </section>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dm.js') }}"></script>
+{% endblock %}

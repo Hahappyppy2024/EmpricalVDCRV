@@ -1,0 +1,54 @@
+<section class="cms-list-page">
+  <h1>Import / Export</h1>
+  <p>Export the entire content collection to JSON, or import a previously exported file.</p>
+  <div class="cms-row">
+    <div class="cms-col">
+      <h3>Export</h3>
+      <p>Bundle articles, settings, and templates into a downloadable JSON file.</p>
+      <button class="btn primary" id="exportBtn">Run export</button>
+      <p id="exportResult"></p>
+    </div>
+    <div class="cms-col">
+      <h3>Import</h3>
+      <p>Paste a previously exported JSON payload to import articles.</p>
+      <form id="importForm" class="cms-form">
+        <textarea name="payload" rows="8" placeholder='{"kind":"cms.export.v1","articles":[]}'></textarea>
+        <button class="btn" type="submit">Run import</button>
+      </form>
+      <p id="importResult"></p>
+    </div>
+  </div>
+  <h2>Recent jobs</h2>
+  <ul id="jobList"></ul>
+</section>
+<script>
+  async function loadJobs() {
+    const r = await fetch('/api/cms/import_export');
+    const data = await r.json();
+    document.getElementById('jobList').innerHTML = (data.jobs || []).map(j => `<li>${j.created_at} &mdash; <strong>${j.job_type}</strong> (${j.status}) &mdash; ${j.result_count} items</li>`).join('') || '<li>No jobs.</li>';
+  }
+  document.getElementById('exportBtn').addEventListener('click', async () => {
+    const r = await fetch('/api/cms/import_export', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jobType: 'export' })
+    });
+    const data = await r.json();
+    document.getElementById('exportResult').innerHTML = `Exported ${data.resultCount} articles. <a href="/api/cms/import_export/download/${data.job.id}">Download file</a>`;
+    loadJobs();
+  });
+  document.getElementById('importForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    let payload;
+    try { payload = JSON.parse(fd.get('payload')); }
+    catch { document.getElementById('importResult').textContent = 'Invalid JSON'; return; }
+    const r = await fetch('/api/cms/import_export', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jobType: 'import', payload })
+    });
+    const data = await r.json();
+    document.getElementById('importResult').textContent = data.message || 'Done';
+    loadJobs();
+  });
+  loadJobs();
+</script>

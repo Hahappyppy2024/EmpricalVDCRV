@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Retrieval collections — AI Assistant / LLM WebUI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <main>
+    <div class="card">
+      <h2>Retrieval collections</h2>
+      <form id="new-coll" class="flex">
+        <input type="text" name="name" required placeholder="Collection name" />
+        <input type="text" name="description" placeholder="Description (optional)" />
+        <button type="submit">Create</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>Your collections</h3>
+      <div id="collections"></div>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    import { mountNav } from '/js/nav.js';
+    await mountNav();
+    const { api, el, flash } = AI;
+
+    async function refresh() {
+      const { items } = await api('GET', '/api/ai/retrieval_collection');
+      const root = document.getElementById('collections');
+      root.innerHTML = '';
+      for (const c of items) {
+        const detail = await api('GET', '/api/ai/retrieval_collection/' + c.id);
+        const card = el('div', { className: 'card' },
+          el('h4', {}, c.name + ' ',
+            el('span', { className: 'badge accent' }, detail.files.length + ' files / ' + detail.chunk_count + ' chunks')),
+          el('p', { className: 'muted' }, c.description || ''),
+        );
+        const attach = el('div', { className: 'flex gap-sm' },
+          el('select', { id: `select-${c.id}` }),
+          el('button', { onClick: async () => {
+            const fileId = document.getElementById(`select-${c.id}`).value;
+            if (!fileId) return;
+            try { await api('POST', `/api/ai/retrieval_collection/${c.id}/files`, { file_id: fileId });
+              flash('File attached & indexed', 'success'); await refresh(); }
+            catch (err) { flash(err.message, 'error'); }
+          } }, 'Attach file'),
+          el('input', { type: 'text', id: `q-${c.id}`, placeholder: 'Search query' }),
+          el('button', { onClick: async () => {
+            const q = document.getElementById(`q-${c.id}`).value;
+            if (!q) return;
+            try { const result = await api('POST', `/api/ai/retrieval_collection/${c.id}/search`,
+              { query: q, limit: 5 });
+              const out = result.results.map(r => `[${r.score}] ${r.content}`).join('\n') || 'No matches';
+              alert(`Search results (${result.total}):\n\n${out}`);
+            } catch (err) { flash(err.message, 'error'); }
+          } }, 'Search'),
+          el('button', { className: 'danger', onClick: async () => {
+            if (!confirm('Delete collection?')) return;
+            try { await api('DELETE', `/api/ai/retrieval_collection/${c.id}`); await refresh(); }
+            catch (err) { flash(err.message, 'error'); }
+          } }, 'Delete')
+        );
+        card.appendChild(attach);
+
+        const filesBox = el('ul', {});
+        detail.files.forEach(f => {
+          const item = el('li', {},
+            f.original_name + ' ',
+            el('button', { className: 'secondary', onClick: async () => {
+              try { await api('DELETE', `/api/ai/retrieval_collection/${c.id}/files/${f.id}`);
+                flash('Detached', 'success'); await refresh(); }
+              catch (err) { flash(err.message, 'error'); }
+            } }, 'Detach')
+          );
+          filesBox.appendChild(item);
+        });
+        if (detail.files.length === 0) filesBox.appendChild(el('li', { className: 'muted' }, 'No files attached.'));
+        card.appendChild(filesBox);
+
+        root.appendChild(card);
+      }
+
+      // Populate attach selects with the user's file list.
+      const { items: files } = await api('GET', '/api/ai/knowledge_file_upload');
+      for (const c of items) {
+        const sel = document.getElementById(`select-${c.id}`);
+        if (!sel) continue;
+        sel.innerHTML = '<option value="">Select file…</option>';
+        files.forEach(f => {
+          const opt = document.createElement('option');
+          opt.value = f.id;
+          opt.textContent = f.original_name + ' (' + f.size_bytes + ' bytes)';
+          sel.appendChild(opt);
+        });
+      }
+    }
+
+    document.getElementById('new-coll').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      try { await api('POST', '/api/ai/retrieval_collection', data); e.currentTarget.reset(); await refresh(); }
+      catch (err) { flash(err.message, 'error'); }
+    });
+
+    await refresh();
+  </script>
+</body>
+</html>

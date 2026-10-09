@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reviews — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card" id="list-card">
+      <h2>Guest reviews</h2>
+      <div id="flash"></div>
+      <div id="reviews"></div>
+    </section>
+  </main>
+  <footer class="app-footer">HOTEL-09</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const user = await HBS.requireRole(['guest', 'moderator', 'admin']);
+      if (!user) return;
+      const flash = document.getElementById('flash');
+      async function load() {
+        const r = await HBS.api('/api/hotel/reviews');
+        if (!r.ok) { HBS.flash(flash, 'error', r.data?.message || 'Failed'); return; }
+        const list = r.data.reviews;
+        const moderatorActions = (user.role === 'moderator' || user.role === 'admin');
+        document.getElementById('reviews').innerHTML = list.length ? list.map(rv => `
+          <div class="card" style="margin-bottom:8px">
+            <div class="flex">
+              <div><strong>${escape(rv.author || 'Anonymous')}</strong> · ${rv.rating}/5</div>
+              <div class="spacer"></div>
+              <div><span class="status-badge status-${rv.status}">${rv.status}</span></div>
+            </div>
+            <div>${escape(rv.body)}</div>
+            ${moderatorActions && rv.status === 'pending' ? `<div class="flex" style="margin-top:8px"><button class="success" data-id="${rv.id}" data-decision="approve">Approve</button><button class="danger" data-id="${rv.id}" data-decision="reject">Reject</button></div>` : ''}
+          </div>`).join('') : '<div class="empty-state">No reviews.</div>';
+        document.querySelectorAll('button[data-decision]').forEach(b => b.addEventListener('click', async () => {
+          const r2 = await HBS.api('/api/hotel/reviews/' + b.dataset.id, { method: 'PATCH', body: { decision: b.dataset.decision } });
+          HBS.flash(flash, r2.ok ? 'success' : 'error', r2.ok ? 'Updated' : 'Failed'); load();
+        }));
+      }
+      load();
+    })();
+  </script>
+</body>
+</html>

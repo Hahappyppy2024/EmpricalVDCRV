@@ -1,0 +1,22 @@
+services:
+  app:
+    build: .
+    container_name: ai-assistant-llm-webui
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOST: 0.0.0.0
+      DB_PATH: data/app.db
+      UPLOAD_DIR: data/uploads
+      MAX_UPLOAD_BYTES: 5242880
+      ALLOWED_UPLOAD_EXT: .txt,.md,.markdown,.csv,.json,.log
+      DEFAULT_MODEL_ID: local-bench-1
+      DEFAULT_TEMPERATURE: 0.2
+      DEFAULT_CONTEXT_LENGTH: 2048
+    volumes:
+      - app-data:/app/data
+    restart: unless-stopped
+volumes:
+  app-data:

@@ -1,0 +1,35 @@
+<section class="cms-list-page">
+  <h1>Articles</h1>
+  <div class="cms-toolbar">
+    <input type="search" id="searchInput" placeholder="Search articles...">
+    <a class="btn" href="/articles/new">New article</a>
+  </div>
+  <table class="cms-table">
+    <thead><tr><th>Title</th><th>Status</th><th>Author</th><th>Updated</th><th></th></tr></thead>
+    <tbody id="articleRows"><tr><td colspan="5">Loading...</td></tr></tbody>
+  </table>
+</section>
+<script>
+  let articles = [];
+  async function load() {
+    const r = await fetch('/api/cms/content_authoring');
+    const data = await r.json();
+    articles = data.articles || [];
+    render();
+  }
+  function render() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const rows = articles.filter(a => !q || a.title.toLowerCase().includes(q) || (a.tags||[]).join(' ').toLowerCase().includes(q));
+    const tbody = document.getElementById('articleRows');
+    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5">No articles.</td></tr>'; return; }
+    tbody.innerHTML = rows.map(a => `<tr>
+      <td><a href="/articles/edit/${a.id}">${a.title}</a></td>
+      <td><span class="badge status-${a.status}">${a.status}</span></td>
+      <td>${a.authorName || ''}</td>
+      <td>${a.updatedAt}</td>
+      <td><a href="/articles/edit/${a.id}">Edit</a></td>
+    </tr>`).join('');
+  }
+  document.getElementById('searchInput').addEventListener('input', render);
+  load();
+</script>

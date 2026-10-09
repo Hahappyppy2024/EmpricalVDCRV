@@ -1,0 +1,9 @@
+{{ define "title" }}Not found{{ end }}
+{{ define "body" }}
+<div class="card">
+<h1>Not found</h1>
+<p>{{ .Message }}</p>
+<a class="btn" href="/">Back home</a>
+</div>
+{{ end }}
+{{ template "layout.html" . }}

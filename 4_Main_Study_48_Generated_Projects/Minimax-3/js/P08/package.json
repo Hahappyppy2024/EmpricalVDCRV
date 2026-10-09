@@ -1,0 +1,25 @@
+{
+  "name": "enterprise-expense-approval-system",
+  "version": "1.0.0",
+  "description": "Enterprise expense approval system with employee, manager, finance, and admin workflows",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:reset": "node src/db/reset.js",
+    "db:seed": "node src/db/seed.js",
+    "smoke": "node scripts/smoke.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "11.5.0",
+    "cookie-parser": "1.4.7",
+    "express": "5.0.1",
+    "multer": "2.0.0",
+    "ws": "8.18.0"
+  },
+  "license": "MIT"
+}

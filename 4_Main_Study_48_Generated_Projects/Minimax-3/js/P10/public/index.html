@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Assistant / LLM WebUI — Sign in</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>AI Assistant / LLM WebUI</h1>
+    <div class="muted">Synthetic benchmark (P10)</div>
+  </header>
+  <main>
+    <div class="grid">
+      <section class="card" id="sign-in-card">
+        <h2>Sign in</h2>
+        <p class="muted">Use one of the seed accounts or your own credentials.</p>
+        <form id="sign-in-form">
+          <label>Email
+            <input type="email" name="email" required autocomplete="email" value="alice@local.test" />
+          </label>
+          <label>Password
+            <input type="password" name="password" required autocomplete="current-password" value="User#12345" />
+          </label>
+          <button type="submit">Sign in</button>
+        </form>
+        <div id="sign-in-flash"></div>
+      </section>
+      <section class="card" id="register-card">
+        <h2>Create account</h2>
+        <form id="register-form">
+          <label>Display name
+            <input type="text" name="display_name" required minlength="1" maxlength="80" />
+          </label>
+          <label>Email
+            <input type="email" name="email" required autocomplete="email" />
+          </label>
+          <label>Password
+            <input type="password" name="password" required minlength="8" autocomplete="new-password" />
+          </label>
+          <button type="submit">Register</button>
+        </form>
+        <div id="register-flash"></div>
+        <h3>Seed accounts</h3>
+        <table>
+          <thead><tr><th>Role</th><th>Email</th><th>Password</th></tr></thead>
+          <tbody>
+            <tr><td>Admin</td><td class="mono">admin@local.test</td><td class="mono">Admin#12345</td></tr>
+            <tr><td>User</td><td class="mono">alice@local.test</td><td class="mono">User#12345</td></tr>
+            <tr><td>User</td><td class="mono">bob@local.test</td><td class="mono">User#12345</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </main>
+  <footer>Local deterministic model · SQLite session storage · Express 5</footer>
+  <script type="module" src="/js/app.js"></script>
+  <script type="module">
+    const { api, el, flash } = AI;
+
+    document.getElementById('sign-in-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.currentTarget;
+      const data = Object.fromEntries(new FormData(form));
+      try {
+        const result = await api('POST', '/api/ai/auth/sign-in', data);
+        AI.storeUser(result.user);
+        window.location.href = '/dashboard.html';
+      } catch (err) {
+        flash('Sign in failed: ' + err.message, 'error');
+      }
+    });
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      try {
+        const result = await api('POST', '/api/ai/auth/register', data);
+        AI.storeUser(result.user);
+        window.location.href = '/dashboard.html';
+      } catch (err) {
+        flash('Registration failed: ' + err.message, 'error');
+      }
+    });
+
+    AI.fetchCurrentUser().then(user => {
+      if (user) window.location.href = '/dashboard.html';
+    });
+  </script>
+</body>
+</html>

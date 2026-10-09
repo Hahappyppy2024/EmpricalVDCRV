@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Dashboards{% endblock %}
+{% block content %}
+<section class="page-header">
+  <h1>Dashboards</h1>
+  <p class="muted">Build dashboards by selecting datasets and configuring charts.</p>
+</section>
+<section class="grid two-col">
+  <article class="card">
+    <header><h2>Datasets</h2></header>
+    <ul id="dashboard-datasets" class="data-list"></ul>
+  </article>
+  <article class="card">
+    <header><h2>All charts</h2></header>
+    <ul id="dashboard-charts" class="data-list"></ul>
+  </article>
+</section>
+<section class="card">
+  <header><h2>Active shares</h2></header>
+  <ul id="dashboard-shares" class="data-list"></ul>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboards.js') }}" defer></script>
+{% endblock %}

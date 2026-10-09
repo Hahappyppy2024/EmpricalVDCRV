@@ -1,0 +1,104 @@
+{{ define "title" }}Admin{{ end }}
+{{ define "body" }}
+<h1>Admin</h1>
+{{ template "partials/errors.html" . }}
+
+<section class="grid two">
+  <div class="card">
+    <h3>Workspace settings</h3>
+    <form method="POST" action="/api/issue/admin_operations/settings">
+      {{ csrf .CSRFToken }}
+      <label>Workspace name<input type="text" name="workspace_name" value="{{ index .Settings "workspace_name" }}"></label>
+      <label>Allow registrations
+        <select name="allow_registration">
+          <option value="1" {{ if eq (index .Settings "allow_registration") "1" }}selected{{ end }}>Enabled</option>
+          <option value="0" {{ if eq (index .Settings "allow_registration") "0" }}selected{{ end }}>Disabled</option>
+        </select>
+      </label>
+      <label>Default issue priority
+        <select name="default_priority">
+          <option value="low" {{ if eq (index .Settings "default_priority") "low" }}selected{{ end }}>low</option>
+          <option value="normal" {{ if eq (index .Settings "default_priority") "normal" }}selected{{ end }}>normal</option>
+          <option value="high" {{ if eq (index .Settings "default_priority") "high" }}selected{{ end }}>high</option>
+          <option value="urgent" {{ if eq (index .Settings "default_priority") "urgent" }}selected{{ end }}>urgent</option>
+        </select>
+      </label>
+      <button class="btn btn-primary" type="submit">Save settings</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Users</h3>
+    <table class="table">
+      <thead><tr><th>Username</th><th>Role</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        {{ range .Users }}
+        <tr>
+          <td>{{ .Username }}<br><span class="muted">{{ .Email }}</span></td>
+          <td>{{ .Role }}</td>
+          <td><span class="tag tag-{{ .Status }}">{{ .Status }}</span></td>
+          <td>
+            <form method="POST" action="/api/issue/admin_operations/users/{{ .ID }}/role" class="inline">
+              {{ csrf $.CSRFToken }}
+              <select name="role">
+                <option value="admin" {{ if eq .Role "admin" }}selected{{ end }}>admin</option>
+                <option value="maintainer" {{ if eq .Role "maintainer" }}selected{{ end }}>maintainer</option>
+                <option value="developer" {{ if eq .Role "developer" }}selected{{ end }}>developer</option>
+                <option value="reporter" {{ if eq .Role "reporter" }}selected{{ end }}>reporter</option>
+                <option value="member" {{ if eq .Role "member" }}selected{{ end }}>member</option>
+              </select>
+              <button class="btn btn-sm" type="submit">Update role</button>
+            </form>
+            <form method="POST" action="/api/issue/admin_operations/users/{{ .ID }}/status" class="inline">
+              {{ csrf $.CSRFToken }}
+              <input type="hidden" name="status" value="{{ if eq .Status "active" }}suspended{{ else }}active{{ end }}">
+              <button class="btn btn-sm {{ if eq .Status "active" }}btn-danger{{ end }}" type="submit">{{ if eq .Status "active" }}Suspend{{ else }}Reactivate{{ end }}</button>
+            </form>
+          </td>
+        </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Project ownership transfer</h3>
+  <form method="POST" action="/api/issue/admin_operations/transfer" class="grid three">
+    {{ csrf .CSRFToken }}
+    <label>Project
+      <select name="project_id">
+        {{ range .Projects }}<option value="{{ .ID }}">{{ .Name }}</option>{{ end }}
+      </select>
+    </label>
+    <label>New owner
+      <select name="user_id">
+        {{ range .Users }}<option value="{{ .ID }}">{{ .Username }}</option>{{ end }}
+      </select>
+    </label>
+    <div><button class="btn btn-primary" type="submit">Transfer</button></div>
+  </form>
+</section>
+
+<section class="card">
+  <h3>Audit log</h3>
+  {{ if .AuditEvents }}
+  <table class="table">
+    <thead><tr><th>When</th><th>Actor</th><th>Action</th><th>Target</th><th>Detail</th></tr></thead>
+    <tbody>
+      {{ range .AuditEvents }}
+      <tr>
+        <td>{{ .CreatedAt }}</td>
+        <td>{{ .ActorName }}</td>
+        <td>{{ .Action }}</td>
+        <td>{{ .TargetType }}{{ if .TargetID }}#{{ .TargetID }}{{ end }}</td>
+        <td>{{ .Detail }}</td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+  {{ else }}
+  <p class="muted">No audit events yet.</p>
+  {{ end }}
+</section>
+{{ end }}
+{{ template "layout.html" . }}

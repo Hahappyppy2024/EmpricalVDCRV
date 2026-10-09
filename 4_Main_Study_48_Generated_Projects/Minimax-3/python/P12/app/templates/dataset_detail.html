@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Dataset detail{% endblock %}
+{% block content %}
+<section class="page-header">
+  <h1 id="dataset-title">Loading dataset…</h1>
+  <p class="muted" id="dataset-meta"></p>
+</section>
+<nav class="tab-bar">
+  <button class="tab-btn active" data-tab="preview">Preview</button>
+  <button class="tab-btn" data-tab="filter">Filter builder</button>
+  {% if is_analyst_or_admin %}
+  <button class="tab-btn" data-tab="chart">Chart builder</button>
+  <button class="tab-btn" data-tab="calc">Calculated columns</button>
+  <button class="tab-btn" data-tab="export">Export</button>
+  {% endif %}
+  <button class="tab-btn" data-tab="share">Sharing</button>
+</nav>
+
+<section class="tab-panel active" data-tab="preview">
+  <div class="toolbar">
+    <label>Page size
+      <select id="preview-limit">
+        <option>25</option><option selected>50</option><option>100</option><option>200</option>
+      </select>
+    </label>
+    <label>Offset<input id="preview-offset" type="number" min="0" value="0"></label>
+    <button class="btn" id="preview-refresh">Refresh</button>
+  </div>
+  <div id="preview-summary" class="summary-grid"></div>
+  <div class="table-wrap"><table id="preview-table"><thead></thead><tbody></tbody></table></div>
+  <p class="muted" id="preview-status"></p>
+</section>
+
+<section class="tab-panel" data-tab="filter">
+  <form id="filter-form" class="form-stack">
+    <label>Filter name<input name="name" required></label>
+    <label>Description<textarea name="description" rows="2"></textarea></label>
+    <label>Expression
+      <textarea name="expression" rows="3" placeholder="e.g. revenue > 400 and region == 'North'"></textarea>
+    </label>
+    <label><input type="checkbox" name="is_public"> Make this filter public (analysts/admins only)</label>
+    <button type="submit" class="btn btn-primary">Save filter</button>
+  </form>
+  <h3>Saved filters</h3>
+  <ul id="filter-list" class="data-list"></ul>
+  <h3>Run an ad-hoc filter</h3>
+  <form id="filter-run-form" class="form-stack">
+    <label>Expression<textarea name="expression" rows="2"></textarea></label>
+    <button class="btn" type="submit">Run</button>
+  </form>
+  <pre id="filter-run-result" class="code-output"></pre>
+</section>
+
+{% if is_analyst_or_admin %}
+<section class="tab-panel" data-tab="chart">
+  <form id="chart-form" class="form-stack">
+    <label>Chart name<input name="name" required></label>
+    <label>Chart type
+      <select name="chart_type">
+        <option value="bar">Bar</option>
+        <option value="line">Line</option>
+        <option value="pie">Pie</option>
+        <option value="scatter">Scatter</option>
+      </select>
+    </label>
+    <label>X column<input name="x" required></label>
+    <label>Y column<input name="y"></label>
+    <label>Aggregation
+      <select name="aggregate">
+        <option value="sum">Sum</option>
+        <option value="avg">Average</option>
+        <option value="count">Count</option>
+        <option value="min">Min</option>
+        <option value="max">Max</option>
+        <option value="none">None (scatter)</option>
+      </select>
+    </label>
+    <label>Filter expression<textarea name="filter_expression" rows="2"></textarea></label>
+    <button class="btn btn-primary" type="submit">Save chart</button>
+  </form>
+  <h3>Existing charts</h3>
+  <ul id="chart-list" class="data-list"></ul>
+  <div id="chart-render" class="chart-render"></div>
+</section>
+
+<section class="tab-panel" data-tab="calc">
+  <form id="calc-form" class="form-stack">
+    <label>Column name<input name="name" required></label>
+    <label>Expression<textarea name="expression" rows="2" placeholder="revenue / units"></textarea></label>
+    <label>Description<textarea name="description" rows="2"></textarea></label>
+    <label>Return type
+      <select name="return_type">
+        <option value="number">Number</option>
+        <option value="string">String</option>
+        <option value="boolean">Boolean</option>
+      </select>
+    </label>
+    <button class="btn btn-primary" type="submit">Save calculated column</button>
+  </form>
+  <h3>Calculated columns</h3>
+  <ul id="calc-list" class="data-list"></ul>
+</section>
+
+<section class="tab-panel" data-tab="export">
+  <form id="export-form" class="form-stack">
+    <label>Format
+      <select name="format">
+        <option value="csv">CSV</option>
+        <option value="json">JSON</option>
+        <option value="pdf">HTML / PDF</option>
+      </select>
+    </label>
+    <label>Filter expression<textarea name="filter_expression" rows="2"></textarea></label>
+    <button class="btn btn-primary" type="submit">Generate export</button>
+  </form>
+  <h3>Previous exports</h3>
+  <ul id="export-list" class="data-list"></ul>
+</section>
+{% endif %}
+
+<section class="tab-panel" data-tab="share">
+  <form id="share-form" class="form-stack">
+    <label>Audience
+      <select name="audience">
+        <option value="team">Team</option>
+        <option value="link">Anyone with link</option>
+        <option value="public">Public</option>
+      </select>
+    </label>
+    <label>Permission
+      <select name="permission">
+        <option value="view">View</option>
+        <option value="comment">Comment</option>
+      </select>
+    </label>
+    <label>Description<textarea name="description" rows="2"></textarea></label>
+    <label>TTL hours (optional)<input name="ttl_hours" type="number" min="1"></label>
+    <button class="btn btn-primary" type="submit">Create share link</button>
+  </form>
+  <h3>Existing shares</h3>
+  <ul id="share-list" class="data-list"></ul>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script>
+  window.DATASET_ID = {{ dataset_id }};
+</script>
+<script src="{{ url_for('static', filename='js/dataset_detail.js') }}" defer></script>
+{% endblock %}

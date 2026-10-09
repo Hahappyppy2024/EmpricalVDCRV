@@ -1,0 +1,35 @@
+{
+    "name": "p16/server-monitoring-job-control-panel",
+    "description": "Server Monitoring & Job Control Panel (P16) - PHP 8.3 + Slim 4 + SQLite",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.3.0",
+        "ext-pdo": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "slim/slim": "4.15.2",
+        "slim/psr7": "1.7.1",
+        "slim/php-view": "3.4.0",
+        "php-di/php-di": "7.0.7",
+        "vlucas/phpdotenv": "5.6.2",
+        "monolog/monolog": "3.7.0",
+        "psr/log": "3.0.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "scripts": {
+        "seed": "php bin/seed.php",
+        "serve": "php -S 0.0.0.0:8080 -t public public/index.php",
+        "start": "php -S 0.0.0.0:8080 -t public public/index.php"
+    },
+    "minimum-stability": "stable"
+}

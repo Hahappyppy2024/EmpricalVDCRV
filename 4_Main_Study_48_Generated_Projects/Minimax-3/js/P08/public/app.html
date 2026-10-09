@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard — Enterprise Expense Approval</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div id="loginView" class="hidden">
+    <div class="login-card">
+      <h2>Sign in</h2>
+      <div id="loginError" class="notice error hidden"></div>
+      <form id="loginForm">
+        <label for="loginUsername">Username</label>
+        <input type="text" id="loginUsername" required value="admin" />
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" required value="Passw0rd!" />
+        <p style="margin-top:12px;">
+          <button class="btn" type="submit">Sign in</button>
+        </p>
+        <p class="hint">Sample users: <code>admin</code>, <code>eng_manager</code>, <code>emp_eng1</code>, <code>fin_lead</code>. Password for all: <code>Passw0rd!</code></p>
+      </form>
+    </div>
+  </div>
+
+  <div id="appShell" class="app-shell hidden">
+    <aside class="sidebar">
+      <h2>Expense Approval</h2>
+      <div class="user" id="userBadge"></div>
+      <nav id="nav"></nav>
+      <button class="logout" id="logoutBtn">Sign out</button>
+    </aside>
+    <main class="main">
+      <h1 id="sectionTitle">Section</h1>
+      <div id="content"></div>
+    </main>
+  </div>
+
+  <div id="wsStatus" class="ws-status">WS: disconnected</div>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

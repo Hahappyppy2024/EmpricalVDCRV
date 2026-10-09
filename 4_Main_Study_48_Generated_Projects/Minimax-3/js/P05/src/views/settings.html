@@ -1,0 +1,48 @@
+<section class="cms-list-page">
+  <h1>Plugin &amp; settings panel</h1>
+  <p>Configure site, comments, media, plugins, and theme.</p>
+  <table class="cms-table">
+    <thead><tr><th>Category</th><th>Key</th><th>Value</th><th>Updated</th><th></th></tr></thead>
+    <tbody id="settingRows"><tr><td colspan="5">Loading...</td></tr></tbody>
+  </table>
+  <h3>Add setting</h3>
+  <form id="newSettingForm" class="cms-form-inline">
+    <label>Key <input name="key" required></label>
+    <label>Value <input name="value"></label>
+    <label>Category <input name="category" value="general" required></label>
+    <button class="btn" type="submit">Add</button>
+  </form>
+</section>
+<script>
+  async function load() {
+    const r = await fetch('/api/cms/plugin_settings_panel');
+    const data = await r.json();
+    const tbody = document.getElementById('settingRows');
+    tbody.innerHTML = (data.settings || []).map(s => `<tr>
+      <td>${s.category}</td>
+      <td><code>${s.key}</code></td>
+      <td><input data-id="${s.id}" class="valueInput" value="${(s.value || '').replace(/"/g, '&quot;')}"></td>
+      <td>${s.updated_at}</td>
+      <td><button data-id="${s.id}" class="saveBtn">Save</button></td>
+    </tr>`).join('');
+    document.querySelectorAll('.saveBtn').forEach(b => b.addEventListener('click', async () => {
+      const id = b.dataset.id;
+      const val = document.querySelector(`.valueInput[data-id="${id}"]`).value;
+      await fetch('/api/cms/plugin_settings_panel/' + id, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: val })
+      });
+      load();
+    }));
+  }
+  document.getElementById('newSettingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData(e.target).entries());
+    await fetch('/api/cms/plugin_settings_panel', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    });
+    e.target.reset();
+    load();
+  });
+  load();
+</script>

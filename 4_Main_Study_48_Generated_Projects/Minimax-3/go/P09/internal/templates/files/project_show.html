@@ -1,0 +1,131 @@
+{{ define "title" }}{{ .Project.Name }}{{ end }}
+{{ define "body" }}
+<nav class="breadcrumb"><a href="/projects">Projects</a> / <span>{{ .Project.Slug }}</span></nav>
+<header class="project-header">
+  <h1>{{ .Project.Name }}
+    {{ if eq .Project.Visibility "private" }}<span class="tag tag-warn">private</span>{{ else }}<span class="tag">public</span>{{ end }}
+    {{ if .Project.Archived }}<span class="tag tag-muted">archived</span>{{ end }}
+  </h1>
+  <p>{{ .Project.Description }}</p>
+  <p class="muted">Owned by <strong>{{ .Project.OwnerUsername }}</strong> &middot; {{ len .Members }} member(s)</p>
+</header>
+
+{{ template "partials/errors.html" . }}
+
+<section class="grid two">
+  <div class="card">
+    <h3>Labels</h3>
+    <ul class="label-list">
+      {{ range .Labels }}<li><span class="tag" style="background:{{ .Color }}">{{ .Name }}</span></li>{{ else }}<li class="muted">No labels yet.</li>{{ end }}
+    </ul>
+    {{ if .CanManage }}
+    <form method="POST" action="/api/issue/project_management/{{ .Project.ID }}/labels" class="inline-form">
+      {{ csrf .CSRFToken }}
+      <input type="text" name="name" required placeholder="new-label">
+      <input type="color" name="color" value="#6c757d">
+      <button type="submit" class="btn btn-sm">Add label</button>
+    </form>
+    {{ end }}
+  </div>
+  <div class="card">
+    <h3>Milestones</h3>
+    <ul>
+      {{ range .Milestones }}<li><strong>{{ .Title }}</strong> &middot; {{ .State }}{{ if .DueDate }} &middot; due {{ .DueDate }}{{ end }}</li>{{ else }}<li class="muted">No milestones.</li>{{ end }}
+    </ul>
+    {{ if .CanManage }}
+    <form method="POST" action="/api/issue/project_management/{{ .Project.ID }}/milestones" class="inline-form">
+      {{ csrf .CSRFToken }}
+      <input type="text" name="title" required placeholder="Milestone title">
+      <input type="date" name="due_date">
+      <button type="submit" class="btn btn-sm">Add milestone</button>
+    </form>
+    {{ end }}
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-header">
+    <h3>Issues</h3>
+    <div>
+      <a class="btn btn-sm" href="/projects/{{ .Project.Slug }}/search">Search within</a>
+      {{ if .CanCreateIssue }}<a class="btn btn-primary btn-sm" href="/projects/{{ .Project.Slug }}/issues/new">New issue</a>{{ end }}
+    </div>
+  </div>
+  {{ if .Issues }}
+  <table class="table">
+    <thead><tr><th>#</th><th>Title</th><th>State</th><th>Priority</th><th>Labels</th><th>Assignee</th></tr></thead>
+    <tbody>
+      {{ range .Issues }}
+      <tr>
+        <td>#{{ .Number }}</td>
+        <td><a href="/projects/{{ $.Project.Slug }}/issues/{{ .Number }}">{{ .Title }}</a></td>
+        <td><span class="tag tag-{{ .State }}">{{ .State }}</span></td>
+        <td>{{ .Priority }}</td>
+        <td>{{ range .Labels }}<span class="tag" style="background:{{ .Color }}">{{ .Name }}</span> {{ end }}</td>
+        <td>{{ if .AssigneeUsername }}{{ .AssigneeUsername }}{{ else }}<span class="muted">unassigned</span>{{ end }}</td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+  {{ else }}
+  <p class="muted">No issues yet.</p>
+  {{ end }}
+</section>
+
+<section class="grid two">
+  <div class="card">
+    <h3>Members</h3>
+    <ul>
+      {{ range .Members }}<li>{{ .Username }} <span class="tag">{{ .Role }}</span></li>{{ end }}
+    </ul>
+    {{ if .CanManage }}
+    <form method="POST" action="/api/issue/project_management/{{ .Project.ID }}/members" class="inline-form">
+      {{ csrf .CSRFToken }}
+      <select name="user_id">
+        {{ range .AllUsers }}<option value="{{ .ID }}">{{ .Username }} ({{ .Role }})</option>{{ end }}
+      </select>
+      <select name="role">
+        <option value="member">member</option>
+        <option value="maintainer">maintainer</option>
+      </select>
+      <button class="btn btn-sm" type="submit">Add member</button>
+    </form>
+    {{ end }}
+  </div>
+  <div class="card">
+    <h3>Webhooks</h3>
+    <ul>
+      {{ range .Webhooks }}<li><code>{{ .URL }}</code> &middot; events {{ .Events }} &middot; {{ if .Active }}active{{ else }}disabled{{ end }}</li>{{ else }}<li class="muted">No webhooks configured.</li>{{ end }}
+    </ul>
+    {{ if .CanManage }}
+    <a class="btn btn-sm" href="/webhooks/{{ .Project.ID }}">Manage webhooks</a>
+    {{ end }}
+  </div>
+</section>
+
+{{ if .CanManage }}
+<section class="card">
+  <h3>Project settings</h3>
+  <form method="POST" action="/api/issue/project_management/{{ .Project.ID }}" class="grid two">
+    {{ csrf .CSRFToken }}
+    <input type="hidden" name="_method" value="PATCH">
+    <label>Name<input type="text" name="name" value="{{ .Project.Name }}"></label>
+    <label>Visibility
+      <select name="visibility">
+        <option value="public" {{ if eq .Project.Visibility "public" }}selected{{ end }}>Public</option>
+        <option value="private" {{ if eq .Project.Visibility "private" }}selected{{ end }}>Private</option>
+      </select>
+    </label>
+    <label>Description<textarea name="description" rows="2">{{ .Project.Description }}</textarea></label>
+    <label>Archived
+      <select name="archived">
+        <option value="0" {{ if not .Project.Archived }}selected{{ end }}>Active</option>
+        <option value="1" {{ if .Project.Archived }}selected{{ end }}>Archived</option>
+      </select>
+    </label>
+    <div><button class="btn btn-primary" type="submit">Save changes</button></div>
+  </form>
+</section>
+{{ end }}
+{{ end }}
+{{ template "layout.html" . }}

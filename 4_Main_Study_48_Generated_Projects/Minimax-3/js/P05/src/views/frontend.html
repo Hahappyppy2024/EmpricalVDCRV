@@ -1,0 +1,51 @@
+<section class="cms-list-page">
+  <h1>Frontend API integration &amp; error simulator</h1>
+  <p>Trigger and observe different API response states for the client UI.</p>
+  <div class="cms-row">
+    <div class="cms-col">
+      <h3>Trigger response</h3>
+      <form id="triggerForm" class="cms-form">
+        <label>Endpoint <input name="endpoint" value="/api/cms/public_site" required></label>
+        <label>Method
+          <select name="method"><option>GET</option><option>POST</option><option>PATCH</option><option>DELETE</option></select>
+        </label>
+        <label>Simulate
+          <select name="simulate">
+            <option value="">(none - just log)</option>
+            <option value="validation">Validation error (422)</option>
+            <option value="missing">Missing page (404)</option>
+            <option value="permission">Permission error (403)</option>
+            <option value="preview">Preview ok (200)</option>
+          </select>
+        </label>
+        <button class="btn primary" type="submit">Send</button>
+      </form>
+      <pre id="responseOutput"></pre>
+    </div>
+    <div class="cms-col">
+      <h3>Recent integration events</h3>
+      <ul id="events"></ul>
+    </div>
+  </div>
+</section>
+<script>
+  async function loadEvents() {
+    const r = await fetch('/api/cms/frontend_api_integration_and_errors');
+    const data = await r.json();
+    document.getElementById('events').innerHTML = (data.items || []).map(i => `<li>${i.created_at} <strong>${i.method} ${i.endpoint}</strong> -> ${i.response_code}${i.error_class ? ` (${i.error_class})` : ''} &mdash; ${i.message || ''}</li>`).join('') || '<li>No events.</li>';
+  }
+  document.getElementById('triggerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = Object.fromEntries(fd.entries());
+    if (!body.simulate) delete body.simulate;
+    const r = await fetch('/api/cms/frontend_api_integration_and_errors', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const text = await r.text();
+    document.getElementById('responseOutput').textContent = `HTTP ${r.status}\n` + text;
+    loadEvents();
+  });
+  loadEvents();
+</script>

@@ -1,0 +1,25 @@
+{{define "content"}}
+<section class="card">
+  <h1>Dashboard</h1>
+  <p>Quick view of your P14 workspace.</p>
+  <div class="grid">
+    <div class="card stat"><span class="stat-value">{{.stats.workflows}}</span><span class="stat-label">Workflows</span></div>
+    <div class="card stat"><span class="stat-value">{{.stats.runs}}</span><span class="stat-label">Runs</span></div>
+    <div class="card stat"><span class="stat-value">{{.stats.schedules}}</span><span class="stat-label">Schedules</span></div>
+    <div class="card stat"><span class="stat-value">{{.stats.webhooks}}</span><span class="stat-label">Webhooks</span></div>
+    <div class="card stat"><span class="stat-value">{{.stats.secrets}}</span><span class="stat-label">Secrets</span></div>
+    <div class="card stat"><span class="stat-value">{{.stats.files}}</span><span class="stat-label">Workspace files</span></div>
+  </div>
+</section>
+<section class="card">
+  <h2>Recent runs</h2>
+  <table class="table">
+    <thead><tr><th>Run</th><th>Workflow</th><th>Status</th><th>Trigger</th><th>Started</th></tr></thead>
+    <tbody>
+    {{range .recent_runs}}
+      <tr><td><code>{{.ID}}</code></td><td>{{.WorkflowID}}</td><td>{{.Status}}</td><td>{{.Trigger}}</td><td>{{if .StartedAt}}{{.StartedAt.Format "2006-01-02 15:04"}}{{else}}—{{end}}</td></tr>
+    {{else}}<tr><td colspan="5">No runs yet.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+{{end}}

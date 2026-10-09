@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <h1>{% if signup_mode %}Create an account{% else %}Sign in{% endif %}</h1>
+  <p class="muted">Welcome to the synthetic Data Analytics Dashboard.</p>
+  <form id="auth-form" method="post" action="/api/data/account_access">
+    <input type="hidden" name="mode" value="{% if signup_mode %}signup{% else %}signin{% endif %}">
+    <label>
+      Username
+      <input name="username" type="text" autocomplete="username" required>
+    </label>
+    {% if signup_mode %}
+    <label>
+      Email
+      <input name="email" type="email" autocomplete="email" required>
+    </label>
+    <label>
+      Display name
+      <input name="display_name" type="text" required>
+    </label>
+    <label>
+      Role
+      <select name="role">
+        <option value="analyst">Analyst</option>
+        <option value="viewer">Viewer</option>
+      </select>
+    </label>
+    {% endif %}
+    <label>
+      Password
+      <input name="password" type="password" autocomplete="current-password" required>
+    </label>
+    <button type="submit" class="btn btn-primary">{% if signup_mode %}Sign up{% else %}Sign in{% endif %}</button>
+    <p class="form-status" data-role="status"></p>
+  </form>
+  <p class="muted">
+    {% if signup_mode %}
+      Already have an account? <a href="{{ url_for('render_login') }}">Sign in</a>
+    {% else %}
+      No account? <a href="{{ url_for('render_signup') }}">Create one</a>
+    {% endif %}
+  </p>
+  <details class="seed-credentials">
+    <summary>Seed accounts</summary>
+    <ul>
+      <li><strong>admin</strong> / Admin#123 — full administrative access</li>
+      <li><strong>analyst</strong> / Analyst#123 — analyst workflows</li>
+      <li><strong>viewer</strong> / Viewer#123 — read-only access</li>
+    </ul>
+  </details>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/auth.js') }}" defer></script>
+{% endblock %}

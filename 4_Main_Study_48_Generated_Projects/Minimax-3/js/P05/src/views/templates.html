@@ -1,0 +1,59 @@
+<section class="cms-list-page">
+  <h1>Page templates &amp; navigation</h1>
+  <h2>Templates</h2>
+  <ul id="tplList" class="cms-list-grid">Loading...</ul>
+  <h3>Create new template</h3>
+  <form id="newTplForm" class="cms-form">
+    <label>Name <input name="name" required></label>
+    <label>Description <input name="description"></label>
+    <label>Layout HTML <textarea name="layoutHtml" rows="4" required>{{body}}</textarea></label>
+    <label><input type="checkbox" name="isDefault"> Set as default</label>
+    <button class="btn primary" type="submit">Create</button>
+  </form>
+  <h2>Navigation menus</h2>
+  <ul id="menuList" class="cms-list-grid">Loading...</ul>
+  <form id="newMenuForm" class="cms-form-inline">
+    <label>Label <input name="label" required></label>
+    <label>URL <input name="url" required></label>
+    <label>Order <input name="sortOrder" type="number" value="0"></label>
+    <button class="btn" type="submit">Add menu item</button>
+  </form>
+</section>
+<script>
+  async function load() {
+    const r = await fetch('/api/cms/page_templates');
+    const data = await r.json();
+    document.getElementById('tplList').innerHTML = (data.templates || []).map(t => `<li>
+      <strong>${t.name}</strong> ${t.isDefault ? '<em>(default)</em>' : ''}<br>
+      <small>${t.description || ''}</small><br>
+      <small>Regions: ${(t.regions || []).join(', ')}</small>
+    </li>`).join('') || '<li>None</li>';
+    document.getElementById('menuList').innerHTML = (data.menus || []).map(m => `<li>
+      <strong>${m.label}</strong> &mdash; <a href="${m.url}">${m.url}</a>
+    </li>`).join('') || '<li>None</li>';
+  }
+  document.getElementById('newTplForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = Object.fromEntries(fd.entries());
+    body.isDefault = !!body.isDefault;
+    body.regions = ['main'];
+    await fetch('/api/cms/page_templates', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    });
+    e.target.reset();
+    load();
+  });
+  document.getElementById('newMenuForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = Object.fromEntries(fd.entries());
+    body.sortOrder = Number(body.sortOrder || 0);
+    await fetch('/api/cms/page_templates/menus', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    });
+    e.target.reset();
+    load();
+  });
+  load();
+</script>

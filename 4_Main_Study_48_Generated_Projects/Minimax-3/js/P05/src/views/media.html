@@ -1,0 +1,51 @@
+<section class="cms-list-page">
+  <h1>Media library</h1>
+  <form id="uploadForm" class="cms-form-inline">
+    <label>File <input type="file" name="file" required></label>
+    <label>Alt text <input type="text" name="altText"></label>
+    <label class="cms-check"><input type="checkbox" name="isPrivate" value="true"> Private</label>
+    <button class="btn primary" type="submit">Upload</button>
+    <p class="cms-error" id="uploadError"></p>
+  </form>
+  <div class="cms-media-grid" id="mediaGrid">Loading...</div>
+</section>
+<script>
+  async function load() {
+    const r = await fetch('/api/cms/media_library');
+    const data = await r.json();
+    const grid = document.getElementById('mediaGrid');
+    if (!data.items || !data.items.length) { grid.innerHTML = '<p>No media yet.</p>'; return; }
+    grid.innerHTML = data.items.map(m => `
+      <div class="cms-media-item">
+        <div class="cms-media-thumb"><a href="${m.urlPath}" target="_blank">${m.mimeType.startsWith('image/') ? `<img src="${m.urlPath}" alt="${m.altText||m.fileName}">` : `<span>${m.mimeType}</span>`}</a></div>
+        <p><strong>${m.fileName}</strong></p>
+        <p class="cms-meta">${m.mimeType} &middot; ${m.sizeBytes} bytes</p>
+        <p><button data-id="${m.id}" class="renameBtn">Rename</button> <button data-id="${m.id}" class="deleteBtn danger">Delete</button></p>
+      </div>
+    `).join('');
+    document.querySelectorAll('.renameBtn').forEach(b => b.addEventListener('click', async () => {
+      const newName = prompt('New file name', b.previousElementSibling?.previousElementSibling?.textContent || '');
+      if (!newName) return;
+      await fetch('/api/cms/media_library/' + b.dataset.id, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: newName })
+      });
+      load();
+    }));
+    document.querySelectorAll('.deleteBtn').forEach(b => b.addEventListener('click', async () => {
+      if (!confirm('Delete this media item?')) return;
+      await fetch('/api/cms/media_library/' + b.dataset.id, { method: 'DELETE' });
+      load();
+    }));
+  }
+  document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const r = await fetch('/api/cms/media_library', { method: 'POST', body: fd });
+    const data = await r.json();
+    if (!r.ok) { document.getElementById('uploadError').textContent = data.message || 'Upload failed'; return; }
+    e.target.reset();
+    load();
+  });
+  load();
+</script>

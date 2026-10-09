@@ -1,0 +1,13 @@
+vendor/
+.env
+storage/lms.sqlite
+storage/lms.sqlite-journal
+storage/uploads/*
+!storage/uploads/.gitkeep
+storage/exports/*
+!storage/exports/.gitkeep
+storage/logs/*
+!storage/logs/.gitkeep
+.idea/
+.vscode/
+*.log

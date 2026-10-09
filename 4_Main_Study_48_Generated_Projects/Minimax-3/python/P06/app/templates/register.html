@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Register · Real-Time Team Chat{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Create account</h1>
+  <form id="register-form">
+    <label>Email
+      <input name="email" type="email" required autocomplete="email">
+    </label>
+    <label>Username
+      <input name="username" required pattern="[a-zA-Z0-9_]{3,32}" autocomplete="username">
+    </label>
+    <label>Display name
+      <input name="display_name" required>
+    </label>
+    <label>Password
+      <input name="password" type="password" required minlength="8" autocomplete="new-password">
+    </label>
+    <button type="submit">Register</button>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
+{% endblock %}

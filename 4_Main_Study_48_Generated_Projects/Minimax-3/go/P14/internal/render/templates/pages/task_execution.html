@@ -1,0 +1,59 @@
+{{define "content"}}
+<section class="card">
+  <h1>Task execution</h1>
+  {{if .notice}}<div class="alert ok">{{.notice}}</div>{{end}}
+  {{if .error}}<div class="alert error">{{.error}}</div>{{end}}
+  <p>Run a workflow manually and inspect step-by-step results.</p>
+  <form method="post" action="/task_execution" class="form inline-form">
+    <label>Workflow
+      <select name="workflow_id">
+        {{range .workflows}}
+          <option value="{{.ID}}">{{.Name}} ({{.TriggerKind}})</option>
+        {{else}}
+          <option value="">(no workflows)</option>
+        {{end}}
+      </select>
+    </label>
+    <button class="btn primary" type="submit">Queue run</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Run history</h2>
+  <table class="table">
+    <thead><tr><th>ID</th><th>Workflow</th><th>Status</th><th>Trigger</th><th>Started</th><th>Finished</th><th>Detail</th><th></th></tr></thead>
+    <tbody>
+    {{range .runs}}
+      <tr>
+        <td><code>{{.ID}}</code></td>
+        <td>{{.WorkflowID}}</td>
+        <td><code>{{.Status}}</code></td>
+        <td>{{.Trigger}}</td>
+        <td>{{if .StartedAt}}{{.StartedAt.Format "2006-01-02 15:04:05"}}{{else}}—{{end}}</td>
+        <td>{{if .FinishedAt}}{{.FinishedAt.Format "2006-01-02 15:04:05"}}{{else}}—{{end}}</td>
+        <td>{{.Detail}}</td>
+        <td><a class="btn small" href="/run_logs_and_replay?run_id={{.ID}}">Inspect</a></td>
+      </tr>
+    {{else}}<tr><td colspan="8">No runs yet.</td></tr>{{end}}
+    </tbody>
+  </table>
+</section>
+
+{{if .focus_run}}
+<section class="card">
+  <h2>Steps for {{.focus_run.ID}}</h2>
+  <ol class="steps">
+    {{range .focus_run.Steps}}
+      <li class="step step-{{.Status}}">
+        <div class="step-head"><span class="seq">#{{.Seq}}</span> <strong>{{.Name}}</strong> <code>{{.Status}}</code></div>
+        <pre>{{.Output}}</pre>
+        {{if .Error}}<pre class="error">{{.Error}}</pre>{{end}}
+      </li>
+    {{else}}<li>No steps recorded.</li>{{end}}
+  </ol>
+  <h3>Live event stream</h3>
+  <div id="live-log" class="live-log" data-run-id="{{.focus_run.ID}}"></div>
+  <script src="/static/js/runner_ws.js" defer></script>
+</section>
+{{end}}
+{{end}}

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin reports — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card">
+      <h2>Admin reports</h2>
+      <div id="flash"></div>
+      <form id="report-form">
+        <div class="toolbar">
+          <label><span>Report</span>
+            <select name="report">
+              <option value="occupancy">Occupancy</option>
+              <option value="revenue">Revenue</option>
+              <option value="cancellations">Cancellations</option>
+            </select>
+          </label>
+          <label><span>Start date</span><input type="date" name="start_date"></label>
+          <label><span>End date</span><input type="date" name="end_date"></label>
+          <button type="submit">Run</button>
+          <button type="button" id="csv-btn" class="secondary">Download CSV</button>
+        </div>
+      </form>
+      <pre id="output" style="background:#0a4d8c;color:#e7f0fa;padding:16px;border-radius:6px;overflow:auto"></pre>
+      <h3 style="margin-top:18px">Recent audit events</h3>
+      <ul id="audit"></ul>
+    </section>
+    <section class="card">
+      <h2>API error scenarios (HOTEL-12)</h2>
+      <p>Simulate frontend error responses to verify client handling.</p>
+      <div class="flex">
+        <button data-s="conflict" class="danger">Conflict (409)</button>
+        <button data-s="validation" class="danger">Validation (400)</button>
+        <button data-s="unauthorized" class="danger">Unauthorized (401)</button>
+        <button data-s="network" class="danger">Network (503)</button>
+      </div>
+      <pre id="err-output" style="background:#1f2a36;color:#fff;padding:16px;border-radius:6px;overflow:auto"></pre>
+    </section>
+  </main>
+  <footer class="app-footer">HOTEL-11 · HOTEL-12</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const user = await HBS.requireRole(['admin']);
+      if (!user) return;
+      const form = document.getElementById('report-form');
+      const out = document.getElementById('output');
+      function buildQuery() {
+        const fd = new FormData(form);
+        const sp = new URLSearchParams();
+        for (const [k, v] of fd.entries()) if (v) sp.set(k, v);
+        return sp;
+      }
+      async function run() {
+        const r = await HBS.api('/api/hotel/admin_reports?' + buildQuery().toString());
+        if (!r.ok) { HBS.flash(document.getElementById('flash'), 'error', r.data?.message || 'Failed'); return; }
+        out.textContent = JSON.stringify(r.data, null, 2);
+        const a = document.getElementById('audit');
+        a.innerHTML = (r.data.audit || []).map(e => `<li><code>${escape(e.action)}</code> by ${escape(e.actor_name)} — ${escape(e.detail || '')} <small>${e.created_at}</small></li>`).join('');
+      }
+      form.addEventListener('submit', (e) => { e.preventDefault(); run(); });
+      document.getElementById('csv-btn').addEventListener('click', () => {
+        const sp = buildQuery(); sp.set('format', 'csv');
+        location.href = '/api/hotel/admin_reports?' + sp.toString();
+      });
+      run();
+
+      document.querySelectorAll('button[data-s]').forEach(btn => btn.addEventListener('click', async () => {
+        const r = await HBS.api('/api/hotel/frontend_api_integration_and_errors', { method: 'POST', body: { scenario: btn.dataset.s } });
+        document.getElementById('err-output').textContent = `Status: ${r.status}\n` + JSON.stringify(r.data, null, 2);
+      }));
+    })();
+  </script>
+</body>
+</html>

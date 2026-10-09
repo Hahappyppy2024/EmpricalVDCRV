@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Write a review — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card">
+      <h2>Write a review</h2>
+      <div id="flash"></div>
+      <form id="review-form">
+        <label><span>Booking ID</span><input type="number" name="booking_id" required></label>
+        <label><span>Rating</span>
+          <select name="rating">
+            <option value="5">5 — excellent</option>
+            <option value="4">4 — great</option>
+            <option value="3">3 — good</option>
+            <option value="2">2 — fair</option>
+            <option value="1">1 — poor</option>
+          </select>
+        </label>
+        <label><span>Body</span><textarea name="body" required></textarea></label>
+        <button type="submit">Submit review</button>
+      </form>
+    </section>
+  </main>
+  <footer class="app-footer">HOTEL-09</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const user = await HBS.requireRole(['guest']);
+      if (!user) return;
+      const params = new URLSearchParams(location.search);
+      const form = document.getElementById('review-form');
+      if (params.get('booking_id')) form.elements.booking_id.value = params.get('booking_id');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = Object.fromEntries(new FormData(form).entries());
+        body.rating = Number(body.rating);
+        const r = await HBS.api('/api/hotel/reviews', { method: 'POST', body });
+        HBS.flash(document.getElementById('flash'), r.ok ? 'success' : 'error', r.ok ? 'Submitted for moderation' : (r.data?.message || 'Failed'));
+        if (r.ok) setTimeout(() => location.href = '/pages/bookings.html', 800);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Sign in · Real-Time Team Chat{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Sign in</h1>
+  <form id="signin-form">
+    <label>Email or username
+      <input name="identifier" required autocomplete="username">
+    </label>
+    <label>Password
+      <input name="password" type="password" required autocomplete="current-password">
+    </label>
+    <button type="submit">Sign in</button>
+    <p class="muted"><a href="{{ url_for('pages.register_page') }}">Create an account</a> · <a href="{{ url_for('pages.reset_request_page') }}">Forgot password</a></p>
+    <p class="muted">Seed accounts: admin@example.com, alice@example.com, bob@example.com, carol@example.com (see README for passwords).</p>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/signin.js') }}"></script>
+{% endblock %}

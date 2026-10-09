@@ -1,0 +1,30 @@
+{
+    "name": "shop/p03-ecommerce-system",
+    "description": "P03 E-commerce System (PHP 8.3 / Slim 4 / SQLite)",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "php-di/php-di": "7.0.6",
+        "slim/php-view": "3.4.0",
+        "slim/psr7": "1.7.0",
+        "slim/slim": "4.15.2",
+        "vlucas/phpdotenv": "5.6.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shop\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "audit": {
+            "abandoned": "ignore"
+        }
+    },
+    "scripts": {
+        "seed": "php bin/seed.php",
+        "serve": "php -S 127.0.0.1:8080 -t public public/index.php"
+    }
+}

@@ -1,0 +1,33 @@
+{{ define "title" }}Account sessions{{ end }}
+{{ define "body" }}
+<h1>Active sessions</h1>
+{{ template "partials/errors.html" . }}
+{{ if .Sessions }}
+<table class="table">
+  <thead><tr><th>Created</th><th>Expires</th><th>IP</th><th>User agent</th><th></th></tr></thead>
+  <tbody>
+    {{ range .Sessions }}
+    <tr>
+      <td>{{ .CreatedAt }}</td>
+      <td>{{ .ExpiresAt }}</td>
+      <td>{{ .IP }}</td>
+      <td>{{ .UA }}</td>
+      <td>
+        {{ if eq .ID $.CurrentSessionID }}
+        <span class="tag tag-info">current</span>
+        {{ else }}
+        <form method="POST" action="/api/issue/account_access/revoke/{{ .ID }}" class="inline">
+          {{ csrf $.CSRFToken }}
+          <button class="btn btn-sm btn-danger" type="submit">Revoke</button>
+        </form>
+        {{ end }}
+      </td>
+    </tr>
+    {{ end }}
+  </tbody>
+</table>
+{{ else }}
+<p class="muted">No active sessions.</p>
+{{ end }}
+{{ end }}
+{{ template "layout.html" . }}

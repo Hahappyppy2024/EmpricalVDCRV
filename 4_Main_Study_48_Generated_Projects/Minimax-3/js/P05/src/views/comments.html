@@ -1,0 +1,42 @@
+<section class="cms-list-page">
+  <h1>Comments moderation</h1>
+  <p>Approve or remove visitor comments.</p>
+  <div class="cms-tabs">
+    <button data-state="pending" class="tab active">Pending</button>
+    <button data-state="approved" class="tab">Approved</button>
+    <button data-state="removed" class="tab">Removed</button>
+  </div>
+  <ul class="cms-comments" id="commentList">Loading...</ul>
+</section>
+<script>
+  let currentState = 'pending';
+  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentState = b.dataset.state;
+    load();
+  }));
+  async function load() {
+    const r = await fetch('/api/cms/comments?state=' + currentState);
+    const data = await r.json();
+    const list = document.getElementById('commentList');
+    if (!data.comments || !data.comments.length) { list.innerHTML = '<li>No comments.</li>'; return; }
+    list.innerHTML = data.comments.map(c => `<li class="cms-comment">
+      <p><strong>${c.author_name}</strong> on <a href="/public/${c.article_slug}">${c.article_title}</a></p>
+      <p>${c.body}</p>
+      <p>
+        ${c.state !== 'approved' ? `<button data-id="${c.id}" data-action="approved">Approve</button>` : ''}
+        ${c.state !== 'removed' ? `<button data-id="${c.id}" data-action="removed">Remove</button>` : ''}
+        ${c.state !== 'pending' ? `<button data-id="${c.id}" data-action="pending">Mark pending</button>` : ''}
+      </p>
+    </li>`).join('');
+    document.querySelectorAll('.cms-comment button').forEach(b => b.addEventListener('click', async () => {
+      await fetch('/api/cms/comments/' + b.dataset.id, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ state: b.dataset.action })
+      });
+      load();
+    }));
+  }
+  load();
+</script>

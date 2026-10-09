@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+      - "8282:8282"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_BASE_URL: http://localhost:8080
+      DB_PATH: storage/lms.sqlite
+      UPLOAD_DIR: storage/uploads
+      EXPORT_DIR: storage/exports
+    volumes:
+      - ./storage:/app/storage
+    command: ["php", "-S", "0.0.0.0:8080", "-t", "public", "public/index.php"]
+  ws:
+    build: .
+    depends_on:
+      - app
+    environment:
+      WS_HOST: 0.0.0.0
+      WS_PORT: "8282"
+      DB_PATH: storage/lms.sqlite
+    volumes:
+      - ./storage:/app/storage
+    command: ["php", "bin/workerman_ws.php"]
+    ports:
+      - "8282:8282"

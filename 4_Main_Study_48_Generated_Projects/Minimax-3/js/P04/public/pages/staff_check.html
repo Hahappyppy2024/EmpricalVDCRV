@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Check-in / Check-out — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card">
+      <h2>Today's operations</h2>
+      <div id="flash"></div>
+      <h3>Arrivals (confirmed, today)</h3>
+      <div id="arrivals"></div>
+      <h3 style="margin-top:18px">In-house guests</h3>
+      <div id="inhouse"></div>
+      <h3 style="margin-top:18px">Departures</h3>
+      <div id="departures"></div>
+    </section>
+  </main>
+  <footer class="app-footer">HOTEL-06</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const user = await HBS.requireRole(['staff', 'admin']);
+      if (!user) return;
+      const flash = document.getElementById('flash');
+
+      function render(target, list, action) {
+        const el = document.getElementById(target);
+        if (!list.length) { el.innerHTML = '<div class="empty-state">None.</div>'; return; }
+        el.innerHTML = list.map(b => `
+          <div class="card" style="margin-bottom:8px">
+            <div class="flex">
+              <div><strong>${escape(b.code)}</strong> — ${escape(b.guest_name)} — ${escape(b.room_name)}</div>
+              <div class="spacer"></div>
+              <button data-id="${b.id}" data-action="${action}" class="success">${action === 'check_in' ? 'Check in' : 'Check out'}</button>
+            </div>
+            <div>${b.check_in} → ${b.check_out} · guests ${b.guests}</div>
+          </div>`).join('');
+        el.querySelectorAll('button').forEach(btn => btn.addEventListener('click', async () => {
+          const r = await HBS.api('/api/hotel/staff_check_in_out', { method: 'POST', body: { booking_id: Number(btn.dataset.id), status: btn.dataset.action } });
+          HBS.flash(flash, r.ok ? 'success' : 'error', r.ok ? 'Updated' : (r.data?.message || 'Failed'));
+          load();
+        }));
+      }
+      async function load() {
+        const r = await HBS.api('/api/hotel/staff_check_in_out');
+        if (!r.ok) { HBS.flash(flash, 'error', r.data?.message || 'Failed'); return; }
+        render('arrivals', r.data.arrivals, 'check_in');
+        render('inhouse', r.data.inhouse, 'check_out');
+        render('departures', r.data.departures, 'check_out');
+      }
+      load();
+    })();
+  </script>
+</body>
+</html>

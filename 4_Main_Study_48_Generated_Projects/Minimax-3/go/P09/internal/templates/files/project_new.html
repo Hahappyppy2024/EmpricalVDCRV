@@ -1,0 +1,21 @@
+{{ define "title" }}New project{{ end }}
+{{ define "body" }}
+<h1>New project</h1>
+{{ template "partials/errors.html" . }}
+<form method="POST" action="/api/issue/project_management" class="card">
+  {{ csrf .CSRFToken }}
+  <div class="grid two">
+    <label>Slug<input type="text" name="slug" required pattern="[a-z0-9-]+" placeholder="my-cool-project"></label>
+    <label>Name<input type="text" name="name" required></label>
+  </div>
+  <label>Description<textarea name="description" rows="3"></textarea></label>
+  <label>Visibility
+    <select name="visibility">
+      <option value="public">Public</option>
+      <option value="private">Private</option>
+    </select>
+  </label>
+  <button class="btn btn-primary" type="submit">Create project</button>
+</form>
+{{ end }}
+{{ template "layout.html" . }}

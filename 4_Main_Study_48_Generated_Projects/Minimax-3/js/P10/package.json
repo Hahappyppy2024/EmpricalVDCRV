@@ -1,0 +1,24 @@
+{
+  "name": "ai-assistant-llm-webui",
+  "version": "1.0.0",
+  "description": "P10 AI Assistant / LLM WebUI - synthetic benchmark system (Lobe Chat alignment)",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "start": "node scripts/start.js",
+    "dev": "node --watch src/server.js",
+    "reset-db": "node scripts/reset-db.js",
+    "seed": "node scripts/reset-db.js --seed",
+    "smoke": "node scripts/smoke-check.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "11.3.0",
+    "express": "5.0.1",
+    "multer": "2.0.1",
+    "ws": "8.18.0"
+  },
+  "license": "MIT"
+}

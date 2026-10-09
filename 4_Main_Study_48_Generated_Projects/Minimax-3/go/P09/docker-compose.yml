@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    image: p09-issue-tracker:latest
+    container_name: p09-issue-tracker
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ADDR: ":8080"
+      APP_BASE_URL: "http://localhost:8080"
+      APP_DATA_DIR: "/app/data"
+      APP_DB_PATH: "/app/data/its.db"
+      APP_UPLOAD_DIR: "/app/data/uploads"
+    volumes:
+      - p09-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  p09-data:

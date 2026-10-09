@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.log
+data/
+.DS_Store
+.env
+server.out.log
+server.err.log
+p14-server

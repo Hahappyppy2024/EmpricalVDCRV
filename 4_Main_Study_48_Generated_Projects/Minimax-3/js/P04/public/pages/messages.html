@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Messages — Benchmark Hotel</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <header class="topbar"><h1>Benchmark Hotel</h1><nav class="main-nav"></nav></header>
+  <main>
+    <section class="card">
+      <h2>Guest messages</h2>
+      <div id="flash"></div>
+      <label><span>Booking</span>
+        <select id="booking-select"></select>
+      </label>
+      <ul class="messages" id="messages"></ul>
+      <form id="send-form" style="margin-top:16px">
+        <label><span>Reply</span><textarea name="body" required></textarea></label>
+        <button type="submit">Send</button>
+      </form>
+    </section>
+  </main>
+  <footer class="app-footer">HOTEL-08</footer>
+  <script src="/js/app.js"></script>
+  <script>
+    (async () => {
+      const user = await HBS.requireRole(['guest', 'staff', 'admin']);
+      if (!user) return;
+      const flash = document.getElementById('flash');
+      const sel = document.getElementById('booking-select');
+      const params = new URLSearchParams(location.search);
+
+      async function loadBookings() {
+        let url;
+        if (user.role === 'guest') url = '/api/hotel/booking_management';
+        else url = '/api/hotel/booking_creation';
+        const r = await HBS.api('/api/hotel/booking_creation');
+        const list = r.ok ? r.data.bookings : [];
+        sel.innerHTML = '<option value="">— select a booking —</option>' + list.map(b => `<option value="${b.id}">${escape(b.code)} — ${escape(b.room_name)} (${b.status})</option>`).join('');
+        if (params.get('booking_id')) sel.value = params.get('booking_id');
+      }
+      loadBookings();
+
+      async function loadMessages() {
+        if (!sel.value) return;
+        const r = await HBS.api('/api/hotel/guest_messages?booking_id=' + encodeURIComponent(sel.value));
+        if (!r.ok) { HBS.flash(flash, 'error', r.data?.message || 'Failed'); return; }
+        document.getElementById('messages').innerHTML = (r.data.messages || []).map(m => `
+          <li class="${m.sender_role}">
+            <div class="meta"><strong>${escape(m.sender_name)}</strong> (${m.sender_role}) · ${escape(m.created_at)}</div>
+            <div>${escape(m.body)}</div>
+          </li>`).join('') || '<li class="empty-state">No messages yet.</li>';
+      }
+      sel.addEventListener('change', loadMessages);
+
+      document.getElementById('send-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!sel.value) { HBS.flash(flash, 'error', 'Select a booking first'); return; }
+        const body = Object.fromEntries(new FormData(e.target).entries());
+        const r = await HBS.api('/api/hotel/guest_messages', { method: 'POST', body: { booking_id: Number(sel.value), body: body.body } });
+        HBS.flash(flash, r.ok ? 'success' : 'error', r.ok ? 'Sent' : (r.data?.message || 'Failed'));
+        if (r.ok) { e.target.reset(); loadMessages(); }
+      });
+    })();
+  </script>
+</body>
+</html>

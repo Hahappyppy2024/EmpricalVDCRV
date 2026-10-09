@@ -1,0 +1,18 @@
+{{define "base"}}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{.Title}} · P14 Workflow Automation</title>
+<link rel="stylesheet" href="/static/css/app.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+{{template "header" .}}
+<main class="container">
+  {{template "content" .}}
+</main>
+{{template "footer" .}}
+<script src="/static/js/app.js" defer></script>
+</body>
+</html>
+{{end}}
